@@ -26,6 +26,10 @@ a:hover { color: #d3ae7e; }
 
 p, p:last-child { margin: 0 0 1.25em 0; }
 
+strong {
+  font-weight: bold;
+}
+
 .breadcrumb { background: none; border: none; font-size: 20px; list-style: none; margin: 10px 0; padding: 0; position: relative; }
 .breadcrumb li { float: none; }
 .breadcrumb li a span { display: none; }

@@ -37,6 +37,7 @@ form#dkan-sitewide-dataset-search-form--2 .btn-info, form#dkan-sitewide-dataset-
 /*Article nodes*/
 article.node-page h2 {
   margin-bottom: 1.2em;
+  margin-top: 1.3em;
 }
 
 /*Footer menu*/

@@ -19,12 +19,27 @@ h1 { font-size: 30px; line-height: 36px; margin-bottom: 15px; }
 
 h1, h2, h3, h4 { color: #333333; font-weight: bold; }
 
+h2 {
+  font-size: 1.6em;
+}
+
+h3 {
+  font-size: 1.4em;
+}
+
 h3.media-heading { margin: .5em 0; }
 
 a { color: #0a77bd; }
 a:hover { color: #d3ae7e; }
 
-p, p:last-child { margin: 0 0 1.25em 0; }
+p, p:last-child {
+  margin: 0 0 1.25em 0;
+}
+
+article p {
+  margin: 0 0 1.25em 0;
+  font-size: 1.1em;
+}
 
 strong {
   font-weight: bold;

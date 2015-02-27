@@ -29,8 +29,9 @@
   margin: 1em 0;
 }
 
-/*Search block in header*/
-form#dkan-sitewide-dataset-search-form--2 .btn-info, form#dkan-sitewide-dataset-search-form .btn-info {
+/*Search block in header and in home page block*/
+form#dkan-sitewide-dataset-search-form--2 .btn,
+form#dkan-sitewide-dataset-search-form .btn {
   display: none;
 }
 

@@ -1,0 +1,12 @@
+; $Id: bot_potpourri.info,v 1.1.2.1.2.1 2010/12/25 21:10:56 morbus Exp $
+name = Bot Potpourri
+package = Bot
+dependencies[] = bot
+description = Enables a collection of gentle and pleasant smelling utilities.
+core = 7.x
+; Information added by drupal.org packaging script on 2011-01-05
+version = "7.x-1.3"
+core = "7.x"
+project = "bot"
+datestamp = "1294193453"
+

@@ -1,0 +1,33 @@
+<?php
+// $Id: bot_aggregator.install,v 1.1.2.1.2.1 2010/12/24 14:36:11 morbus Exp $
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Bot Aggregator module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function bot_aggregator_schema() {
+  $schema['bot_aggregator'] = array(
+    'description' => 'Stores feed-to-channel configuration.',
+    'fields' => array(
+      'fid' => array(
+        'description'   => 'The {aggregator_feed} this configuration belongs to.',
+        'not null'      => TRUE,
+        'type'          => 'int',
+        'unsigned'      => TRUE,
+      ),
+      'channel' => array(
+        'default'     => '',
+        'description' => 'The IRC channel or channels where this feed is reported to.',
+        'length'      => 255,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+    ),
+  );
+
+  return $schema;
+}

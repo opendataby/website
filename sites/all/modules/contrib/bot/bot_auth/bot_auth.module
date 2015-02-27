@@ -1,0 +1,83 @@
+<?php
+// $Id: bot_auth.module,v 1.1.2.2 2010/12/31 03:19:28 morbus Exp $
+
+/**
+ * @file
+ * Authenticate to the bot with your Drupal user account.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function bot_auth_help($path, $arg) {
+  switch ($path) {
+    case 'irc:features':
+      return array(t('Auth'));
+    case 'irc:features#auth':
+      return t('If you have a Drupal user account with the bot\'s host, you can "/msg BOTNAME login [username]/[password]" to authenticate your IRC session and gain additional privileges.');
+  }
+}
+
+/**
+ * Allow a user to authenticate from a private message.
+ */
+function bot_auth_irc_msg_query($data) {
+  $addressed = bot_name_regexp();
+
+  if (preg_match("/^($addressed)?login\s+(.*?)\/(.*?)$/", $data->message, $matches)) {
+    $username = trim($matches[3]); $password = trim($matches[4]);
+    $uid = user_authenticate($username, $password);
+
+    if ($uid) {
+      db_merge('bot_sessions')
+        ->key(array('nick' => $data->nick))
+        ->fields(array(
+          'uid'       => $uid,
+          'hostname'  => $data->host,
+          'timestamp' => time(),
+        ))
+        ->execute(); // I LOVE MERGE QUERIES, GO UPSERTS!
+      bot_message($data->nick, t("You are now logged in."));
+    }
+    else {
+      bot_message($data->nick, t("Unrecognized username or password: [$username/$password]"));
+    }
+  }
+}
+
+/**
+ * If a user changes their nick, update their session (if one exists).
+ */
+function bot_auth_irc_msg_nickchange($data) {
+  db_update('bot_sessions')
+    ->fields(array(
+      'nick' => $data->message,
+    ))
+    ->condition('nick', $data->nick)
+    ->condition('hostname', $data->host)
+    ->execute();
+}
+
+/**
+ * When a user quits the server, delete their session (if one exists).
+ */
+function bot_auth_irc_msg_quit($data) {
+  db_delete('bot_sessions')->condition('nick', $data->nick)->execute();
+}
+
+/**
+ * If the IRC user is authenticated, return their Drupal $user object.
+ *
+ * Checks the passed nick to see if a session has been started for them
+ * and their hostname matches the last known entry. Expected usage is:
+ *
+ *   $account = both_auth_authed($data);
+ *   if ($account && user_access('go crazy', $account)) {
+ *     // Do something
+ *   }
+ */
+function bot_auth_authed($data) {
+  $uid = db_query('SELECT uid FROM {bot_sessions} WHERE nick LIKE :nick AND hostname = :hostname', 
+    array(':nick' => db_like($data->nick), ':hostname' => $data->host))->fetchField(); // sleepywinks.
+  return !empty($uid) ? user_load($uid) : NULL;
+}

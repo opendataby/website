@@ -1,0 +1,63 @@
+<?php
+// $Id: bot_project.install,v 1.1.2.2.2.1.2.1 2010/12/27 15:20:15 morbus Exp $
+
+/**
+ * Implements hook_schema().
+ */
+function bot_project_schema() {
+  $schema['bot_urls'] = array(
+    'description' => 'Stores URLs mentioned in IRC channels.',
+    'fields' => array(
+      'url' => array(
+        'default'     => '',
+        'description' => 'The URL mentioned in an IRC channel.',
+        'length'      => 255,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+      'title' => array(
+        'default'     => '',
+        'description' => 'The title of the URL, cached for quicker lookups.',
+        'length'      => 128,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+      'count' => array(
+        'description' => 'The number of times the URL has been mentioned.',
+        'not null'    => TRUE,
+        'type'        => 'int',
+        'unsigned'    => TRUE,
+      ),
+      'last_seen' => array(
+        'default'     => 0,
+        'description' => 'The Unix timestamp when the URL was last mentioned.',
+        'not null'    => TRUE,
+        'type'        => 'int',
+        'unsigned'    => TRUE,
+      ),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function bot_project_uninstall() {
+  variable_del('bot_project_api_default_branch');
+  variable_del('bot_project_project_enable');
+  variable_del('bot_project_project_nid_min');
+  variable_del('bot_project_project_nid_max');
+  variable_del('bot_project_project_url');
+  variable_del('bot_project_project_url_regexp');
+  variable_del('bot_project_too_lazy_to_recompile_for_ssl');
+  variable_del('bot_project_trac_enable');
+  variable_del('bot_project_trac_num_min');
+  variable_del('bot_project_trac_num_max');
+  variable_del('bot_project_trac_url');
+  variable_del('bot_project_trac_url_regexp');
+
+  // branch names create dynamic variables. get 'em all here.
+  db_query("DELETE FROM {variable} WHERE name LIKE 'bot_project_api_branch_%'");
+}

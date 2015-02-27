@@ -1,0 +1,13 @@
+; $Id: bot_tell.info,v 1.1.2.1.2.1 2010/12/27 16:35:04 morbus Exp $
+name = Bot Tell
+package = Bot
+dependencies[] = bot
+description = "Enables queued messages for unavailable users."
+core = 7.x
+
+; Information added by drupal.org packaging script on 2011-01-05
+version = "7.x-1.3"
+core = "7.x"
+project = "bot"
+datestamp = "1294193453"
+

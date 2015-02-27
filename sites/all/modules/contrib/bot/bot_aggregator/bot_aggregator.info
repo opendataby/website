@@ -1,0 +1,14 @@
+; $Id: bot_aggregator.info,v 1.1.2.1.2.1 2010/12/24 14:36:11 morbus Exp $
+name = Bot Aggregator
+package = Bot
+dependencies[] = bot
+dependencies[] = aggregator
+description = Enables the reporting of aggregated feed items to configured channels.
+configure = admin/config/bot/aggregator
+core = 7.x
+; Information added by drupal.org packaging script on 2011-01-05
+version = "7.x-1.3"
+core = "7.x"
+project = "bot"
+datestamp = "1294193453"
+

@@ -1,0 +1,22 @@
+<?php
+// $Id: bot.install,v 1.1.2.1.2.1.2.2 2010/12/24 14:34:50 morbus Exp $
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Bot module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function bot_uninstall() {
+  variable_del('bot_auto_retry');
+  variable_del('bot_auto_reconnect');
+  variable_del('bot_cache_cleared');
+  variable_del('bot_channels');
+  variable_del('bot_debugging');
+  variable_del('bot_nickname');
+  variable_del('bot_password');
+  variable_del('bot_server');
+  variable_del('bot_server_port');
+}

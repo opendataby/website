@@ -1,0 +1,42 @@
+<?php
+// $Id: bot_seen.install,v 1.1.2.3.2.1.2.1 2010/12/27 16:01:13 morbus Exp $
+
+/**
+ * Implements hook_schema().
+ */
+function bot_seen_schema() {
+  $schema['bot_seen'] = array(
+    'description' => 'The single table necessary for user seen state.',
+    'fields' => array(
+      'nick' => array(
+        'default'     => '',
+        'description' => 'The IRC user that we know seen state for.',
+        'length'      => 60,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+      'channel' => array(
+        'default'     => '',
+        'description' => 'The IRC channel where the user was last seen.',
+        'length'      => 255,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+      'message' => array(
+        'description' => 'The last message or action of the IRC user.',
+        'not null'    => TRUE,
+        'type'        => 'text',
+      ),
+      'timestamp' => array(
+        'default'     => 0,
+        'description' => 'The Unix timestamp when this IRC user was last seen.',
+        'not null'    => TRUE,
+        'type'        => 'int',
+        'unsigned'    => TRUE,
+      ),
+    ),
+    'key' => array('nick'),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,6 @@
+/* $Id: bot_project.css,v 1.1.2.1.4.1 2010/12/27 15:20:15 morbus Exp $ */
+
+/*  long titles can cause Last Seen to wrap - force a width for 'em.  */
+#bot-project-urls-popular .last_seen, #bot-project-urls-recent .last_seen {
+  width: 165px;
+}

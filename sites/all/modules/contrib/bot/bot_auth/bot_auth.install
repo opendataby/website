@@ -1,0 +1,49 @@
+<?php
+// $Id: bot_auth.install,v 1.1.2.1 2010/12/31 01:54:52 morbus Exp $
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Bot Auth module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function bot_auth_schema() {
+  $schema['bot_sessions'] = array(
+    'description' => 'Maintains correlation between an IRC nick and an authenticated user.',
+    'fields' => array(
+      'uid' => array(
+        'default'     => 0,
+        'description' => 'The {users}.uid of this IRC session.',
+        'not null'    => TRUE,
+        'type'        => 'int',
+      ),
+      'nick' => array(
+        'default'     => '',
+        'description' => 'The nick of this IRC session.',
+        'length'      => 60,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+      'hostname' => array(
+        'default'     => '',
+        'description' => 'The hostname (not IP) of this IRC session.',
+        'length'      => 255,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+      'timestamp' => array(
+        'default'     => 0,
+        'description' => 'The Unix timestamp when the nick of this IRC session was last seen.',
+        'not null'    => TRUE,
+        'type'        => 'int',
+        'unsigned'    => TRUE,
+      ),
+    ),
+    'primary key' => array('nick'),
+    'unique keys' => array('uid' => array('uid')),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,34 @@
+<?php
+// $Id: bot_karma.install,v 1.1.2.1.2.1 2010/12/24 20:51:19 morbus Exp $
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Bot Karma module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function bot_karma_schema() {
+  $schema['bot_karma'] = array(
+    'description' => 'The single table necessary for karma storage.',
+    'fields' => array(
+      'term' => array(
+        'default'     => '',
+        'description' => 'The term whose total points are being stored.',
+        'length'      => 255,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+      'karma' => array(
+        'default'     => 0,
+        'description' => 'The points, or karma, associated with this term.',
+        'not null'    => TRUE,
+        'type'        => 'int',
+      ),
+    ),
+    'key' => array('term'),
+  );
+
+  return $schema;
+}

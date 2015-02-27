@@ -1,0 +1,96 @@
+<?php
+// $Id: bot_log.install,v 1.1.2.3.2.2.2.2 2010/12/28 21:55:53 morbus Exp $
+
+/**
+ * Implements hook_schema().
+ */
+function bot_log_schema() {
+  $schema['bot_log'] = array(
+    'description' => 'The single table necessary for IRC channel logging.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'A unique ID for this log message, across all channels.',
+        'not null'    => TRUE,
+        'size'        => 'big',
+        'type'        => 'serial',
+        'unsigned'    => TRUE,
+      ),
+      'type' => array(
+        'default'     => 0,
+        'description' => 'The message ID value, as provided by Net_SmartIRC.',
+        'not null'    => TRUE,
+        'type'        => 'int',
+      ),
+      'timestamp' => array(
+        'default'     => 0,
+        'description' => 'The Unix timestamp when this log message occurred.',
+        'not null'    => TRUE,
+        'type'        => 'int',
+        'unsigned'    => TRUE,
+      ),
+      'channel' => array(
+        'description' => 'The IRC channel or channels where this log message occurred.',
+        'not null'    => TRUE,
+        'type'        => 'text',
+      ),
+      'nick' => array(
+        'default'     => '',
+        'description' => 'The IRC user that caused this log message to occur.',
+        'length'      => 60,
+        'not null'    => TRUE,
+        'type'        => 'varchar',
+      ),
+      'message' => array(
+        'description' => 'The log message itself.',
+        'not null'    => TRUE,
+        'type'        => 'text',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function bot_log_install() {
+  // if we don't set the logging module first, then we'll get into situations
+  // where a bot factoid response will log BEFORE the actual factoid trigger.
+  db_query("UPDATE {system} SET weight = -10 WHERE name = 'bot_log'");
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function bot_log_uninstall() {
+  variable_del('bot_log_channels');
+  variable_del('bot_log_dont_change_the_content');
+}
+
+/**
+ * Add index to 'timestamp'.
+ */
+function bot_log_update_6100() {
+  db_add_index('bot_log', 'timestamp', array('timestamp'));
+}
+
+/**
+ * Increase the size of the bot_log.channel column.
+ *
+ * If a user who is in dozens of channels QUITs or NICKCHANGEs, the
+ * channel string would be longer than a varchar's 255 characters (since
+ * a QUIT or NICKCHANGE effects each of those dozens of channels). Prior
+ * to Drupal 6, this extra data would be silently ignored. In Drupal 7+,
+ * a PDOException is flagged, killing the bot.
+ */
+function bot_log_update_7100() {
+  db_change_field('bot_log', 'channel', 'channel',
+    array(
+      'description' => 'The IRC channel or channels where this log message occurred.',
+      'not null'    => TRUE,
+      'type'        => 'text',
+    )
+  );
+}

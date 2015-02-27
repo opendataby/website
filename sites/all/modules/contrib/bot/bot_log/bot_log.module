@@ -1,0 +1,433 @@
+<?php
+// $Id: bot_log.module,v 1.1.2.7.2.10.2.6 2010/12/29 23:33:34 morbus Exp $
+
+/**
+ * @file
+ * Enables the logging of IRC channels.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function bot_log_help($path, $arg) {
+  switch ($path) {
+    case 'irc:features':
+      return array(t('Logging'));
+    case 'irc:features#logging':
+      return t('Logging is enabled for some or all channels at <!url>. A URL to the current log and timestamp is retrievable with "BOTNAME: log pointer?" or "BOTNAME: log bookmark?"', array('!url' => url('bot/log', array('absolute' => TRUE))));
+    case 'admin/settings/bot/log':
+      return '<p>' . t('Configure bot logging with these settings.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function bot_log_menu() {
+  $items['bot/log'] = array(
+    'access arguments'  => array('view bot logs'),
+    'description'       => "Display either an overview of all channels, or a specific channel's date.",
+    'page callback'     => 'bot_log_date',
+    'title'             => 'Logs',
+  );
+  $items['admin/config/bot/log'] = array(
+    'access arguments'  => array('administer bot'),
+    'description'       => 'Configure bot logging with these settings.',
+    'page callback'     => 'drupal_get_form',
+    'page arguments'    => array('bot_log_settings'),
+    'title'             => 'Bot Log',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function bot_log_permission() {
+  $perms = array(
+    'view bot logs' => array(
+      'title' => t('View bot logs'),
+    ),
+  );
+  foreach (variable_get('bot_log_channels', array()) as $channel) {
+    $perms["view bot logs: $channel"] = array( // HELO REPETITITITION.
+      'title' => t('View bot logs: %channel', array('%channel' => $channel)),
+    );
+  }
+  return $perms;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function bot_log_theme() {
+  return array(
+    'bot_log_date' => array(
+      'variables' => array('channel' => NULL, 'date' => NULL, 'logs' => NULL, 'format' => 'html'),
+    ),
+  );
+}
+
+/**
+ * Log regular channel communications.
+ */
+function bot_log_irc_msg_channel($data) {
+  $addressed = bot_name_regexp();
+
+  // slurp, slurp, slurp.
+  $log_id = bot_log_insert($data->type, $data->channel, $data->nick, $data->message);
+
+  // we've been asked for a bookmark to the current log. never accessible from PMs.
+  if (preg_match("/^${addressed}log (bookmark|pointer)\s*[!\?\.]*\s*$/i", $data->message)) {
+    $lc_channel = drupal_strtolower($data->channel); // lowercase the channel everywhere.
+    $logged_channels = array_map('drupal_strtolower', variable_get('bot_log_channels', array()));
+    if (in_array($lc_channel, $logged_channels)) { // clients can send case; we always LC.
+      $path = 'bot/log/' . str_replace('#', '', $lc_channel) . '/' . gmdate('Y-m-d');
+      bot_message($data->channel, url($path, array('fragment' => 'T' . $log_id, 'absolute' => TRUE)));
+    }
+    else {
+      bot_message($data->channel, t('!channel is not logged; no URL exists.', array('!channel' => $lc_channel)));
+    }
+  }
+}
+
+/**
+ * Log a user joining a channel.
+ */
+function bot_log_irc_msg_join($data) {
+  global $_bot_log_users; // keep track of users per channel. see...
+  $_bot_log_users[$data->nick][$data->channel] = 1; // bot_log_irc_msg_quit().
+  bot_log_insert($data->type, $data->channel, $data->nick, $data->message);
+}
+
+/**
+ * Log a user leaving a channel.
+ */
+function bot_log_irc_msg_part($data) {
+  global $_bot_log_users; // keep track of users per channel. see...
+  unset($_bot_log_users[$data->nick][$data->channel]); // bot_log_irc_msg_quit().
+  bot_log_insert($data->type, $data->channel, $data->nick, $data->message);
+}
+
+/**
+ * Log a user leaving the server.
+ */
+function bot_log_irc_msg_quit($data) {
+  // while Net_SmartIRC does provide us a list of users per channel, it
+  // updates this list BEFORE we get QUIT messages, so we have no idea
+  // which channels a user has QUIT out of. we maintain our own list in
+  // $_bot_log_users and store this list of channels in the logs on
+  // QUIT so we know which channels to show this QUIT message in. whew.
+  global $_bot_log_users; // space splice the list in the database.
+  $channel = implode(' ', array_keys($_bot_log_users[$data->nick]));
+  bot_log_insert($data->type, $channel, $data->nick, $data->message);
+  unset($_bot_log_users[$data->nick]);
+}
+
+/**
+ * Log a user performing an action.
+ */
+function bot_log_irc_msg_action($data) {
+  bot_log_insert($data->type, $data->channel, $data->nick, $data->message);
+}
+
+/**
+ * Log a user changing their nick.
+ */
+function bot_log_irc_msg_nickchange($data) {
+  global $_bot_log_users; // keep track of users per channel. see...
+  $_bot_log_users[$data->message] = $_bot_log_users[$data->nick];
+  $channel = implode(' ', array_keys($_bot_log_users[$data->nick]));
+  unset($_bot_log_users[$data->nick]); // bot_log_irc_msg_quit().
+  bot_log_insert($data->type, $channel, $data->nick, $data->message);
+}
+
+/**
+ * Log the channel topic changing.
+ */
+function bot_log_irc_msg_topicchange($data) {
+  // Net_SmartIRC doesn't put the channel in, so parse it from the raw message.
+  bot_log_insert($data->type, $data->rawmessageex[2], $data->nick, $data->message);
+}
+
+/**
+ * Log bot replies (as normal channel messages).
+ */
+function bot_log_irc_bot_reply_message($to, $message) {
+  if (drupal_substr($to, 0, 1) == '#') { // but, naturally, only for channel messages.
+    require_once 'Net/SmartIRC/defines.php'; // load the whole thingy in for one constant. bah!
+    bot_log_insert(SMARTIRC_TYPE_CHANNEL, $to, variable_get('bot_nickname', 'bot_module'), $message);
+  }
+}
+
+/**
+ * Log bot actions (as normal channel messages).
+ */
+function bot_log_irc_bot_reply_action($to, $message) {
+  if (drupal_substr($to, 0, 1) == '#') { // but, naturally, only for channel messages.
+    require_once 'Net/SmartIRC/defines.php'; // load the whole thingy in for one constant. bah!
+    bot_log_insert(SMARTIRC_TYPE_ACTION, $to, variable_get('bot_nickname', 'bot_module'), $message);
+  }
+}
+
+/**
+ * When Net_SmartIRC issues a /WHO, update our internal user list.
+ */
+function bot_log_irc_msg_who($data) {
+  if ($data->rawmessageex[6] != '/WHO') { // spit the actual "End of /WHO" message.
+    global $_bot_log_users; // keep track of users per channel. see the annoying explanation in...
+    $_bot_log_users[$data->rawmessageex[7]][$data->rawmessageex[3]] = 1; // bot_log_irc_msg_quit().
+  }
+}
+
+/**
+ * Create a new entry in the log table.
+ *
+ * @param $type
+ *   The type of message (as provided by Net_SmartIRC).
+ * @param $channel
+ *   The channel where this message took place (we ignore non-logged channels).
+ * @param $nick
+ *   (Optional) Who caused this message to occur.
+ * @param $message
+ *   The actual message itself.
+ * @return $log_id
+ *   The unique log ID for this entry; 0 otherwise.
+ */
+function bot_log_insert($type, $channel, $nick, $message) {
+  $incoming_channels = array(); // predeclare for intersect.
+  $logged_channels = variable_get('bot_log_channels', array());
+  if (strpos($channel, ' ') !== FALSE) { $incoming_channels = array_flip(explode(' ', $channel)); }
+  // if $channel is space-separated, this is a NICKCHANGE or QUIT that needs all relevant channels.
+  // we need to lowercase all channels for these lookups; clients pass around sensitivity, servers don't.
+  $logged_channels    = array_map('drupal_strtolower', $logged_channels);
+  $incoming_channels  = array_map('drupal_strtolower', $incoming_channels);
+  $channel = drupal_strtolower($channel);
+
+  if (isset($channel) && (in_array($channel, $logged_channels)) || array_intersect_key($incoming_channels, $logged_channels)) {
+    $log = new stdClass();
+    $log->type      = $type;
+    $log->timestamp = time();
+    $log->channel   = $channel;
+    $log->nick      = $nick;
+    $log->message   = $message;
+    drupal_write_record('bot_log', $log);
+    return $log->id;
+  }
+
+  return 0;
+}
+
+/**
+ * Displays either an overview of all channels, or a specific channel's date.
+ *
+ * @param $channel
+ *   The channel (without the first #, since this commonly comes from URLs).
+ * @param $date
+ *   The date to display, in YYYY-MM-DD format. Defaults to today.
+ * @return $html
+ *   A themed log for display.
+ */
+function bot_log_date($channel = NULL, $date = NULL) {
+  require_once 'Net/SmartIRC/defines.php'; // type constants.
+
+  if (!isset($channel)) { // no channel? show a list of all we're logging.
+    foreach (variable_get('bot_log_channels', array()) as $available_channel) { // RUN AWAY!
+      if (user_access("view bot logs: $available_channel")) { // unleashed spirits of the war dead.
+        $logged_channels[] = '<li>' . l($available_channel, 'bot/log/' . drupal_substr($available_channel, 1)) . '</li>';
+      } // you'll be popular, but just not quite as popular asSSs MmE.eEEe.
+    }
+
+    $build['bot_log_channels'] = array(
+      '#prefix' => '<p>' . t('Choose the IRC channel whose logs you want to view:') . '</p><ul>',
+      '#markup' => implode("\n", $logged_channels), // should probably be slightly more renderable.
+      '#suffix' => '</ul>', // instead of just raw HTML for people to futz with and QQ over.
+    );
+  }
+
+  // there is a channel! and the user can view it! holy crap!
+  if (isset($channel) && user_access("view bot logs: #$channel")) {
+    // all time calcs are in GMT.
+    $date = $date ? $date : gmdate('Y-m-d');
+    $date_start = strtotime("$date GMT");
+    $date_end   = $date_start + (60 * 60 * 24);
+
+    // purdy up the page a little with colahs and param'd titles.
+    drupal_add_css(drupal_get_path('module', 'bot_log') .'/bot_log.css');
+    drupal_set_title(t('IRC logs for @channel, @date (GMT)', array('@channel' => "#$channel", '@date' => $date)), PASS_THROUGH);
+
+    // see bot_log_irc_msg_quit() for why we use a regexp on channels for lookups.
+    // this likely fails for a number of non-MySQL databases; LIKE wasn't happy for me...
+    $results = db_query("SELECT * FROM {bot_log} WHERE channel REGEXP '#$channel( |$)' AND (timestamp >=
+      :date_start AND timestamp <= :date_end) ORDER BY id", array(':date_start' => $date_start, ':date_end' => $date_end));
+    $build['bot_log_filter_form'] = drupal_get_form('bot_log_filter_form', $channel, $date); // thwip! thwip! back! forth!
+    $build['bot_log_date'] = array('#theme' => 'bot_log_date', '#channel' => $channel, '#date' => $date, '#logs' => $results);
+  }
+  elseif (isset($channel) && !user_access('view bot logs: #$channel"')) {
+    return drupal_access_denied(); // HOW DAR EYOU INTERRUPT MY CYBER SEXORING!
+  }
+
+  return $build;
+}
+
+/**
+ * Themes the logs for a date.
+ *
+ * @param $variables
+ *   - date: the date (as YYYY-MM-DD) in the $channel this log represents.
+ *   - logs: an array of log objects with id, type, timestamp, channel, nick, message.
+ *   - format: the format you want returned (currently only supports html).
+ */
+function theme_bot_log_date($variables) {
+  $output = NULL; $rows = array(); // filled with delicious candy.
+
+  if ($variables['format'] == 'html') {
+    foreach ($variables['logs'] as $log) {
+      $fragment = 'T'. $log->id; // our timestamps will be linked to the internal ID, providing permanent URLs for conversations.
+      $permalink = l(format_date($log->timestamp, 'custom', '[H:i:s]'), 'bot/log/' . $variables['channel'] . '/' . $variables['date'], array('attributes' => array('id' => $fragment), 'fragment' => $fragment));
+
+      // change row color based on the speaker.
+      $last_nick  = !empty($last_nick) ? $last_nick : $log->nick;
+      $last_class = !empty($last_class) ? $last_class : 'bot-log-nick-odd';
+      $nick_class = ($last_nick == $log->nick) ? $last_class : (($last_class == 'bot-log-nick-even') ? 'bot-log-nick-odd' : 'bot-log-nick-even');
+
+      // format message.
+      switch ($log->type) {
+        case SMARTIRC_TYPE_CHANNEL:
+          $message = t('@message', array('@message' => $log->message));
+          break; // [Purportedly. --Burgengute]
+
+        case SMARTIRC_TYPE_JOIN:
+          $message = t('* @nick has joined @channel', array('@nick' => $log->nick, '@channel' => $log->channel));
+          break; // [My hands are fine! It's these blasted pens you bought! --Burgengute]
+
+        case SMARTIRC_TYPE_PART:
+          $message = t('* @nick has left @channel (@reason)', array('@nick' => $log->nick, '@channel' => $log->channel, '@reason' => $log->message));
+          break; // [Not a chance! This is the stupidest thing I've ever read, and I'm not correcting your mistakes. --Burgengute]
+
+        case SMARTIRC_TYPE_QUIT:
+          $message = t('* @nick has quit (@reason)', array('@nick' => $log->nick, '@reason' => $log->message));
+          break; // [Weren't all the Avazians women? If they slept at night, where was the blood coming from? --Burgengute]
+
+        case SMARTIRC_TYPE_ACTION:
+          $log->message = preg_replace('/^ACTION/', '', trim($log->message, '')); // odd bits.
+          $message = t('* @nick @message', array('@nick' => $log->nick, '@message' => $log->message));
+          break; // [My copy ends here in the middle of a sentence, is that all there is? --Burgengute]
+
+        case SMARTIRC_TYPE_NICKCHANGE:
+          $message = t('* @nick is now known as @new_nick', array('@nick' => $log->nick, '@new_nick' => $log->message));
+          break; // [That wasn't me. --Burgengute]
+
+        case SMARTIRC_TYPE_TOPICCHANGE:
+          $message = t('* @nick has changed the topic to @topic', array('@nick' => $log->nick, '@topic' => $log->message));
+          break; // [Derm right I'm a ge... hey! --Burgengute]
+      }
+
+      // if there are URLs, make them links and shorten them if they're long.
+      if (!variable_get('bot_log_dont_change_the_content', FALSE)) {
+        // oOoooOooOO Looowkk wHWhahtTT MOroBUSusis is iDOodoIingngn/!
+        $message = _filter_url($message, (object) array('settings' => array('filter_url_length' => 72)));
+      }
+
+      // our type determines number of columns.
+      if ($log->type == SMARTIRC_TYPE_CHANNEL) { 
+        $rows[] = array('class' => array($nick_class), 'data' => array(
+          array('class' => array('bot-log-time'), 'data' => $permalink),
+          array('class' => array('bot-log-nick'), 'data' => '&lt;' . check_plain($log->nick) . '>'),
+          array('class' => array('bot-log-message'), 'data' => $message),
+        ));
+      }
+      else {
+        $type = ($log->type == SMARTIRC_TYPE_ACTION) ? 'action' : 'status';
+        $rows[] = array('class' => array($nick_class), 'data' => array(
+          array('class' => array('bot-log-time'), 'data' => $permalink),
+          array('class' => array('bot-log-'. $type), 'colspan' => 2, 'data' => $message),
+        ));
+      }
+
+      $last_nick = $log->nick; // helps determine row color.
+      $last_class = $nick_class; // and this one too. MAN ALIVE.
+    }
+
+    $build['bot_log_date_table'] = array(
+      '#theme'      => 'table',
+      '#header'     => array(t('Time'), t('Nick'), t('Message')),
+      '#rows'       => $rows,
+      '#attributes' => array('id' => "bot-log-date"),
+      '#empty'      => t('No logs are available.'),
+    );
+
+    $output .= drupal_render($build);
+  }
+
+  return $output;
+}
+
+/**
+ * Displays a form for choosing a channel's particular day log.
+ */
+function bot_log_filter_form($form, &$form_state, $channel, $date = NULL) {
+  if (!$channel) { return; }
+  $date = $date ? strtotime($date) : time();
+  $day_before_date = date('Y-m-d', $date - (60 * 60 * 24));
+  $day_after_date = date('Y-m-d', $date + (60 * 60 * 24));
+
+  $form['bot_log_date'] = array(
+    '#default_value' => array('year' => date('Y', $date), 'month'=> date('n', $date),'day' => date('j', $date)),
+    '#prefix'        => '<div class="container-inline">&lsaquo; ' . l($day_before_date, 'bot/log/' . $channel . '/' . $day_before_date),
+    '#type'          => 'date',
+  );
+  $form['bot_log_channel'] = array(
+    '#type'          => 'hidden',
+    '#value'         => $channel,
+  );
+  $form['bot_log_submit'] = array(
+    '#suffix'        => l($day_after_date, 'bot/log/' . $channel . '/' . $day_after_date) . ' &rsaquo;</div>',
+    '#type'          => 'submit',
+    '#value'         => t('Apply'),
+  );
+
+  return $form;
+}
+
+/**
+ * FormAPI #submit callback for redirecting to a channel by day.
+ */
+function bot_log_filter_form_submit($form, &$form_state) {
+  $form_state['redirect'] = 'bot/log/' . $form_state['values']['bot_log_channel'] . '/' . date('Y-m-d', mktime(0, 0, 0, $form_state['values']['bot_log_date']['month'], $form_state['values']['bot_log_date']['day'], $form_state['values']['bot_log_date']['year']));
+}
+
+/**
+ * Configures bot logging.
+ */
+function bot_log_settings(){
+  // get a list of all joined channels, sans passwords.
+  $joined_channels = preg_split('/\s*,\s*/', variable_get('bot_channels', '#test'));
+  $channel_options = array(); // HOW MAY I HELP YOU!?
+  foreach ($joined_channels as $k => $v) {
+    $channel = preg_replace('/(.*) .*/', '\1', $v);
+    $channel_options[$channel] = $channel;
+  }
+
+  // we don't use checkboxes because it doesn't want
+  // to accept an array key name of "#channel".
+  $form['bot_log_channels'] = array (
+    '#default_value'  => variable_get('bot_log_channels', array()),
+    '#description'    => t('Select the channels to log.'),
+    '#multiple'       => TRUE,
+    '#options'        => $channel_options,
+    '#size'           => 10,
+    '#type'           => 'select',
+    '#title'          => t('IRC channels'),
+  );
+
+  // @todo if we've been logging a channel, but no longer join it, the logs
+  // become unaccessible. frando solved this by doing a non-scalable DISTINCT
+  // across the entire log table. we should do this only on the admin page and
+  // let the user decide which now-not-logged channels to show publicly. we
+  // then would add these channels to all lookups of var bot_log_channels.
+
+  return system_settings_form($form);
+}
+

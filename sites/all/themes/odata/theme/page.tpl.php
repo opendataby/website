@@ -64,10 +64,10 @@
         <!-- #featured-inside -->
         <div class="featured-inside" class="clearfix">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <?php print render($page['preface_first']); ?>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <?php print render($page['preface_second']); ?>
                 </div>
             </div>

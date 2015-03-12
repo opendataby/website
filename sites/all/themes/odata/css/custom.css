@@ -1,3 +1,36 @@
+/* Home page */
+
+.front .intro-left {
+  width: 550px;
+  float: left;
+}
+
+.front .intro-left .intro-big {
+  font-size: 54px;
+  line-height: 1.1em;
+  margin-bottom: 20px;
+}
+
+.front .intro-left .intro-copy {
+  font-size: 26px;
+  font-style: italic;
+  line-height: 1.1em;
+  margin-bottom: 20px;
+}
+
+.front .intro-right {
+  width: auto;
+  height: 400px;
+  background-image: url("/sites/all/themes/odata/images/front-man.jpg");
+  background-repeat: no-repeat;
+  background-position: 100% 0;
+  font-size: 13px;
+}
+
+.front .intro-right span.number {
+  font-size: 20px;
+}
+
 #block-block-1 {
   -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);

@@ -50,7 +50,7 @@ settings[toggle_favicon] = 1
 settings[toggle_main_menu] = 1
 settings[toggle_secondary_menu] = 1
 settings[logo_path] = 'profiles/dkan/themes/contrib/odata/logo.svg'
-settings[hero_path] = 'profiles/dkan/themes/contrib/odata/images/hero.jpg'
+
 
 ; Breadcrumbs
 ; --------------

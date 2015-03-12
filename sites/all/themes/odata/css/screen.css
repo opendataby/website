@@ -2,6 +2,10 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 
 html { line-height: 1; }
 
+body {
+  background-color: #2A2F4E;
+}
+
 ol, ul { list-style: none; }
 
 table { border-collapse: collapse; border-spacing: 0; }
@@ -45,6 +49,11 @@ strong {
   font-weight: bold;
 }
 
+.nav > li > a:hover, .nav > li > a:focus {
+  text-decoration: none;
+  background-color: transparent;
+}
+
 .breadcrumb { background: none; border: none; font-size: 20px; list-style: none; margin: 10px 0; padding: 0; position: relative; }
 .breadcrumb li { float: none; }
 .breadcrumb li a span { display: none; }
@@ -74,7 +83,10 @@ body { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 .navbar .logo { margin: 0; padding: 10px 15px 10px 0; }
 
-#page-wrapper { padding: 20px 0; }
+#page-wrapper {
+  padding: 20px 0;
+  background-color: #fff;
+}
 
 .page-header { border-bottom: none; }
 
@@ -92,7 +104,15 @@ body { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 #top-content [class*="col-"] { background-color: #cccccc; border-left: 4px solid #0a77bd; border-right: 4px solid #0a77bd; margin-bottom: -99999px; padding-bottom: 99999px; }
 #top-content .row { overflow: hidden; }
 
-.footer-wrapper { padding: 20px; }
+.footer-wrapper {
+  padding: 20px;
+  background-color: #2a2f4e;
+}
+
+.footer-wrapper li a {
+  color: #6692c3;
+  text-transform: uppercase;
+}
 
 .page-groups article.node-teaser { height: 365px; margin-bottom: 20px; }
 .page-groups article.node-teaser .field-name-field-image img { border: 1px solid #f3f3f3; }
@@ -162,7 +182,12 @@ h2.block-title { background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, co
 #block-dkan-sitewide-dkan-sitewide-user-menu { position: relative; margin: 0 auto; }
 #block-dkan-sitewide-dkan-sitewide-user-menu img { position: relative; display: inline-block; height: 26px; width: 26px; }
 #block-dkan-sitewide-dkan-sitewide-user-menu .links { display: inline-block; position: relative; padding: 10px; }
-#block-dkan-sitewide-dkan-sitewide-user-menu .links a { float: left; line-height: 14px; margin: 0 15px; }
+
+#block-dkan-sitewide-dkan-sitewide-user-menu .links a {
+  float: left; line-height: 14px; margin: 0 15px;
+  color: #6692C3;
+}
+
 #block-dkan-sitewide-dkan-sitewide-user-menu .sub { font-size: 12px; }
 @media (min-width: 768px) { #block-dkan-sitewide-dkan-sitewide-user-menu { position: absolute; width: 50px; padding: 20px 0 0 20px; right: 16px; top: 0; }
   #block-dkan-sitewide-dkan-sitewide-user-menu img { position: absolute; left: 0px; padding: 2px 0 0 0; }
@@ -329,7 +354,11 @@ table.field-multiple-table th label { padding-left: 6px; }
 
 .container > .navbar-header, .container > .navbar-collapse { margin-left: 10px; margin-right: 10px; }
 
-#nav-wrapper { border-bottom: 1px solid #cccccc; position: relative; z-index: 1; }
+#nav-wrapper {
+  border-bottom: 1px solid #cccccc; position: relative; z-index: 1;
+  background-color: #2a2f4e;
+}
+
 #nav-wrapper .navbar.container { margin: 0 auto; padding: 0; }
 #nav-wrapper .navbar-header { position: relative; z-index: 3; }
 #nav-wrapper .navbar-default { background: transparent; border: none; }
@@ -339,7 +368,13 @@ table.field-multiple-table th label { padding-left: 6px; }
 #nav-wrapper .navbar-default .logo { padding: 10px 10px 0 0; }
 #nav-wrapper .navbar-default .lead { font-size: 21px; margin: 0; position: absolute; top: 42px; left: 50px; whitespace: no-wrap; }
 #nav-wrapper .navbar-default .navbar-nav { margin: 0 14px; }
-#nav-wrapper .navbar-default .navbar-nav li > a { color: #0a77bd; font-size: 12px; padding: 15px 6px; }
+
+#nav-wrapper .navbar-default .navbar-nav li > a {
+  color: #6692c3; font-size: 12px; padding: 15px 6px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
 #nav-wrapper .navbar-default .navbar-nav li > a:hover, #nav-wrapper .navbar-default .navbar-nav li > a:focus { text-decoration: underline; }
 #nav-wrapper .navbar-default .navbar-nav .active a { background: transparent; }
 #nav-wrapper .navbar-default .navbar-nav.secondary li { float: none; }

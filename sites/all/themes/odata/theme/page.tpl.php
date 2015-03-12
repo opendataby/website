@@ -57,19 +57,8 @@
   </header>
 </div><!-- EOF:#nav-wrapper -->
 
-<?php if ($is_front) : ?>
-  <?php 
-    // Get the file path to the hero image.
-    $uri = theme_get_setting('hero_path');
-    if(!empty($uri)):
-      $uri = $uri;
-    else :
-      $uri = 'profiles/dkan/themes/contrib/nuboot/images/hero.jpg';
-    endif;
-    $path = file_create_url($uri);
-  ?>
   <!-- #featured -->
-  <div id="featured" class="clearfix" <?php print 'style="background-image:url(' . $path . ');"' ?>>
+  <div id="featured" class="clearfix">
     <div class="tint"></div>
     <div class="container">
         <!-- #featured-inside -->
@@ -87,7 +76,7 @@
     </div>
   </div>
   <!-- EOF:#featured -->
-<?php endif; ?>
+
 
 <?php if ($page['highlighted']):?>
   <!-- #top-content -->

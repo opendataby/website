@@ -7,20 +7,26 @@
 
 .front .intro-left .intro-big {
   font-size: 54px;
-  font-family: "nerisblack";
+  font-family: nerisblack, Arial, sans-serif;
   line-height: 1.1em;
   margin-bottom: 20px;
 }
 
 .front .intro-left .intro-copy {
-  font-family: "neristhin";
+  font-family: neristhin, Arial, sans-serif;
   font-size: 26px;
   font-style: italic;
   line-height: 1.1em;
   margin-bottom: 20px;
 }
 
+.front .intro-left .intro-button-dataset a {
+  font-family: nerisblack, Arial, sans-serif;
+}
+
 .front .intro-right {
+  font-family: nerislight_italic;
+  color: #5a6c78;
   width: auto;
   height: 400px;
   background-image: url("/sites/all/themes/odata/images/front-man.jpg");

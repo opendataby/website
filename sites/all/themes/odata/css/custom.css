@@ -25,18 +25,24 @@
 }
 
 .front .intro-right {
-  font-family: nerislight;
+  font-family: nerissemibold_italic, Arial, sans-serif;
   color: #5a6c78;
   width: auto;
   height: 400px;
-  background-image: url("/sites/all/themes/odata/images/front-man.jpg");
-  background-repeat: no-repeat;
-  background-position: 100% 0;
   font-size: 13px;
 }
 
-.front .intro-right span.number {
+.front .intro-right div.number {
   font-size: 20px;
+}
+
+.front .intro-copy-right {
+  width: 189px;
+  float: left;
+  position: relative;
+  left: 238px;
+  top: 47px;
+  text-align: center;
 }
 
 #block-block-1 {

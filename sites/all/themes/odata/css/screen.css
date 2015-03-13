@@ -194,6 +194,9 @@ body { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 #featured .tint {
   background-color: #2a2f4e;
+  background-image: url("/sites/all/themes/odata/images/front-man.jpg");
+  background-repeat: no-repeat;
+  background-position: 90% 7%;
   position: absolute;
   height: 900px;
   width: 100%;
@@ -201,9 +204,17 @@ body { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #featured h2.block-title { display: none; }
-#featured .featured-inside { padding: 30px 0; }
+
+#featured .featured-inside {
+  padding: 14px 0;
+}
+
 #featured .container { positoin: relative; z-index: 5; }
-#featured .block-content { color: white; font-size: 1.25em; line-height: 1.33em; margin: 0 40px; text-shadow: rgba(0, 0, 0, 0.8) 0 0 3px, rgba(10, 119, 189, 0.6) 1px 1px 0; }
+
+#featured .block-content {
+  color: white; font-size: 1.25em; line-height: 1.33em; margin: 0 40px;
+}
+
 #featured a { color: white; }
 
 #top-content { margin: 20px; }

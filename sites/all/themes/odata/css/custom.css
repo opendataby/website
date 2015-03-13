@@ -7,11 +7,13 @@
 
 .front .intro-left .intro-big {
   font-size: 54px;
+  font-family: "nerisblack";
   line-height: 1.1em;
   margin-bottom: 20px;
 }
 
 .front .intro-left .intro-copy {
+  font-family: "neristhin";
   font-size: 26px;
   font-style: italic;
   line-height: 1.1em;

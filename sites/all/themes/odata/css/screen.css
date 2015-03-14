@@ -472,7 +472,6 @@ table.field-multiple-table th label { padding-left: 6px; }
 .container > .navbar-header, .container > .navbar-collapse { margin-left: 10px; margin-right: 10px; }
 
 #nav-wrapper {
-  border-bottom: 1px solid #cccccc; position: relative; z-index: 1;
   background-color: #2a2f4e;
 }
 

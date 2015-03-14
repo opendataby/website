@@ -67,15 +67,46 @@
                 <div class="col-md-12">
                   <?php print render($page['preface_first']); ?>
                 </div>
-                <div class="col-md-12">
-                  <?php print render($page['preface_second']); ?>
-                </div>
             </div>
         </div>
         <!-- EOF: #featured-inside -->
     </div>
   </div>
   <!-- EOF:#featured -->
+
+<!-- #featured bottom-->
+<div id="featured-bottom" class="clearfix">
+  <div class="tint-bottom"></div>
+  <div class="container">
+    <!-- #featured-inside -->
+    <div class="featured-bottom-inside" class="clearfix">
+      <div class="row">
+        <div class="col-md-12">
+          <?php print render($page['preface_second']); ?>
+        </div>
+      </div>
+    </div>
+    <!-- EOF: #featured-inside -->
+  </div>
+</div>
+<!-- EOF:#featured -->
+
+<!-- #featured bottom 2-->
+<div id="featured-bottom-2" class="clearfix">
+  <div class="tint-bottom-2"></div>
+  <div class="container">
+    <!-- #featured-inside -->
+    <div class="featured-bottom-inside" class="clearfix">
+      <div class="row">
+        <div class="col-md-12">
+          <?php print render($page['preface_third']); ?>
+        </div>
+      </div>
+    </div>
+    <!-- EOF: #featured-inside -->
+  </div>
+</div>
+<!-- EOF:#featured -->
 
 
 <?php if ($page['highlighted']):?>

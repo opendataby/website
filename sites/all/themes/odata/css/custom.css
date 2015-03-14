@@ -40,13 +40,14 @@
   width: 189px;
   float: left;
   position: relative;
-  left: 238px;
-  top: 47px;
+  left: 276px;
+  top: 59px;
   text-align: center;
 }
 
 /*Featured second block*/
 #featured-bottom-menu .menu-bar {
+  font-family: nerissemibold, Arial, sans-serif;
   list-style:none; margin-top: 40px;
   text-align: center;
 }

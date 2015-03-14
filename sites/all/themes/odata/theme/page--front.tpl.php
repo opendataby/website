@@ -9,13 +9,13 @@
     <div class="container">
       <div class="navbar-header">
         <?php if ($logo): ?>
-        <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
-          <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
-        </a>
+          <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
+            <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
+          </a>
         <?php endif; ?>
 
         <?php if (!empty($site_name)): ?>
-        <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
+          <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
         <?php endif; ?>
 
         <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
@@ -57,22 +57,74 @@
   </header>
 </div><!-- EOF:#nav-wrapper -->
 
+<!-- #featured -->
+<div id="featured" class="clearfix">
+  <div class="tint"></div>
+  <div class="container">
+    <!-- #featured-inside -->
+    <div class="featured-inside" class="clearfix">
+      <div class="row">
+        <div class="col-md-12">
+          <?php print render($page['preface_first']); ?>
+        </div>
+      </div>
+    </div>
+    <!-- EOF: #featured-inside -->
+  </div>
+</div>
+<!-- EOF:#featured -->
+
+<!-- #featured bottom-->
+<div id="featured-bottom" class="clearfix">
+  <div class="tint-bottom"></div>
+  <div class="container">
+    <!-- #featured-inside -->
+    <div class="featured-bottom-inside" class="clearfix">
+      <div class="row">
+        <div class="col-md-12">
+          <?php print render($page['preface_second']); ?>
+        </div>
+      </div>
+    </div>
+    <!-- EOF: #featured-inside -->
+  </div>
+</div>
+<!-- EOF:#featured -->
+
+<!-- #featured bottom 2-->
+<div id="featured-bottom-2" class="clearfix">
+  <div class="tint-bottom-2"></div>
+  <div class="container">
+    <!-- #featured-inside -->
+    <div class="featured-bottom-inside" class="clearfix">
+      <div class="row">
+        <div class="col-md-12">
+          <?php print render($page['preface_third']); ?>
+        </div>
+      </div>
+    </div>
+    <!-- EOF: #featured-inside -->
+  </div>
+</div>
+<!-- EOF:#featured -->
+
+
 <?php if ($page['highlighted']):?>
   <!-- #top-content -->
   <div id="top-content" class="clearfix">
-      <div class="container">
+    <div class="container">
 
-          <!-- #top-content-inside -->
-          <div id="top-content-inside" class="clearfix">
-              <div class="row">
-                  <div class="col-md-12">
-                  <?php print render($page['highlighted']); ?>
-                  </div>
-              </div>
+      <!-- #top-content-inside -->
+      <div id="top-content-inside" class="clearfix">
+        <div class="row">
+          <div class="col-md-12">
+            <?php print render($page['highlighted']); ?>
           </div>
-          <!-- EOF:#top-content-inside -->
-
+        </div>
       </div>
+      <!-- EOF:#top-content-inside -->
+
+    </div>
   </div>
   <!-- EOF: #top-content -->
 <?php endif; ?>
@@ -129,27 +181,27 @@
   <?php if ($page['bottom_content']):?>
     <!-- #bottom-content -->
     <div id="bottom-content" class="clearfix">
-        <div class="container">
+      <div class="container">
 
-            <!-- #bottom-content-inside -->
-            <div id="bottom-content-inside" class="clearfix">
-              <div class="row">
-                <div class="col-md-12">
-                  <?php print render($page['bottom_content']); ?>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <?php print render($page['postscript_first']); ?>
-                </div>
-                <div class="col-md-6">
-                  <?php print render($page['postscript_second']); ?>
-                </div>
-              </div>
+        <!-- #bottom-content-inside -->
+        <div id="bottom-content-inside" class="clearfix">
+          <div class="row">
+            <div class="col-md-12">
+              <?php print render($page['bottom_content']); ?>
             </div>
-            <!-- EOF:#bottom-content-inside -->
-
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <?php print render($page['postscript_first']); ?>
+            </div>
+            <div class="col-md-6">
+              <?php print render($page['postscript_second']); ?>
+            </div>
+          </div>
         </div>
+        <!-- EOF:#bottom-content-inside -->
+
+      </div>
     </div>
     <!-- EOF: #bottom-content -->
   <?php endif; ?>
@@ -159,40 +211,40 @@
   <div class="container">
     <!-- #footer-inside -->
     <div id="footer-inside" class="clearfix">
-        <div class="row">
-            <div class="col-md-3">
-                <?php if ($page['footer_first']):?>
-                <div class="footer-area">
-                <?php print render($page['footer_first']); ?>
-                </div>
-                <?php endif; ?>
+      <div class="row">
+        <div class="col-md-3">
+          <?php if ($page['footer_first']):?>
+            <div class="footer-area">
+              <?php print render($page['footer_first']); ?>
             </div>
-
-            <div class="col-md-3">
-                <?php if ($page['footer_second']):?>
-                <div class="footer-area">
-                <?php print render($page['footer_second']); ?>
-                </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="col-md-3">
-                <?php if ($page['footer_third']):?>
-                <div class="footer-area">
-                <?php print render($page['footer_third']); ?>
-                </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="col-md-3">
-                <?php if ($page['footer_fourth']):?>
-                <div class="footer-area">
-                <?php print render($page['footer_fourth']); ?>
-                </div>
-                <?php endif; ?>
-            </div>
+          <?php endif; ?>
         </div>
-        <?php print render($page['footer']); ?>
+
+        <div class="col-md-3">
+          <?php if ($page['footer_second']):?>
+            <div class="footer-area">
+              <?php print render($page['footer_second']); ?>
+            </div>
+          <?php endif; ?>
+        </div>
+
+        <div class="col-md-3">
+          <?php if ($page['footer_third']):?>
+            <div class="footer-area">
+              <?php print render($page['footer_third']); ?>
+            </div>
+          <?php endif; ?>
+        </div>
+
+        <div class="col-md-3">
+          <?php if ($page['footer_fourth']):?>
+            <div class="footer-area">
+              <?php print render($page['footer_fourth']); ?>
+            </div>
+          <?php endif; ?>
+        </div>
+      </div>
+      <?php print render($page['footer']); ?>
     </div>
     <!-- EOF: #footer-inside -->
   </div><!--/container -->

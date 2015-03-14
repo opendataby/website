@@ -46,7 +46,10 @@
 }
 
 /*Featured second block*/
-#featured-bottom-menu .menu-bar { list-style:none; margin-top: 40px; }
+#featured-bottom-menu .menu-bar {
+  list-style:none; margin-top: 40px;
+  text-align: center;
+}
 #featured-bottom-menu .menu-bar li { display:inline; padding:0 10px; }
 
 #featured-bottom-menu .menu-bar li a {

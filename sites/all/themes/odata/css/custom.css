@@ -228,3 +228,24 @@ article.node-page h2 {
 .view-projects li {
   margin-bottom: 150px;
 }
+
+/*Sidebar*/
+
+h2.block-title {
+  font-family: nerislight, Arial, sans-serif;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.region-sidebar-first .block-content {
+  background-color: #eef2f9;
+}
+
+.region-sidebar-first .block, .region-sidebar-second .block {
+  background-color: #FFFFFF;
+  margin-bottom: 20px;
+}
+
+.region-sidebar-first .block .block-content, .region-sidebar-second .block .block-content {
+  padding: 20px 15px;
+}

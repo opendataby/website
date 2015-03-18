@@ -210,9 +210,9 @@ body {
 
 #featured .tint {
   background-color: #2a2f4e;
-  background-image: url("/sites/all/themes/odata/images/front-man.jpg");
+  background-image: url("/sites/all/themes/odata/images/man-image.jpg");
   background-repeat: no-repeat;
-  background-position: 90% 7%;
+  background-position: 43% 4%;
   position: absolute;
   height: 900px;
   width: 100%;

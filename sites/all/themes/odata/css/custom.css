@@ -18,11 +18,27 @@
   font-style: italic;
   line-height: 1.1em;
   margin-bottom: 20px;
+  color: #7791ab;
+}
+
+.front .intro-left .intro-button-dataset {
+  margin-top: 60px;
 }
 
 .front .intro-left .intro-button-dataset a {
   font-family: nerisblack, Arial, sans-serif;
+  color: #76B8E7;
+  text-transform: uppercase;
+  border-radius: 13px;
+  border: 2px solid #76B8E7;
+  padding: 5px 15px;
+  font-size: 14px;
 }
+
+.front .intro-left .intro-button-dataset a:hover {
+ text-decoration: none;
+}
+
 
 .front .intro-right {
   font-family: nerissemibold_italic, Arial, sans-serif;

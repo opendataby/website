@@ -231,8 +231,6 @@ body {
   color: white; font-size: 1.25em; line-height: 1.33em; margin: 0 40px;
 }
 
-#featured a { color: white; }
-
 #top-content { margin: 20px; }
 #top-content .block { padding: 10px; text-align: center; }
 #top-content .block h2.block-title { border: none; color: #333333; font-size: 1.6em; }

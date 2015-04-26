@@ -448,6 +448,20 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['fields']['body_summary']['alter']['max_length'] = '100';
   $handler->display->display_options['fields']['body_summary']['alter']['trim'] = TRUE;
   $handler->display->display_options['fields']['body_summary']['element_label_colon'] = FALSE;
+  /* Sort criterion: Indexed Node: Date changed */
+  $handler->display->display_options['sorts']['changed']['id'] = 'changed';
+  $handler->display->display_options['sorts']['changed']['table'] = 'search_api_index_groups_di';
+  $handler->display->display_options['sorts']['changed']['field'] = 'changed';
+  $handler->display->display_options['sorts']['changed']['order'] = 'DESC';
+  $handler->display->display_options['sorts']['changed']['exposed'] = TRUE;
+  $handler->display->display_options['sorts']['changed']['expose']['label'] = 'Date changed';
+  /* Sort criterion: Indexed Node: Title */
+  $handler->display->display_options['sorts']['title']['id'] = 'title';
+  $handler->display->display_options['sorts']['title']['table'] = 'search_api_index_groups_di';
+  $handler->display->display_options['sorts']['title']['field'] = 'title';
+  $handler->display->display_options['sorts']['title']['order'] = 'DESC';
+  $handler->display->display_options['sorts']['title']['exposed'] = TRUE;
+  $handler->display->display_options['sorts']['title']['expose']['label'] = 'Title';
   /* Contextual filter: Indexed Node: Publisher */
   $handler->display->display_options['arguments']['og_group_ref']['id'] = 'og_group_ref';
   $handler->display->display_options['arguments']['og_group_ref']['table'] = 'search_api_index_groups_di';
@@ -523,13 +537,15 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['fields']['gid']['relationship'] = 'og_membership_rel';
   $handler->display->display_options['fields']['gid']['group_type'] = 'count';
   $handler->display->display_options['fields']['gid']['label'] = '';
-  $handler->display->display_options['fields']['gid']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['gid']['alter']['text'] = '[gid] Datasets';
   $handler->display->display_options['fields']['gid']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['gid']['alter']['path'] = 'node/!1';
   $handler->display->display_options['fields']['gid']['alter']['link_class'] = 'btn btn-small btn-primary';
   $handler->display->display_options['fields']['gid']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['gid']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['gid']['format_plural'] = TRUE;
+  $handler->display->display_options['fields']['gid']['format_plural_singular'] = '1 Dataset';
+  $handler->display->display_options['fields']['gid']['format_plural_plural'] = '@count Datasets';
   /* Contextual filter: OG membership: Group ID */
   $handler->display->display_options['arguments']['gid']['id'] = 'gid';
   $handler->display->display_options['arguments']['gid']['table'] = 'og_membership';

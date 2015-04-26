@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Creates DKAN Datastore
+ * Creates DKAN Datastore.
  */
 
 // Datastore is created for a given resource.
@@ -108,7 +108,7 @@ function dkan_datastore_feeds_access($action, $node) {
     // If $action is not one of the supported actions, we return access denied.
     return FALSE;
   }
-  if ($action == 'drop' && user_access('manage datastore')){
+  if ($action == 'drop' && user_access('manage datastore')) {
     return TRUE;
   }
   if ($action != 'import') {
@@ -148,16 +148,19 @@ function dkan_datastore_feeds_access($action, $node) {
  * Access callback for Data API instructions.
  */
 function dkan_datastore_datastore_api_access($resource) {
+  $file_field = dkan_datastore_file_upload_field();
+  $link_field = dkan_datastore_file_link_field();
+  $type = dkan_datastore_node_type();
   $node = is_object($resource) ? $resource : node_load($resource);
   $upload = '';
   $link = '';
-  if (isset($node->field_upload) && $node->field_upload) {
-    $upload = isset($node->field_upload[$node->language]) ? $node->field_upload[$node->language] : $node->field_upload['und'];
+  if (isset($node->$file_field) && $node->$file_field) {
+    $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
   }
-  if (isset($node->field_link_remote_file) && $node->field_link_remote_file) {
-    $link = isset($node->field_link_remote_file[$node->language]) ? $node->field_link_remote_file[$node->language] :  $node->field_link_remote_file['und'];
+  if (isset($node->{$link_field}) && $node->{$link_field}) {
+    $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
   }
-  if ($node->type == 'resource' && ($upload || $link)) {
+  if ($node->type == $type && ($upload || $link)) {
     return node_access('view', $node);
   }
   else {
@@ -171,13 +174,16 @@ function dkan_datastore_datastore_api_access($resource) {
 function dkan_datastore_download_access($node) {
   $upload = '';
   $link = '';
-  if (isset($node->field_upload) && $node->field_upload) {
-    $upload = isset($node->field_upload[$node->language]) ? $node->field_upload[$node->language] : $node->field_upload['und'];
+  $file_field = dkan_datastore_file_upload_field();
+  $link_field = dkan_datastore_file_link_field();
+  $type = dkan_datastore_node_type();
+  if (isset($node->$file_field) && $node->$file_field) {
+    $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
   }
-  if (isset($node->field_link_remote_file) && $node->field_link_remote_file) {
-    $link = isset($node->field_link_remote_file[$node->language]) ? $node->field_link_remote_file[$node->language] : $node->field_link_remote_file['und'];
+  if (isset($node->$link_field) && $node->$link_field) {
+    $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
   }
-  if ($node->type == 'resource' && ($upload || $link)) {
+  if ($node->type == $type && ($upload || $link)) {
     return node_access('view', $node);
   }
   else {
@@ -213,7 +219,8 @@ function dkan_add_resource($node) {
  * Implements hook_node_update().
  */
 function dkan_datastore_node_insert($node) {
-  if ($node->type == 'resource') {
+  $type = dkan_datastore_node_type();
+  if ($node->type == $type) {
     if (!isset($node->feeds)) {
       // Feeds only saves if there is a form present. We want this to work
       // programmatically as well.
@@ -227,12 +234,15 @@ function dkan_datastore_node_insert($node) {
  * Implements hook_node_update().
  */
 function dkan_datastore_node_update($node) {
-  if ($node->type == 'resource') {
+  $type = dkan_datastore_node_type();
+  if ($node->type == $type) {
+    $file_field = dkan_datastore_file_upload_field();
+    $link_field = dkan_datastore_file_link_field();
     // See if we have a file link or upload.
     $wrapper = entity_metadata_wrapper('node', $node);
-    $file = $wrapper->field_upload->value();
-    if (!$file && $wrapper->__isset("field_link_remote_file")) {
-      $link = $wrapper->field_link_remote_file->value();
+    $file = $wrapper->{$file_field}->value();
+    if (!$file) {
+      $link = $wrapper->{$link_field}->value();
       if (isset($link) && isset($link['fid'])) {
         $file = file_load($link['fid']);
       }
@@ -272,7 +282,8 @@ function dkan_datastore_permission() {
  * Implements hook_node_view().
  */
 function dkan_datastore_node_view($node, $view_mode, $langcode) {
-  if ($node->type == 'resource') {
+  $type = dkan_datastore_node_type();
+  if ($node->type == $type) {
     $status = dkan_datastore_status($node);
     if (user_access('manage datastore') && $status = dkan_datastore_status($node)) {
       if ($status === DKAN_DATASTORE_FILE_EXISTS) {
@@ -332,10 +343,13 @@ function dkan_datastore_records($nid) {
  * Retrieves loaded file from resource node.
  */
 function dkan_datastore_file_field($node) {
-  if ($node->type == 'resource') {
+  $type = dkan_datastore_node_type();
+  if ($node->type == $type) {
+    $file_field = dkan_datastore_file_upload_field();
+    $link_field = dkan_datastore_file_link_field();
     $wrapper = entity_metadata_wrapper('node', $node);
-    $file = $wrapper->__isset("field_upload") ? $wrapper->field_upload->value() : NULL;
-    $link = $wrapper->__isset("field_link_remote_file") ? $wrapper->field_link_remote_file->value() : NULL;
+    $file = isset($wrapper->{$file_field}) ? $wrapper->{$file_field}->value() : '';
+    $link = isset($wrapper->{$link_field}) ? $wrapper->{$link_field}->value() : '';
     if (isset($file)) {
       return $file;
     }
@@ -393,14 +407,14 @@ function dkan_datastore_theme() {
  *
  * @param array $variables
  *   An associative array containing:
- *   - item: Associative array of recline field
+ *   - item: Associative array of recline field.
  *
  * @ingroup themeable
  */
 function theme_dkan_datastore_status_formatter($variables) {
   $status = dkan_datastore_status($variables['item']['entity']);
   if ($status === DKAN_DATASTORE_FILE_EXISTS) {
-    return '<span class="circle false" title="' . t('A file has been uploaded but not added to the datastore')  . '">' . t('Data ready to be added') . '</span>';
+    return '<span class="circle false" title="' . t('A file has been uploaded but not added to the datastore') . '">' . t('Data ready to be added') . '</span>';
   }
   elseif ($status === DKAN_DATASTORE_EXISTS) {
     return '<span class="circle true">' . t('Datastore enabled') . '</span>';
@@ -408,21 +422,56 @@ function theme_dkan_datastore_status_formatter($variables) {
   return '<span class="circle na">' . t('Correct file type not attached to resource') . '</span>';
 }
 
- /**
+/**
  * Gets a datastore instance.
  *
- * @param $id
+ * @param string $id
  *   The unique id of the importer object.
  *
- * @return
+ * @return Datastore
  *   A Datastore object or an object of a class defined by the Drupal
  *   variable 'dkan_datastore_class'. There is only one importer object
  *   per $id system-wide.
  */
-function dkan_datastore_go($id, $class = NULL) {
+function dkan_datastore_go($id = NULL, $class = NULL) {
   if (!$class) {
     $class = variable_get('dkan_datastore_class', 'DkanDatastore');
   }
   return Datastore::instance($class, $id);
 }
 
+/**
+ * Returns name of upload field.
+ */
+function dkan_datastore_file_upload_field() {
+  static $field;
+  if (!$field) {
+    $field = 'field_upload';
+    drupal_alter('dkan_datastore_file_upload_field', $field);
+  }
+  return $field;
+}
+
+/**
+ * Returns name of link field.
+ */
+function dkan_datastore_file_link_field() {
+  static $field;
+  if (!$field) {
+    $field = 'field_link_remote_file';
+    drupal_alter('dkan_datastore_field_link_remote_file', $field);
+  }
+  return $field;
+}
+
+/**
+ * Returns name of node type that the Datastore is attached to.
+ */
+function dkan_datastore_node_type() {
+  static $node_type;
+  if (!$node_type) {
+    $node_type = 'resource';
+    drupal_alter('dkan_datastore_node_type', $node_type);
+  }
+  return $node_type;
+}

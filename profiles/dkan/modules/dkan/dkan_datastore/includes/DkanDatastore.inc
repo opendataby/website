@@ -5,6 +5,9 @@
  * DKAN Datatore implementation of Datastore class.
  */
 
+/**
+ * Class for DKAN Datastores.
+ */
 class DkanDatastore extends Datastore implements DatastoreForm {
 
   public $endpoint = 'api/action/datastore/search.json';
@@ -114,7 +117,11 @@ class DkanDatastore extends Datastore implements DatastoreForm {
    */
   public function apiUri() {
     return url($this->endpoint, array(
-      'query' => array('resource_id' => $this->uuid, 'limit' => 5), 'absolute' => TRUE));
+      'query' => array(
+        'resource_id' => $this->uuid,
+        'limit' => 5),
+      'absolute' => TRUE,
+    ));
   }
 
   /**
@@ -224,7 +231,6 @@ class DkanDatastore extends Datastore implements DatastoreForm {
    * Adds configuration to feeds source.
    */
   public function addConfig($config) {
-    $this->source->addConfig($config);
     $this->source->addConfig($config);
   }
 
@@ -403,6 +409,207 @@ class DkanDatastore extends Datastore implements DatastoreForm {
   public function import() {
     $feed = isset($this->feed) ? $this->feed : $this->feed($this->node);
     $feed['source']->startImport();
+  }
+
+  /**
+   * Update datastore with file.
+   */
+  public function updateByFile($uri = '', $copy_file = TRUE, $truncate = TRUE) {
+
+    if (!$uri) {
+      return FALSE;
+    }
+
+    try {
+      // Get current file.
+      $current_file = $this->file();
+
+      $new_file = array();
+      if ($copy_file) {
+        // Save new file.
+        $new_file = file_get_contents($uri);
+        $new_file = file_save_data($new_file, 'public://' . drupal_basename($uri));
+      }
+      else {
+        // The file exists.
+        $fid = db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', array(':uri' => $uri))->fetchField();;
+        $new_file = file_load($fid);
+      }
+
+      if ($new_file) {
+        // Set default settings.
+        $new_file->status = FILE_STATUS_PERMANENT;
+        $new_file->display = 1;
+        $new_file->description = '';
+        $new_file->map = 1;
+        $new_file->grid = 1;
+        $new_file->graph = 1;
+
+        if ($current_file) {
+          // Copy view settings from current file.
+          if (isset($current_file->map)) {
+            $new_file->map = $current_file->map;
+          }
+          if (isset($current_file->grid)) {
+            $new_file->grid = $current_file->grid;
+          }
+          if (isset($current_file->graph)) {
+            $new_file->graph = $current_file->graph;
+          }
+          // Delete current file.
+          $this->deleteFile();
+        }
+
+        // Save new file.
+        file_save($new_file);
+
+        $file_field = dkan_datastore_file_upload_field();
+        $this->node->{$file_field} = array(LANGUAGE_NONE => array((array) $new_file));
+        node_save($this->node);
+
+        // Add importer if not present.
+        if (!$this->importerId) {
+          feeds_node_insert($this->node);
+          $this->importerId = $this->importerId();
+          $this->source = $this->source();
+          $this->importer = $this->importer();
+        }
+
+        // Set up importer.
+        $source = $this->setUpSource();
+        // Import new items.
+        while (FEEDS_BATCH_COMPLETE != $source->import()) {
+          continue;
+        };
+
+        return TRUE;
+
+      }
+      else {
+        return FALSE;
+      }
+
+    }
+    catch (Exception $e) {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Delete file from datastore.
+   */
+  public function deleteFile() {
+
+    // Get current file.
+    $current_file = $this->file();
+
+    if ($current_file) {
+      // If the datastore has items, delete them.
+      $this->deleteItems();
+      // Delete file.
+      file_delete($current_file, TRUE);
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Delete file from datastore.
+   */
+  public function createByFile($uri = '', $copy_file = TRUE) {
+
+    if ($uri) {
+      return $this->updateByFile($uri, $copy_file);
+    }
+    else {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Set up of source and importer for background operations.
+   */
+  protected function setUpSource() {
+    // IMPROVEMENT: Allow configuration of parser.
+    // IMPROVEMENT: Allow configuration of processor.
+    $source = feeds_source($this->importerId, $this->node->nid);
+    // Code added to fix this issue: https://www.drupal.org/node/2087091
+    // The feeds source does not get cleaned up properly.
+    // Ask it for its states so they are all present.
+    $source->state(FEEDS_FETCH);
+    $source->state(FEEDS_PROCESS);
+    $source->state(FEEDS_PROCESS_CLEAR);
+    $config = array(
+      'process_in_background' => TRUE,
+    );
+    $source->importer->addConfig($config);
+    $this->save();
+    $feed = isset($this->feed) ? $this->feed : $this->feed($this->node);
+
+    return $feed['source'];
+  }
+
+  /**
+   * Delete items in datastore.
+   */
+  protected function deleteItems() {
+    // If the datastore has items, delete them.
+    if ($this->status() == DKAN_DATASTORE_EXISTS) {
+      // Set up source and importer.
+      $source = $this->setUpSource();
+      // Delete items.
+      while (FEEDS_BATCH_COMPLETE != $source->clear()) {
+        continue;
+      };
+    }
+  }
+
+  /**
+   * Adds row to table.
+   *
+   * @param array $row
+   *   Key/value array of table fields to data.
+   *
+   * @return string
+   *   Autoincrement id number for row if successful.
+   */
+  public function addRow($row = array()) {
+    if (is_array($row) && $row) {
+      $defaults = array(
+        'timestamp' => time(),
+        'feeds_entity_id' => $this->node->nid,
+      );
+      $row = array_merge($defaults, $row);
+      $insert = db_insert($this->tableName)
+        ->fields($row)
+        ->execute();
+
+      return $insert;
+    }
+    else {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Deletes row from table.
+   *
+   * @param string $field
+   *   Database field to use for condition value.
+   * @param string $value
+   *   Condition value from which to delete.
+   *
+   * @return string
+   *   Number of rows deleted.
+   */
+  public function deleteRow($field, $value) {
+    $num_deleted = db_delete($this->tableName)
+      ->condition($field, $value)
+      ->execute();
+
+    return $num_deleted;
   }
 
 }

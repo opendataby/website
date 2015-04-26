@@ -502,6 +502,7 @@ ul.action-links { margin: 1em 0; }
 @media (min-width: 768px) { .container > .navbar-header { margin-left: 0; }
   #nav-wrapper .navbar-default .logo { padding: 10px 10px 0 0; }
   #nav-wrapper #block-dkan-sitewide-dkan-sitewide-search-bar { margin-right: 60px; }
+  #nav-wrapper #block-dkan-sitewide-dkan-sitewide-search-bar label[for=edit-search] { display: none; }
   #data-and-resources ul.resource-list { margin: 1em 0; }
   #data-and-resources ul.resource-list li { margin: .5em 0; min-height: 40px; padding: 0 125px 0 40px; position: relative; }
   #data-and-resources ul.resource-list li span.links { margin-top: 0; position: absolute; top: 0px; right: 10px; }

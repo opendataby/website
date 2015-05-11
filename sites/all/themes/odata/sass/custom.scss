@@ -259,7 +259,7 @@ h2.block-title {
 
 /* BLOG */
 
-.view-id-blog {
+.view-id-blog, body.node-type-blog-post .node-blog-post {
   width: 60%;
   min-width: 550px;
 }

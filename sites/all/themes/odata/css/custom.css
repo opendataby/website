@@ -196,7 +196,7 @@ h2.block-title {
   padding: 20px 15px; }
 
 /* BLOG */
-.view-id-blog {
+.view-id-blog, body.node-type-blog-post .node-blog-post {
   width: 60%;
   min-width: 550px; }
 

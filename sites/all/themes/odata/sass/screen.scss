@@ -815,11 +815,20 @@ body {
   }
 }
 
-#views-exposed-form-user-profile-search-entity-view-1, #views-exposed-form-groups-search-entity-view-1, #views-exposed-form-dataset-page {
+#views-exposed-form-user-profile-search-entity-view-1, #views-exposed-form-groups-search-entity-view-1 {
   display: inline-block;
   position: relative;
   margin-top: 8px;
   width: 372px;
+}
+
+#views-exposed-form-dataset-page {
+  @extend #views-exposed-form-user-profile-search-entity-view-1;
+  width: 100%;
+  #edit-query {
+    width: 100%;
+    border-radius: 20px;
+  }
 }
 
 #views-exposed-form-user-profile-search-entity-view-1 form, #views-exposed-form-groups-search-entity-view-1 form, #views-exposed-form-dataset-page form {
@@ -857,6 +866,10 @@ body {
   top: -20px;
   width: 25px;
   text-indent: -40px;
+}
+
+#views-exposed-form-dataset-page .views-exposed-form .form-submit {
+  width: auto !important;
 }
 
 #views-exposed-form-user-profile-search-entity-view-1 .views-exposed-form .form-submit:after, #views-exposed-form-groups-search-entity-view-1 .views-exposed-form .form-submit:after, #views-exposed-form-dataset-page .views-exposed-form .form-submit:after {

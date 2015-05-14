@@ -200,4 +200,8 @@ h2.block-title {
   width: 60%;
   min-width: 550px; }
 
+/* Datasets page */
+.facetapi-count {
+  float: right; }
+
 /*# sourceMappingURL=custom.css.map */

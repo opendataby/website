@@ -359,3 +359,16 @@ function odata_file_widget($variables) {
   $output .= render($hidden_elements);
   return $output;
 }
+
+/**
+ * Returns HTML for the active facet item's count.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - count: The item's facet count.
+ *
+ * @ingroup themeable
+ */
+function odata_facetapi_count($variables) {
+  return '<span class="facetapi-count">' . (int) $variables['count'] . '</span>';
+}

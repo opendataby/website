@@ -513,7 +513,7 @@ body {
   border-radius: 3px;
   -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
   background-color: white;
   margin-bottom: 20px;
   padding: 20px; }

@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * Implements hook_form_alter.
+ */
+function datasets_form_views_exposed_form_alter(&$form, &$form_state) {
+  $view = $form_state['view'];
+  if ($view->name == 'dataset' && $view->current_display == 'page') {
+    $form['#process'][] = '_datasets_process_search';
+  }
+}
+
+/* *
+ * Process datasets search form.
+ */
+function _datasets_process_search(&$form, &$form_state) {
+  $form['query']['#attributes']['placeholder'] = t('Search by datasets');
+  return $form;
+}

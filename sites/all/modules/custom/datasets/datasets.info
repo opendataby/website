@@ -1,0 +1,4 @@
+name = Datasets
+description = Additional functionality for datasets.
+package = Custom
+core = 7.x

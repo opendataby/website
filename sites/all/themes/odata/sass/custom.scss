@@ -266,6 +266,33 @@ h2.block-title {
 
 /* Datasets page */
 
-.facetapi-count {
-  float: right;
+body.page-dataset {
+  .facetapi-count {
+    float: right;
+  }
+
+  .region-sidebar-first .block-content {
+    background-color: inherit;
+    padding-left: 0;
+    ul li.leaf {
+      background-color: #eef2f9;
+      border-bottom: none;
+      margin: 1px;
+      a {
+        line-height: 30px;
+        background: none;
+        border-bottom: none;
+        &:before {
+          content: none;
+        }
+        &.facetapi-active:after {
+          content: "\f057";
+        }
+        &:after {
+          left: -7px;
+          font-size: 17px;
+        }
+      }
+    }
+  }
 }

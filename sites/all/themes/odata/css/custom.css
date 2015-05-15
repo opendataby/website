@@ -201,7 +201,25 @@ h2.block-title {
   min-width: 550px; }
 
 /* Datasets page */
-.facetapi-count {
+body.page-dataset .facetapi-count {
   float: right; }
+body.page-dataset .region-sidebar-first .block-content {
+  background-color: inherit;
+  padding-left: 0; }
+  body.page-dataset .region-sidebar-first .block-content ul li.leaf {
+    background-color: #eef2f9;
+    border-bottom: none;
+    margin: 1px; }
+    body.page-dataset .region-sidebar-first .block-content ul li.leaf a {
+      line-height: 30px;
+      background: none;
+      border-bottom: none; }
+      body.page-dataset .region-sidebar-first .block-content ul li.leaf a:before {
+        content: none; }
+      body.page-dataset .region-sidebar-first .block-content ul li.leaf a.facetapi-active:after {
+        content: "\f057"; }
+      body.page-dataset .region-sidebar-first .block-content ul li.leaf a:after {
+        left: -7px;
+        font-size: 17px; }
 
 /*# sourceMappingURL=custom.css.map */

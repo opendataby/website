@@ -206,6 +206,8 @@ body.page-dataset .facetapi-count {
 body.page-dataset .view-header {
   font-size: 25px;
   padding-bottom: 10px; }
+body.page-dataset #block-system-main {
+  padding-left: 0; }
 body.page-dataset .region-sidebar-first .block-content {
   background-color: inherit;
   padding-left: 0; }

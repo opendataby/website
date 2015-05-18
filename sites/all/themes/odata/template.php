@@ -252,6 +252,10 @@ function odata_facetapi_link_active($variables) {
   );
 
   $accessible_markup = theme('facetapi_accessible_markup', $accessible_vars);
+  // Adds count to link if one was passed.
+  if (isset($variables['count'])) {
+    $variables['text'] .= ' ' . theme('facetapi_count', $variables);
+  }
   $variables['text'] .= $accessible_markup;
   $variables['options']['html'] = TRUE;
   return theme_link($variables);

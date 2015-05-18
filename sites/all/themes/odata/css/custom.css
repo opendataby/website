@@ -203,6 +203,9 @@ h2.block-title {
 /* Datasets page */
 body.page-dataset .facetapi-count {
   float: right; }
+body.page-dataset .view-header {
+  font-size: 25px;
+  padding-bottom: 10px; }
 body.page-dataset .region-sidebar-first .block-content {
   background-color: inherit;
   padding-left: 0; }

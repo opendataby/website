@@ -217,7 +217,8 @@ body.page-dataset .region-sidebar-first .block-content {
       body.page-dataset .region-sidebar-first .block-content ul li.leaf a:before {
         content: none; }
       body.page-dataset .region-sidebar-first .block-content ul li.leaf a.facetapi-active:after {
-        content: "\f057"; }
+        content: "\f057";
+        color: red; }
       body.page-dataset .region-sidebar-first .block-content ul li.leaf a:after {
         left: -7px;
         font-size: 17px; }

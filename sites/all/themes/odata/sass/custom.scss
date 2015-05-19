@@ -280,6 +280,21 @@ body.page-dataset {
     padding-left: 0;
   }
 
+  article {
+    position: relative;
+    .data-and-resources {
+      position: absolute;
+      top: 1px;
+      right: 10px;
+      .label {
+        background-color: #686868;
+      }
+    }
+    header, .field-name-body {
+      width: 85%;
+    }
+  }
+
   .region-sidebar-first .block-content {
     background-color: inherit;
     padding-left: 0;

@@ -208,6 +208,16 @@ body.page-dataset .view-header {
   padding-bottom: 10px; }
 body.page-dataset #block-system-main {
   padding-left: 0; }
+body.page-dataset article {
+  position: relative; }
+  body.page-dataset article .data-and-resources {
+    position: absolute;
+    top: 1px;
+    right: 10px; }
+    body.page-dataset article .data-and-resources .label {
+      background-color: #686868; }
+  body.page-dataset article header, body.page-dataset article .field-name-body {
+    width: 85%; }
 body.page-dataset .region-sidebar-first .block-content {
   background-color: inherit;
   padding-left: 0; }

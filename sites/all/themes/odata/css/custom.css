@@ -201,6 +201,14 @@ h2.block-title {
   min-width: 550px; }
 
 /* Datasets page */
+body.page-dataset .pagination a {
+  border: none;
+  background-color: white;
+  color: #62ade3;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: 'nerissemibold Arial', sans-serif;
+  padding: 6px 25px; }
 body.page-dataset .facetapi-count {
   float: right; }
 body.page-dataset .view-header {

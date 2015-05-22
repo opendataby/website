@@ -17,6 +17,15 @@ function blog_field_default_field_instances() {
     'deleted' => 0,
     'description' => '',
     'display' => array(
+      'broadcast' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'trim_length' => 600,
+        ),
+        'type' => 'text_summary_or_trimmed',
+        'weight' => 0,
+      ),
       'default' => array(
         'label' => 'hidden',
         'module' => 'text',
@@ -61,6 +70,15 @@ function blog_field_default_field_instances() {
     'deleted' => 0,
     'description' => '',
     'display' => array(
+      'broadcast' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'trim_length' => 600,
+        ),
+        'type' => 'text_summary_or_trimmed',
+        'weight' => 0,
+      ),
       'default' => array(
         'label' => 'hidden',
         'module' => 'text',

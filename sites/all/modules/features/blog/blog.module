@@ -5,3 +5,13 @@
  */
 
 include_once 'blog.features.inc';
+
+/**
+ * Implements hook_entity_info_alter.
+ */
+function blog_entity_info_alter(&$info) {
+	$info['node']['view modes']['broadcast'] = array(
+		'label' => t('In broadcast block'),
+		'custom settings' => FALSE
+	);
+}

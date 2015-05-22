@@ -34,6 +34,13 @@ function odata_preprocess_page(&$vars) {
 }
 
 /**
+ * Implements template_preprocess_node.
+ */
+function odata_preprocess_node(&$vars) {
+  $vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__' . $vars['view_mode'];
+}
+
+/**
  * Theme function for iframe link.
  */
 function odata_link_iframe_formatter_original($variables) {

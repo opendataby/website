@@ -118,7 +118,8 @@ h3 {
 a {
   color: #62ade3; }
   a:hover {
-    color: #55c15c; }
+    color: #f03f3c;
+    text-decoration: none; }
 
 p {
   margin: 0 0 1.25em 0; }
@@ -1149,7 +1150,7 @@ table.field-multiple-table th label {
         text-transform: uppercase; }
         #nav-wrapper .navbar-default .navbar-nav li > a:hover, #nav-wrapper .navbar-default .navbar-nav li > a:focus {
           text-decoration: none;
-          color: #55c15c; }
+          color: #f03f3c; }
       #nav-wrapper .navbar-default .navbar-nav .active a {
         background: transparent; }
       #nav-wrapper .navbar-default .navbar-nav.secondary li {

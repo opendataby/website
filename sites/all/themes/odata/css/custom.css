@@ -59,6 +59,8 @@
       padding-left: 25px;
       text-transform: uppercase;
       color: #6692c3; }
+      #featured-bottom-menu .menu-bar li a:hover {
+        text-decoration: none; }
 
 /*Featured bottom 2 block*/
 #featured-bottom-2 {

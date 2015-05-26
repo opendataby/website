@@ -162,7 +162,8 @@ h3 {
 a {
   color: #62ade3;
   &:hover {
-    color: #55c15c;
+    color: rgb(240, 63, 60);
+    text-decoration: none;
   }
 }
 
@@ -1449,7 +1450,7 @@ table.field-multiple-table th label {
         text-transform: uppercase;
         &:hover, &:focus {
           text-decoration: none;
-          color: #55c15c;
+          color: rgb(240, 63, 60);
         }
       }
       .active a {

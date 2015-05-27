@@ -5,7 +5,35 @@
     .view-id-blog {
       width: auto;
     }
+
+    h2, .content {
+      width: 95%;
+      float: right;
+      position: relative;
+      bottom: 25px;
+    }
+
+    .day, .month {
+      float: left;
+      clear: left;
+    }
+
+    .day {
+      font-size: 20px;
+    }
+
+    .month {
+      font-size: 13px;
+      text-transform: lowercase;
+    }
+
+    h2, .name {
+      a {
+        color: rgb(240, 63, 60);
+      }
+    }
   }
+
   .intro-left {
     width: 550px;
     float: left;

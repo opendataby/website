@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Default theme implementation to display a node.
+ * Output of blog post in broadcast block.
  *
  * Available variables:
  * - $title: the (sanitized) title of the node.
@@ -81,26 +81,14 @@
  */
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-  <?php print render($title_prefix); ?>
-  <?php if (!$page): ?>
-    <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
-  <?php endif; ?>
-  <?php print render($title_suffix); ?>
-
-  <?php if ($display_submitted): ?>
-    <div class="submitted">
-      <?php print $submitted; ?>
-    </div>
-  <?php endif; ?>
+  <div class="day"><?php print format_date($created, 'custom', 'j'); ?></div>
+  <div class="month"><?php print format_date($created, 'custom', 'M'); ?></div>
+  <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
 
   <div class="content"<?php print $content_attributes; ?>>
     <?php
       print strip_tags(render($content), '<p>');
     ?>
   </div>
-
-  <?php print render($content['links']); ?>
-
-  <?php print render($content['comments']); ?>
 
 </div>

@@ -1,6 +1,21 @@
 /* HOME */
 .front #block-quicktabs-broadcast .view-id-blog {
   width: auto; }
+.front #block-quicktabs-broadcast h2, .front #block-quicktabs-broadcast .content {
+  width: 95%;
+  float: right;
+  position: relative;
+  bottom: 25px; }
+.front #block-quicktabs-broadcast .day, .front #block-quicktabs-broadcast .month {
+  float: left;
+  clear: left; }
+.front #block-quicktabs-broadcast .day {
+  font-size: 20px; }
+.front #block-quicktabs-broadcast .month {
+  font-size: 13px;
+  text-transform: lowercase; }
+.front #block-quicktabs-broadcast h2 a, .front #block-quicktabs-broadcast .name a {
+  color: #f03f3c; }
 .front .intro-left {
   width: 550px;
   float: left; }

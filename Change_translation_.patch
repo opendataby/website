@@ -1,0 +1,16 @@
+Index: profiles/dkan/modules/dkan/dkan_dataset/dkan_dataset.theme.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- profiles/dkan/modules/dkan/dkan_dataset/dkan_dataset.theme.inc	(revision c2e9a9da51b08aac647127e84dafcb999a06f8dc)
++++ profiles/dkan/modules/dkan/dkan_dataset/dkan_dataset.theme.inc	(revision )
+@@ -96,7 +96,7 @@
+       if (isset($node->field_upload[LANGUAGE_NONE])) {
+         $url = file_create_url($node->field_upload[LANGUAGE_NONE][0]['uri']);
+         $download_link = l(
+-          '<i class="fa fa-download"><span> Download</span></i>',
++          '<i class="fa fa-download"><span> Загрузить</span></i>',
+           $url,
+           array(
+             'html' => TRUE,

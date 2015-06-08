@@ -17,6 +17,7 @@ function odata_css_alter(&$css) {
 function odata_preprocess_html(&$variables) {
   drupal_add_css('//fonts.googleapis.com/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800', array('type' => 'external'));
   drupal_add_css('//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', array('type' => 'external'));
+  drupal_add_js(path_to_theme() . '/js/recline-translate.js', array('weight' => 200,'group' => 200));
 }
 
 /**

@@ -5,9 +5,7 @@
 с нуля, чтобы поправить стили, поэкспериментировать или исправить ошибки.
 Можно просто оставлять предложения и сообщать о багах.
 
-Если что непонятно - задавайте вопросы в Google группе:
-https://groups.google.com/forum/#!forum/opendata-belarus
-или на наших периодических встречах.
+Если что непонятно - задавайте вопросы в [Google группе](https://groups.google.com/forum/#!forum/opendata-belarus) или на наших периодических встречах.
 
 ---
 
@@ -15,6 +13,13 @@ https://groups.google.com/forum/#!forum/opendata-belarus
 
     git clone https://github.com/opendataby/website
 
-Настроить сайт:
+Ветка `dev` доступна для записи участникам GitHub организации. Все, что отправляется в `dev` ветку появляется на development сайте
+
+http://dev.opendata.by
+    
+    Заглушка:
+    dataguest
+    12345
+
 
 https://docs.google.com/document/d/15qU6oOtgw1C2ovIh4kexUHSt36mNoyhsVCSC9OaJ8HQ

@@ -1546,3 +1546,8 @@ ul.action-links {
     margin-right: 40px !important; } }
 
 /*# sourceMappingURL=screen.css.map */
+
+
+.page-blog .breadcrumb {
+  display:none;
+}

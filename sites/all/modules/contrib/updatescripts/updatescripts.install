@@ -1,0 +1,31 @@
+<?php
+/*
+ * @copyright 	2012 (c) By Bright Solutions GmbH
+ * @author		Marc Sven Kleinboehl
+ *
+ */
+
+/*
+ * Implements hook_schema.
+ */
+function updatescripts_schema () {
+  
+  return array (
+    'updatescripts_register' => array(
+       'description'   => t('The register table for update scripts.'),
+       'fields'        => array(
+					'update_hash'     => array('type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''),
+					'script'          => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+					'register_time'   => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+					'processed'       => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+					'process_times'   => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+					'log'             => array('type' => 'text'),			   
+       ),
+       'unique keys' => array(
+       	 'update_hash' => array('update_hash'),
+       ),
+       'primary key' => array('update_hash'),
+    )
+  );
+}
+

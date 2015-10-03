@@ -1,0 +1,7 @@
+Todo for 4.09 release:
+
+- Implementing the automatic processing.
+- Implementing the email notifications as submodule.
+- Fixing BEST-NEXT-NUMBER feature
+- Showing version in footer
+- Adding error catching for updatescripts.

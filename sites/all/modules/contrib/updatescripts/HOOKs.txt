@@ -1,0 +1,48 @@
+You can develop extension for the updatescript processor.
+Therefore, I added a bunch of hooks.
+
+
+
+hook_updatescripts_process_closed ($script_filepath, $update, $author, $description)
+
+$script_filepath
+(string)The filepath of the script.
+
+$update
+(boolean)The process was an update.
+
+$author
+(string) The name of the script author.
+
+$description
+(string) The description of the script.
+
+The hook will be called after processing of each single script.
+
+-----
+
+hook_updatescripts_revert ($script_filepath, $process_times)
+
+$script_filepath
+(string)The filepath of the script.
+
+$process_times
+(integer)This is the number of times, the script was previously processed.
+
+The hook will be called after reverting of a single script.
+
+-----
+
+updatescripts_config_form ($form, $form_state, $settings)
+
+$form
+(array)A form array.
+
+$form_state
+(array)A form state array.
+
+$settings
+(array)An array of updatescript processor settings.
+
+You can use this function for inject your own config form into the config form of the updatescript processor.
+

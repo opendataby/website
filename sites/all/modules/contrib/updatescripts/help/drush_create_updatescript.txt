@@ -1,0 +1,11 @@
+BS Updatescript processor V4
+2013+ (c) By Bright Solutions GmbH
+All rights reserved
+
+Creates a new updatescript with perfect numeric prefix in filename. 
+
+Use like:
+drush crusp "Your name" "Usage description" "\$this->setupModules(array('module_name'));"
+
+Syntax:
+drush crusp [AUTHOR NAME] [USAGE DESCRIPTION] [OPTIONAL CODE (ONE CODE LINE)]

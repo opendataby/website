@@ -1,0 +1,278 @@
+<?php
+/**
+ * @copyright 	2012 (c) By Bright Solutions GmbH
+ * @author		Marc Sven Kleinboehl
+ *
+ */
+
+define ('UPDATESCRIPTS_FOLDERNAME', 'updatescripts');
+
+// Hooks
+// ----------------------------------
+
+/**
+ * Implements hook_updatescripts_process_closed.
+ * Will be called after processing a single script.
+ * @param string 	$filepath 		The filepath of the script.
+ * @param boolean $update				TRUE, if the process was an update of a previously processed script. 
+ * @param string	$author				The name of the script author.
+ * @param string  $description	The description of the script.
+ */
+// function updatescripts_updatescripts_process_closed ($filepath, $update, $author, $description) {
+
+/**
+ * Implements hook_updatescripts_config_form.
+ * You can use this hook to inject your own settings form elements into the config form.
+ * @param array $form					The form definition array of the updatescript config form.
+ * @param array $form_state		The form state array of the config form.
+ * @param array	$settings			This array contains the available settings.
+ */
+// function updatescripts_updatescripts_config_form ($form, $form_state, $settings) {
+
+/**
+ * Implements hook_updatescripts_batch_process_created.
+ * @param array $scripts	An array which contains the script filenames.
+ */
+// function updatescripts_updatescripts_batch_process_created ($scripts) {
+
+/**
+ * Implements hook_updatescripts_batch_process_finished.
+ * @param boolean $success		TRUE if the process was successfuly finished.
+ * @param array		$results		An array which contains the results of the batch process.
+ * @param array 	$operations	An array which contains the operations of the batch process.
+ */
+// function updatescripts_updatescripts_batch_process_finished ($success, $results, $operations) {
+
+
+// Module functions.
+// ----------------------------------
+
+
+module_load_include ('inc', 'updatescripts', 'includes/common');
+
+/**
+ * Implements hook_init.
+ */
+function updatescripts_init () {
+  
+  drupal_add_css (drupal_get_path ('module', 'updatescripts') . '/css/updatescript.css');
+   
+  return;
+}
+
+/**
+ * Implements hook_permission.
+ */
+function updatescripts_permission(){
+  
+  return array(
+    'updatescripts process' => array(
+      'title'       => t('Process updatescripts'), 
+      'description' => t('Allowes to process updatescripts.'),
+    ),
+    'updatescripts configure' => array(
+      'title'       => t('Configure updatescripts'), 
+      'description' => t('Allows to configure the updatescript processor and submodules.'),
+    ),
+  );
+} 
+
+/**
+ * Implements hook_menu.
+ */
+function updatescripts_menu () {
+	
+	return array (
+		'updatescripts-process/%' => array (
+		  'file'				    => 'includes/processor_remote.inc',
+			'page callback' 	=> '_bs_updatescripts_process',
+			'page arguments'	=> array (1),
+			'access arguments'=> array ('updatescripts process'),
+			'type'				    => MENU_CALLBACK
+		),
+		'admin/config/updatescripts/log/%' => array (
+			'file'				    => 'includes/processor_gui.inc',
+			'page callback' 	=> '_updatescripts_ajax_show_log',
+			'page arguments'	=> array (4),
+			'access arguments'=> array ('updatescripts process'),
+			'type'				    => MENU_CALLBACK
+	    ),
+		'admin/config/updatescripts/meta-log.txt' => array (
+			'file'				    => 'includes/meta_log.inc',
+			'page callback' 	=> '_updatescripts_meta_log',
+			'page arguments'	=> array (4),
+			'access arguments'=> array ('updatescripts process'),
+			'type'				    => MENU_CALLBACK
+	    ),
+		'admin/config/updatescripts/revert/%' => array (
+			'file'				    => 'includes/processor_gui.inc',
+			'page callback' 	=> 'drupal_get_form',
+			'page arguments'	=> array ('_updatescripts_revert_script_confirm_form', 4),
+			'access arguments'=> array ('updatescripts process'),
+			'type'				    => MENU_CALLBACK
+	    ), 
+	    
+	  // Public menu items
+		'admin/config/development/updatescripts' => array (
+	    'title'		  		  => 'Updatescript processor',
+		  'description'			=> 'Click here to process some script per GUI.',
+			'file'				    => 'includes/processor_gui.inc',
+			'page callback' 	=> 'drupal_get_form',
+			'page arguments'	=> array ('_updatescripts_batch_form'),
+			'access arguments'=> array ('updatescripts process'), 
+		),
+		'admin/config/development/updatescripts/processing' => array (
+	    'title'		  		  => 'Updatescript processor',
+		  'description'			=> 'Click here to process some script per GUI.',
+			'file'				    => 'includes/processor_gui.inc',
+			'page callback' 	=> 'drupal_get_form',
+			'page arguments'	=> array ('_updatescripts_batch_form'),
+			'access arguments'=> array ('updatescripts process'),
+	    'type'						=> MENU_DEFAULT_LOCAL_TASK
+		),
+		'admin/config/development/updatescripts/configuration' => array (
+	    'title'				    => 'Updatescript processor config',
+		  'description'			=> 'Click here to configure the updatescript processor.',
+			'file'				    => 'includes/configuration.inc',
+			'page callback' 	=> 'drupal_get_form',
+			'page arguments'	=> array ('_updatescripts_configuration_form'),
+			'access arguments'=> array ('updatescripts configure'),
+		  'type'						=> MENU_LOCAL_TASK
+		)
+	);
+}
+
+/**
+ * Implements hook_theme.
+ */
+function updatescripts_theme () {
+ 
+  $theme = array ();
+  
+  $theme['updatescripts_icon_link'] = array (
+      'template'             => 'templates/updatescripts_icon_link',
+      'variables'            => array ('icon_type'=>'', 'url'=>'', 'blank'=>FALSE),
+  ); 
+
+  return $theme;
+}
+
+/**
+ * Preprocess of the icon_link template.
+ *
+ * @link http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_theme/7
+ */
+function template_preprocess_updatescripts_icon_link (&$vars) {
+ 
+  $vars['url'] = url($vars['url'], array ('absolute'=>TRUE));
+    
+  return;
+}
+/**
+ * Returns the path of the updatescripts folder.
+ *
+ * @return string	The path of the updatescripts folder.
+ */
+function _updatescripts_get_scripts_path() {
+ 
+  $path = conf_path () .
+          '/' .
+          UPDATESCRIPTS_FOLDERNAME;
+
+  file_prepare_directory($path, FILE_CREATE_DIRECTORY);
+ 
+  return $path;
+}
+
+/**
+ * Implements hook_help.
+ */
+function updatescripts_help($path, $arg) {
+  
+  switch ($path) {
+    // Main module help for the block module
+    case 'admin/help#updatescripts':
+
+      return file_get_contents (drupal_get_path('module', 'updatescripts') . '/help/main.html');
+
+      // Help for another path in the block module
+    case 'admin/config/development/updatescripts':
+      
+      drupal_add_js('misc/form.js'); 
+      drupal_add_js('misc/collapse.js'); 
+      
+      $output = array ('help-box'=>array (
+          '#type'         => 'fieldset',
+          '#title'				=> t('Help'),
+          '#collapsible'	=> TRUE,
+          '#collapsed'		=> FALSE,
+          '#attributes'		=> array('class' => array('collapsible', 'collapsed')),
+          'help' => array (
+            '#type'  => 'markup',
+            '#markup' => file_get_contents (drupal_get_path('module', 'updatescripts') . '/help/context.html')
+          )
+        )
+      );
+ 
+      return drupal_render ($output);
+  }
+}
+
+/**
+ * Implements updatescripts_theme_registry_alter.
+ */
+function updatescripts_theme_registry_alter(&$theme_registry) {
+
+  $theme_registry['page']['preprocess functions'][] = '_updatescripts_render_overlay_button';
+  
+  return;
+}
+
+/**
+ * Renders an overlay button onto the page.
+ * (Theme processor function.)
+ */
+function _updatescripts_render_overlay_button (&$variables) {
+ 
+  module_load_include ('inc', 'updatescripts', 'includes/common');
+  
+  if (_updatescripts_get_config_value ('general', 'overlay_button') != TRUE) {
+    return;
+  }
+  
+  if (! user_access ('updatescripts process')) {
+    return;
+  }
+  
+  drupal_add_css (drupal_get_path ('module', 'updatescripts') . '/css/updatescripts_overlay.css');
+  drupal_add_js (drupal_get_path ('module', 'updatescripts') . '/js/updatescripts_overlay.js');
+  
+  $variables['page']['content']['system_main']['updatescripts']['#type']   = 'markup';
+  $variables['page']['content']['system_main']['updatescripts']['#markup'] = '<div id="updatescripts-overlay-button"><a href="/admin/config/development/updatescripts" id="updatescripts-overlay-button-link">Updatescripts</a></div>';
+  
+  return;
+}
+
+/**
+ * Implements hook_form_alter.
+ */
+function updatescripts_form_alter (&$form, &$form_state, $form_id) {
+  
+  if ('system_modules' != $form_id) {
+    return;
+  }
+  
+  $form['#submit'][] = '_updatescripts_system_modules_submit';
+  
+  return;
+}
+
+/**
+ * @Todo: 
+ */
+function _updatescripts_system_modules_submit (&$form, &$form_state) {
+ 
+  //$modules = $form_state['values']['modules'];
+  
+  // TODO: AUTOSCRIPT
+}

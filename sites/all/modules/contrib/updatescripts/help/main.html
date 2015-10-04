@@ -1,0 +1,23 @@
+<p>
+	The updatescript processor is a deployment tool for drupal configurations.<br />
+	It provides a scripting environment that allows you to define your own configurations as script files with incremental version-controlling.<br />
+	<br />
+	The API of the updatescript processor supports functions to configure, disable and enable modules and themes.<br />
+	<br />
+	Furthermore, it provides a drush function for other tasks that do not have corresponding API functions in the updatescript environment.<br />
+	<br />
+	The updatescript processor can be used with CI (continuous integration) systems like jenkins for updating target systems like dev and stage installations.<br />
+</p>
+<h3>API</h3> 
+<p>The updatescript processor provides some API for handling with drupal.</p>
+<ul>
+	<li><strong>UpdatescriptAPI::setupModules</strong><br />Installs/Enables specific modules.</li>
+	<li><strong>UpdatescriptAPI::unsetupModules</strong><br />Disables specific modules.</li>
+	<li><strong>UpdatescriptAPI::setupThemes</strong><br />Installs/Enables specific themes.</li>
+	<li><strong>UpdatescriptAPI::unsetupThemes</strong><br />Disables specific themes.</li>
+	<li><strong>UpdatescriptAPI::setDefaultTheme</strong><br />Sets a specific theme as default theme or admin theme.</li>
+	<li><strong>UpdatescriptAPI::log</strong><br />Writes a text message to the log of the current running updatescript.</li>
+	<li><strong>UpdatescriptAPI::drush</strong><br />Runs a drush commandline.</li>
+	<li><strong>UpdatescriptAPI::setLanguageWording</strong><br />Translates a specific string.</li>
+</ul>
+

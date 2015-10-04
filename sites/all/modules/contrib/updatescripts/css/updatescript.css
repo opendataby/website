@@ -1,0 +1,27 @@
+.messages.updatescripts_status {
+	background-color:		#EEEEEE;	
+	background-image:		url(../images/bs_bulp.png);
+	background-repeat:		no-repeat;
+	background-position:	15px 8px;
+	padding-left:         40px !important;
+}
+
+#updatescripts-dialog {
+	width:				6480px;
+	height:				480px;
+	overflow:			auto;
+	background-color:	black;
+	color:				white;
+	display:			none;
+	font-family:		Monospace;
+	font-size:			0.9em;
+}
+
+#updatescripts-footer {
+	text-align: center;
+	font-size:	0.7em;
+}
+
+#updatescripts-process-scripts-submit {
+	margin-top: 15px;
+}

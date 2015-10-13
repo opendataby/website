@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the feature_opendata_voting feature.
+ */
+
+include_once 'feature_opendata_voting.features.inc';

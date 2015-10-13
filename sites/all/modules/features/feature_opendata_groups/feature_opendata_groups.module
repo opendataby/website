@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the feature_opendata_groups feature.
+ */
+
+include_once 'feature_opendata_groups.features.inc';

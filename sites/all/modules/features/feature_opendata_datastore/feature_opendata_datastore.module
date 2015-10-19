@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the feature_opendata_datastore feature.
+ */
+
+include_once 'feature_opendata_datastore.features.inc';

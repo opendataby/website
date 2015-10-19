@@ -1,0 +1,12 @@
+name = feature_opendata_dataset
+description = OpenData Dataset
+core = 7.x
+package = OpenData
+version = 7.x-1.0
+project = feature_opendata_dataset
+dependencies[] = dkan_dataset
+features[features_api][] = api:2
+features[features_override_items][] = variable.pathauto_node_dataset_pattern
+features[features_override_items][] = variable.pathauto_node_resource_pattern
+features[features_overrides][] = variable.pathauto_node_dataset_pattern.value
+features[features_overrides][] = variable.pathauto_node_resource_pattern.value

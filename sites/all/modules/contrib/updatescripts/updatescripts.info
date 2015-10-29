@@ -1,0 +1,13 @@
+name        = "Updatescripts processor"
+description	= "Provides an updatescript processor for easier deployment of site configurations."
+package     = "Deployment"
+core        = "7.x"
+
+
+
+; Information added by Drupal.org packaging script on 2014-01-23
+version = "7.x-4.17"
+core = "7.x"
+project = "updatescripts"
+datestamp = "1390493305"
+

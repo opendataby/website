@@ -1,0 +1,16 @@
+name = feature_opendata_user
+description = OpenData User
+core = 7.x
+package = OpenData
+version = 7.x-1.0
+project = feature_opendata_user
+features[features_api][] = api:2
+features[features_overrides][] = views_view.user_profile_fields.display|default|display_options|arguments|uid|exception
+features[features_overrides][] = views_view.user_profile_fields.display|default|display_options|exposed_form|options
+features[features_overrides][] = views_view.user_profile_fields.display|default|display_options|use_more_text
+features[features_overrides][] = views_view.user_profile_search.display|default|display_options|arguments|author|exception
+features[features_overrides][] = views_view.user_profile_search.display|default|display_options|empty|area|content
+features[features_overrides][] = views_view.user_profile_search.display|default|display_options|exposed_form|options
+features[features_overrides][] = views_view.user_profile_search.display|default|display_options|pager|options|expose
+features[features_overrides][] = views_view.user_profile_search.display|default|display_options|pager|options|tags
+features[features_overrides][] = views_view.user_profile_search.display|default|display_options|use_more_text

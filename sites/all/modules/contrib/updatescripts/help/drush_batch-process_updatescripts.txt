@@ -1,0 +1,11 @@
+BS Updatescript processor V4
+2013+ (c) By Bright Solutions GmbH
+All rights reserved
+
+Runs all unprocessed updatescripts in background. 
+Each script will be processed separately.
+
+You can also use the short version 'batchbsu'.
+
+ATTENTION:
+LINUX ONLY. NOHUP MUST BE AVAILABLE.

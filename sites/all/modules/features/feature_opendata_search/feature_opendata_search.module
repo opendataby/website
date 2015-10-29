@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the feature_opendata_search feature.
+ */
+
+include_once 'feature_opendata_search.features.inc';

@@ -1,0 +1,11 @@
+name = feature_opendata_voting
+description = OpenData Voting
+core = 7.x
+package = OpenData
+version = 7.x-1.0
+project = feature_opendata_voting
+features[features_api][] = api:2
+features[features_override_items][] = field_instance.node-dataset-field_rating
+features[features_overrides][] = field_instance.node-dataset-field_rating.display|teaser|weight
+features[features_overrides][] = field_instance.node-dataset-field_rating.widget|weight
+features_exclude[dependencies][dkan_dataset_voting] = dkan_dataset_voting

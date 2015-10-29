@@ -297,6 +297,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'required' => 0,
       ),
     ),
+    'outputformat' => 'json',
   );
   // Exported Open Data API Map: CKAN Group List
   $open_data_schema_apis['ckan_group_list'] = array(
@@ -575,6 +576,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     ),
     'endpoint' => 'api/3/action/group_list',
     'arguments' => array(),
+    'outputformat' => 'json',
   );
   // Exported Open Data API Map: CKAN Group Package Show
   $open_data_schema_apis['ckan_group_package_show'] = array(
@@ -858,6 +860,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'required' => 1,
       ),
     ),
+    'outputformat' => 'json',
   );
   // Exported Open Data API Map: CKAN Package List
   $open_data_schema_apis['ckan_package_list'] = array(
@@ -1136,6 +1139,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     ),
     'endpoint' => 'api/3/action/package_list',
     'arguments' => array(),
+    'outputformat' => 'json',
   );
   // Exported Open Data API Map: CKAN Package Show
   $open_data_schema_apis['ckan_package_show'] = array(
@@ -1423,6 +1427,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'required' => 1,
       ),
     ),
+    'outputformat' => 'json',
   );
   // Exported Open Data API Map: CKAN Resource Show
   $open_data_schema_apis['ckan_resource_show'] = array(
@@ -1530,6 +1535,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'required' => 0,
       ),
     ),
+    'outputformat' => 'json',
   );
   // Exported Open Data API Map: Data.json
   $open_data_schema_apis['data_json'] = array(
@@ -1670,6 +1676,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     ),
     'endpoint' => 'data.json',
     'arguments' => array(),
+    'outputformat' => 'json',
   );
   // Exported Open Data API Map: Data Json 1.1
   $open_data_schema_apis['data_json_1_1'] = array(
@@ -1862,6 +1869,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
     ),
     'endpoint' => 'data.json',
     'arguments' => array(),
+    'outputformat' => 'json',
   );
   return $open_data_schema_apis;
 }

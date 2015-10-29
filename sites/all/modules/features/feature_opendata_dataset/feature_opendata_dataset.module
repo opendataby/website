@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the feature_opendata_dataset feature.
+ */
+
+include_once 'feature_opendata_dataset.features.inc';

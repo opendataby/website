@@ -1,0 +1,32 @@
+#updatescripts-overlay-button {
+	position:            fixed;
+	left:                0;
+	top:                 50%;
+	background-image:    url(../images/grip.png);
+	background-repeat:   no-repeat;
+	background-color:    #d58e8e;
+	background-position: right;
+	height:              24px;
+	padding:             4px;
+	padding-right:       16px;
+	border:              2px solid #aa3f3f;
+	border-left:         none;
+	line-height:         24px;
+  -webkit-box-shadow:  2px 2px 2px 2px rgba(0, 0, 0, 0.8);
+  box-shadow:          2px 2px 2px 2px rgba(0, 0, 0, 0.8);
+  z-index:             9999;
+}
+
+
+#updatescripts-overlay-button a {
+	color:             black;
+	text-decoration:   none;
+	display:           block;
+	font-family:       monospace;
+	font-size:         11px;
+	font-weight:       bold;
+	cursor:            pointer;
+	height:            32px;
+	display: none;
+}
+ 

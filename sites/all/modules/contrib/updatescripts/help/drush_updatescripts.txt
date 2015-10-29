@@ -1,0 +1,10 @@
+BS Updatescript processor V4
+2013+ (c) By Bright Solutions GmbH
+All rights reserved
+
+Executes BS Updatescripts. You can also use the short version 'drush runbsu'.
+
+Arguments:
+-s	Silent mode (no output).
+-d	Process a specific file.
+-h	This document.

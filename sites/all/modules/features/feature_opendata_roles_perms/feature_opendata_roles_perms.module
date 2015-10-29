@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the feature_opendata_roles_perms feature.
+ */
+
+include_once 'feature_opendata_roles_perms.features.inc';

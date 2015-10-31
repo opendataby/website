@@ -9,7 +9,7 @@
  */
 function feature_opendata_search_context_default_contexts_alter(&$data) {
   if (isset($data['dataset'])) {
-    $data['dataset']->reactions['breadcrumb'][0] = 'main-menu:dataset'; /* WAS: 'd' */
+    $data['dataset']->reactions['breadcrumb'] = 'mataset'; /* WAS: 'dataset' */
     unset($data['dataset']->reactions['block']['blocks']['dkan_sitewide-dkan_sitewide_license']);
     unset($data['dataset']->reactions['block']['blocks']['dkan_sitewide-dkan_sitewide_social']);
   }

@@ -14,7 +14,7 @@ function feature_opendata_search_features_override_default_overrides() {
   // Exported overrides for: context
   $overrides["context.dataset.reactions|block|blocks|dkan_sitewide-dkan_sitewide_license"]["DELETED"] = TRUE;
   $overrides["context.dataset.reactions|block|blocks|dkan_sitewide-dkan_sitewide_social"]["DELETED"] = TRUE;
-  $overrides["context.dataset.reactions|breadcrumb|0"] = 'main-menu:dataset';
+  $overrides["context.dataset.reactions|breadcrumb"] = 'mataset';
 
   // Exported overrides for: facetapi
   $overrides["facetapi.search_api@datasets:block:author.settings|active_sorts|active"] = 0;

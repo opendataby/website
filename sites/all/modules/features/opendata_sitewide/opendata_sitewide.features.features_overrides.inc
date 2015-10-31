@@ -16,6 +16,7 @@ function opendata_sitewide_features_override_default_overrides() {
 
   // Exported overrides for: variable
   $overrides["variable.admin_theme.value"] = 'seven';
+  $overrides["variable.colorizer_cssfile.value"] = '';
 
  return $overrides;
 }

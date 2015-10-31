@@ -1548,6 +1548,21 @@ ul.action-links {
 /*# sourceMappingURL=screen.css.map */
 
 
+/*dataset page fixed*/
+
 .page-blog .breadcrumb {
   display:none;
+}
+
+/*hide VIEW tab on node pages for anons */
+.not-logged-in .tabs--primary{
+  display:none;
+}
+
+.node-dataset .field-name-field-tags {
+  overflow-x:hidden;
+}
+
+#block-system-main h2 {
+  margin-top:32px;
 }

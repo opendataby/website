@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the feature_opendata_context feature.
+ */
+
+include_once 'feature_opendata_context.features.inc';

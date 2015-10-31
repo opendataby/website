@@ -73,7 +73,7 @@ function dkan_dataset_content_types_field_default_field_bases() {
   // Exported field_base: 'field_author'
   $field_bases['field_author'] = array(
     'active' => 1,
-    'cardinality' => 1,
+    'cardinality' => -1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_author',
@@ -259,6 +259,7 @@ function dkan_dataset_content_types_field_default_field_bases() {
           'parent' => 0,
         ),
       ),
+      'options_list_callback' => 'i18n_taxonomy_allowed_values',
     ),
     'translatable' => 0,
     'type' => 'taxonomy_term_reference',
@@ -281,17 +282,52 @@ function dkan_dataset_content_types_field_default_field_bases() {
     'module' => 'list',
     'settings' => array(
       'allowed_values' => array(
-        0 => 'Daily',
-        1 => 'Weekly',
-        2 => 'Monthly',
-        3 => 'Annually',
-        4 => 'Continuously',
-        5 => 'Irregularly',
+        0 => 'Ежедневно',
+        1 => 'Непрерывно',
+        2 => 'Нерегулярно',
+        3 => 'Раз в год',
+        4 => 'Раз в месяц',
+        5 => 'Раз в неделю',
       ),
       'allowed_values_function' => '',
     ),
     'translatable' => 0,
     'type' => 'list_integer',
+  );
+
+  // Exported field_base: 'field_geo'
+  $field_bases['field_geo'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_geo',
+    'foreign keys' => array(
+      'tid' => array(
+        'columns' => array(
+          'tid' => 'tid',
+        ),
+        'table' => 'taxonomy_term_data',
+      ),
+    ),
+    'indexes' => array(
+      'tid' => array(
+        0 => 'tid',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'taxonomy',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => array(
+          'vocabulary' => 'geography',
+          'parent' => 0,
+        ),
+      ),
+      'options_list_callback' => 'i18n_taxonomy_allowed_values',
+    ),
+    'translatable' => 0,
+    'type' => 'taxonomy_term_reference',
   );
 
   // Exported field_base: 'field_granularity'
@@ -430,9 +466,9 @@ function dkan_dataset_content_types_field_default_field_bases() {
     'module' => 'list',
     'settings' => array(
       'allowed_values' => array(
-        'public' => 'Public',
-        'restricted' => 'Restricted',
-        'private' => 'Private',
+        'public' => 'Публичный',
+        'restricted' => 'Ограниченный',
+        'private' => 'Частный',
       ),
       'allowed_values_function' => '',
     ),
@@ -559,6 +595,41 @@ function dkan_dataset_content_types_field_default_field_bases() {
     'type' => 'text',
   );
 
+  // Exported field_base: 'field_spec_projects'
+  $field_bases['field_spec_projects'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_spec_projects',
+    'foreign keys' => array(
+      'tid' => array(
+        'columns' => array(
+          'tid' => 'tid',
+        ),
+        'table' => 'taxonomy_term_data',
+      ),
+    ),
+    'indexes' => array(
+      'tid' => array(
+        0 => 'tid',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'taxonomy',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => array(
+          'vocabulary' => 'special',
+          'parent' => 0,
+        ),
+      ),
+      'options_list_callback' => 'i18n_taxonomy_allowed_values',
+    ),
+    'translatable' => 0,
+    'type' => 'taxonomy_term_reference',
+  );
+
   // Exported field_base: 'field_tags'
   $field_bases['field_tags'] = array(
     'active' => 1,
@@ -588,6 +659,7 @@ function dkan_dataset_content_types_field_default_field_bases() {
           'parent' => 0,
         ),
       ),
+      'options_list_callback' => 'i18n_taxonomy_allowed_values',
     ),
     'translatable' => 0,
     'type' => 'taxonomy_term_reference',

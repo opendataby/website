@@ -1,0 +1,14 @@
+name = opendata_sitewide
+description = OpenData Sitewide
+core = 7.x
+package = OpenData
+version = 7.x-1.0
+project = opendata_sitewide
+dependencies[] = dkan_sitewide
+features[features_api][] = api:2
+features[features_override_items][] = filter.html
+features[features_override_items][] = variable.admin_theme
+features[features_override_items][] = variable.colorizer_cssfile
+features[features_overrides][] = filter.html.filters|filter_html
+features[features_overrides][] = variable.admin_theme.value
+features_exclude[features_overrides][variable.colorizer_cssfile.value] = variable.colorizer_cssfile.value

@@ -40,8 +40,5 @@ function feature_opendata_roles_perms_features_override_default_overrides() {
   $overrides["user_permission.view pane admin links.roles|administrator"]["DELETED"] = TRUE;
   $overrides["user_permission.view pane admin links.roles|editor"] = 'editor';
 
-  // Exported overrides for: variable
-  $overrides["variable.user_admin_role.value"] = 4;
-
  return $overrides;
 }

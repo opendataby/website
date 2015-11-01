@@ -74,12 +74,3 @@ function feature_opendata_roles_perms_user_default_permissions_alter(&$data) {
     unset($data['view pane admin links']['roles']['administrator']);
   }
 }
-
-/**
- * Implements hook_strongarm_alter().
- */
-function feature_opendata_roles_perms_strongarm_alter(&$data) {
-  if (isset($data['user_admin_role'])) {
-    $data['user_admin_role']->value = 4; /* WAS: '' */
-  }
-}

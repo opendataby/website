@@ -22,22 +22,23 @@ function dkan_dataset_content_types_ctools_plugin_api($module = NULL, $api = NUL
 function dkan_dataset_content_types_node_info() {
   $items = array(
     'dataset' => array(
-      'name' => t('Набор данных'),
+      'name' => t('Dataset'),
       'base' => 'node_content',
-      'description' => t('Набор данных - это контейнер для нескольких файлов с данными по определенной теме. В свою очередь, файлы с данными имеют уникальный адрес и описание лицензии. '),
+      'description' => t('Datasets are simply used to group related pieces of data. These can then be found under a single url with a description and licensing information.'),
       'has_title' => '1',
-      'title_label' => t('Заголовок'),
+      'title_label' => t('Title'),
       'help' => '',
     ),
     'resource' => array(
-      'name' => t('Русурс'),
+      'name' => t('Resource'),
       'base' => 'node_content',
-      'description' => t('Данные - это файл или ссылка на файл с данными.'),
+      'description' => t('Data can be any file or link to a file containing useful data.'),
       'has_title' => '1',
-      'title_label' => t('Заголовок'),
+      'title_label' => t('Title'),
       'help' => '',
     ),
   );
+  drupal_alter('node_info', $items);
   return $items;
 }
 

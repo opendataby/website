@@ -65,7 +65,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Dataset Information',
-    'weight' => 2,
+    'weight' => '1',
     'children' => array(
       0 => 'field_additional_info',
       1 => 'field_author',
@@ -133,7 +133,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = 'group_data';
   $field_group->data = array(
     'label' => 'Link to an API',
-    'weight' => 14,
+    'weight' => '11',
     'children' => array(
       0 => 'field_link_api',
     ),
@@ -161,7 +161,7 @@ function dkan_dataset_content_types_field_group_info() {
   $field_group->parent_name = 'group_data';
   $field_group->data = array(
     'label' => 'Link to a file',
-    'weight' => 13,
+    'weight' => '9',
     'children' => array(
       0 => 'field_link_remote_file',
     ),
@@ -194,9 +194,7 @@ function dkan_dataset_content_types_field_group_info() {
       0 => 'body',
       1 => 'field_license',
       2 => 'field_tags',
-      3 => 'field_geo',
-      4 => 'field_spec_projects',
-      5 => 'title',
+      3 => 'title',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(

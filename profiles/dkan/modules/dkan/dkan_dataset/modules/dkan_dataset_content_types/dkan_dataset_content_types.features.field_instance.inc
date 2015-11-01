@@ -31,12 +31,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
           'trim_length' => 200,
         ),
         'type' => 'text_trimmed',
-        'weight' => 4,
+        'weight' => 1,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'body',
-    'label' => 'Описание',
+    'label' => 'Description',
     'required' => 0,
     'settings' => array(
       'display_summary' => 0,
@@ -51,7 +51,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 2,
+      'weight' => 1,
     ),
   );
 
@@ -78,21 +78,30 @@ function dkan_dataset_content_types_field_default_field_instances() {
             'prefix' => '',
             'suffix' => '',
           ),
-          'style' => 'inline',
+          'table' => array(
+            'first' => array(
+              'column_label' => 'Field',
+            ),
+            'number_column' => 0,
+            'number_column_label' => '№',
+            'second' => array(
+              'column_label' => 'Value',
+            ),
+          ),
         ),
-        'type' => 'double_field_unformatted_list',
+        'type' => 'double_field_table',
         'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 13,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_additional_info',
-    'label' => 'Дополнительная информация',
+    'label' => 'Additional Info',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -126,20 +135,16 @@ function dkan_dataset_content_types_field_default_field_instances() {
         ),
       ),
       'type' => 'textfield_&_textfield',
-      'weight' => 22,
+      'weight' => 21,
     ),
   );
 
   // Exported field_instance: 'node-dataset-field_author'
   $field_instances['node-dataset-field_author'] = array(
     'bundle' => 'dataset',
-    'default_value' => array(
-      0 => array(
-        'value' => 'http://',
-      ),
-    ),
+    'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Источник информации',
+    'description' => 'This is the author of the dataset.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -152,12 +157,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 22,
+        'weight' => 6,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_author',
-    'label' => 'Источник',
+    'label' => 'Author',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -167,7 +172,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
       'active' => 1,
       'module' => 'text',
       'settings' => array(
-        'size' => 120,
+        'size' => 60,
       ),
       'type' => 'text_textfield',
       'weight' => 10,
@@ -192,12 +197,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 15,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_contact_email',
-    'label' => 'Контактный Email',
+    'label' => 'Contact Email',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -210,7 +215,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 20,
+      'weight' => 19,
     ),
   );
 
@@ -232,12 +237,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 19,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_contact_name',
-    'label' => 'Контактное имя',
+    'label' => 'Contact Name',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -250,7 +255,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 19,
+      'weight' => 18,
     ),
   );
 
@@ -272,7 +277,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 16,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
@@ -290,7 +295,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'rows' => 3,
       ),
       'type' => 'text_textarea',
-      'weight' => 18,
+      'weight' => 17,
     ),
   );
 
@@ -299,7 +304,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Частота, с которой публикуется набор данных. Смотрите <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">Ссылку</a> для информации.',
+    'description' => 'The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -312,12 +317,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 17,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_frequency',
-    'label' => 'Частота',
+    'label' => 'Frequency',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -330,45 +335,6 @@ function dkan_dataset_content_types_field_default_field_instances() {
       ),
       'type' => 'options_select',
       'weight' => 13,
-    ),
-  );
-
-  // Exported field_instance: 'node-dataset-field_geo'
-  $field_instances['node-dataset-field_geo'] = array(
-    'bundle' => 'dataset',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'taxonomy',
-        'settings' => array(),
-        'type' => 'taxonomy_term_reference_link',
-        'weight' => 21,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 12,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_geo',
-    'label' => 'География',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'options',
-      'settings' => array(
-        'apply_chosen' => 0,
-      ),
-      'type' => 'options_select',
-      'weight' => 3,
     ),
   );
 
@@ -390,12 +356,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 18,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_granularity',
-    'label' => 'Гранулярность',
+    'label' => 'Granularity',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -408,7 +374,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 17,
+      'weight' => 16,
     ),
   );
 
@@ -421,25 +387,25 @@ function dkan_dataset_content_types_field_default_field_instances() {
       ),
     ),
     'deleted' => 0,
-    'description' => 'Определение лицензий и дополнительная информация могут быть найдены на сайте <a href="http://opendefinition.org">opendefinition.org</a>',
+    'description' => 'License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'select_or_other',
+        'module' => 'dkan_dataset_content_types',
         'settings' => array(),
-        'type' => 'select_or_other_formatter',
+        'type' => 'render_license',
         'weight' => 13,
       ),
       'teaser' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 21,
+        'weight' => 5,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_license',
-    'label' => 'Лицензия',
+    'label' => 'License',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -449,21 +415,22 @@ function dkan_dataset_content_types_field_default_field_instances() {
       'active' => 1,
       'module' => 'select_or_other',
       'settings' => array(
+        'apply_chosen' => '',
         'available_options' => 'cc-by|Creative Commons Attribution
-        cc-by-sa|Creative Commons Attribution Share-Alike
-        cc-zero|Creative Commons CCZero
-        cc-nc|Creative Commons Non-Commercial (Any)
-        gfdl|GNU Free Documentation License
-        notspecified|License Not Specified
-        odc-by|Open Data Commons Attribution License
-        odc-odbl|Open Data Commons Open Database License (ODbL)
-        odc-pddl|Open Data Commons Public Domain Dedication and Licence (PDDL)
-        other-at|Other (Attribution)
-        other-nc|Other (Non-Commercial)
-        other-closed|Other (Not Open)
-        other-open|Other (Open)
-        other-pd|Other (Public Domain)
-        uk-ogl|UK Open Government Licence (OGL)',
+cc-by-sa|Creative Commons Attribution Share-Alike
+cc-zero|Creative Commons CCZero
+cc-nc|Creative Commons Non-Commercial (Any)
+gfdl|GNU Free Documentation License
+notspecified|License Not Specified
+odc-by|Open Data Commons Attribution License
+odc-odbl|Open Data Commons Open Database License (ODbL)
+odc-pddl|Open Data Commons Public Domain Dedication and Licence (PDDL)
+other-at|Other (Attribution)
+other-nc|Other (Non-Commercial)
+other-closed|Other (Not Open)
+other-open|Other (Open)
+other-pd|Other (Public Domain)
+uk-ogl|UK Open Government Licence (OGL)',
         'available_options_php' => '',
         'markup_available_options_php' => '&lt;none&gt;',
         'other' => 'Other',
@@ -473,7 +440,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'sort_options' => 0,
       ),
       'type' => 'select_or_other',
-      'weight' => 6,
+      'weight' => 3,
     ),
   );
 
@@ -495,12 +462,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 14,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_public_access_level',
-    'label' => 'Уровень доступа',
+    'label' => 'Public Access Level',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -512,7 +479,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 21,
+      'weight' => 20,
     ),
   );
 
@@ -521,7 +488,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Внутренняя или внешняя ссылка которая обеспечивает дополнительную информацию по набору данных.',
+    'description' => 'An internal link or link to an outside resource that provides additional context to the dataset.',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -534,12 +501,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 8,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_related_content',
-    'label' => 'Похожие материалы',
+    'label' => 'Related Content',
     'required' => 0,
     'settings' => array(
       'attributes' => array(
@@ -566,7 +533,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 24,
+      'weight' => 23,
     ),
   );
 
@@ -587,12 +554,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 7,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_resources',
-    'label' => 'Ресурсы',
+    'label' => 'Resources',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -606,7 +573,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'entityreference_autocomplete',
-      'weight' => 23,
+      'weight' => 22,
     ),
   );
 
@@ -630,12 +597,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 6,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_spatial',
-    'label' => 'Пространственный (географический) охват',
+    'label' => 'Spatial / Geographical Coverage Area',
     'required' => 0,
     'settings' => array(
       'local_solr' => array(
@@ -692,7 +659,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 9,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
@@ -714,45 +681,6 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-dataset-field_spec_projects'
-  $field_instances['node-dataset-field_spec_projects'] = array(
-    'bundle' => 'dataset',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'i18n_taxonomy',
-        'settings' => array(),
-        'type' => 'i18n_taxonomy_term_reference_link',
-        'weight' => 22,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_spec_projects',
-    'label' => 'Спецпроекты',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'options',
-      'settings' => array(
-        'apply_chosen' => 0,
-      ),
-      'type' => 'options_select',
-      'weight' => 5,
-    ),
-  );
-
   // Exported field_instance: 'node-dataset-field_tags'
   $field_instances['node-dataset-field_tags'] = array(
     'bundle' => 'dataset',
@@ -768,15 +696,15 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'weight' => 2,
       ),
       'teaser' => array(
-        'label' => 'hidden',
+        'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 5,
+        'weight' => 2,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_tags',
-    'label' => 'Тэги',
+    'label' => 'Tags',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -786,13 +714,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
       'module' => 'autocomplete_deluxe',
       'settings' => array(
         'autocomplete_deluxe_path' => 'autocomplete_deluxe/taxonomy',
-        'delimiter' => '',
         'limit' => 10,
         'min_length' => 0,
         'size' => 60,
       ),
       'type' => 'autocomplete_deluxe_taxonomy',
-      'weight' => 4,
+      'weight' => 2,
     ),
   );
 
@@ -800,7 +727,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
   $field_instances['node-dataset-field_temporal_coverage'] = array(
     'bundle' => 'dataset',
     'deleted' => 0,
-    'description' => 'Временной период который охватывает набор данных. Смотри <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">ссылку</a> для подробной информации.',
+    'description' => 'The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">temporal coverage</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -819,12 +746,12 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 10,
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_temporal_coverage',
-    'label' => 'Временной охват',
+    'label' => 'Temporal Coverage',
     'required' => 0,
     'settings' => array(
       'default_value' => 'blank',
@@ -845,7 +772,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'year_range' => '-10:+10',
       ),
       'type' => 'date_popup',
-      'weight' => 16,
+      'weight' => 15,
     ),
   );
 
@@ -875,7 +802,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'body',
-    'label' => 'Описание',
+    'label' => 'Description',
     'required' => 0,
     'settings' => array(
       'display_summary' => 0,
@@ -916,7 +843,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_dataset_ref',
-    'label' => 'Набор данных',
+    'label' => 'Dataset',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -954,7 +881,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_format',
-    'label' => 'Формат',
+    'label' => 'Format',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -963,10 +890,10 @@ function dkan_dataset_content_types_field_default_field_instances() {
       'active' => 1,
       'module' => 'autocomplete_deluxe',
       'settings' => array(
+        'apply_chosen' => 0,
         'autocomplete_deluxe_path' => 'autocomplete_deluxe/taxonomy',
-        'delimiter' => '',
-        'limit' => 10,
-        'min_length' => 0,
+        'autocomplete_path' => 'taxonomy/autocomplete',
+        'mode' => 'single',
         'size' => 60,
       ),
       'type' => 'autocomplete_deluxe_taxonomy',
@@ -1060,7 +987,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'settings' => array(
       'description_field' => 0,
       'file_directory' => '',
-      'file_extensions' => 'csv html xls json xlsx doc rdf txt jpg png gif tiff pdf odf ods odt tsv geojson xml zip tif',
+      'file_extensions' => 'csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv geojson xml zip',
       'max_filesize' => '',
       'user_register_form' => FALSE,
     ),
@@ -1123,8 +1050,8 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'settings' => array(
       'alt_field' => 0,
       'description_field' => 0,
-      'file_directory' => 'resources',
-      'file_extensions' => 'kml csv html xls json xlsx doc rdf txt jpg jpeg png gif tiff tif pdf odf ods odt tsv geojson xml zip',
+      'file_directory' => '',
+      'file_extensions' => 'csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv geojson xml zip',
       'max_filesize' => '',
       'title_field' => 0,
       'user_register_form' => FALSE,
@@ -1200,42 +1127,40 @@ function dkan_dataset_content_types_field_default_field_instances() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Additional Info');
+  t('An internal link or link to an outside resource that provides additional context to the dataset.');
+  t('Author');
+  t('Contact Email');
+  t('Contact Name');
   t('Contact person’s email address. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
   t('Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.');
   t('Data Dictionary');
+  t('Dataset');
+  t('Description');
+  t('Format');
+  t('Frequency');
+  t('Granularity');
   t('Groups audience');
+  t('License');
+  t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');
   t('Link API');
   t('Link File');
   t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See Project Open Data <a href="http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.');
+  t('Public Access Level');
+  t('Related Content');
+  t('Resources');
+  t('Spatial / Geographical Coverage Area');
   t('Spatial / Geographical Coverage Location');
   t('Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
   t('Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
+  t('Tags');
+  t('Temporal Coverage');
   t('The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
+  t('The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.');
+  t('The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">temporal coverage</a> for more info.');
+  t('This is the author of the dataset.');
   t('This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://project-open-data.github.io/schema/#expanded-fields">DCAT Granularity</a> for more info.');
   t('Upload');
-  t('Внутренняя или внешняя ссылка которая обеспечивает дополнительную информацию по набору данных.');
-  t('Временной охват');
-  t('Временной период который охватывает набор данных. Смотри <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">ссылку</a> для подробной информации.');
-  t('География');
-  t('Гранулярность');
-  t('Дополнительная информация');
-  t('Источник');
-  t('Источник информации');
-  t('Контактное имя');
-  t('Контактный Email');
-  t('Лицензия');
-  t('Набор данных');
-  t('Описание');
-  t('Определение лицензий и дополнительная информация могут быть найдены на сайте <a href="http://opendefinition.org">opendefinition.org</a>');
-  t('Похожие материалы');
-  t('Пространственный (географический) охват');
-  t('Ресурсы');
-  t('Спецпроекты');
-  t('Тэги');
-  t('Уровень доступа');
-  t('Формат');
-  t('Частота');
-  t('Частота, с которой публикуется набор данных. Смотрите <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">Ссылку</a> для информации.');
 
   return $field_instances;
 }

@@ -27,100 +27,16 @@ function dkan_dataset_content_types_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'comment_anonymous_dataset';
-  $strongarm->value = 0;
-  $export['comment_anonymous_dataset'] = $strongarm;
+  $strongarm->name = 'chosen_minimum_multiple';
+  $strongarm->value = '0';
+  $export['chosen_minimum_multiple'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'comment_anonymous_resource';
-  $strongarm->value = 0;
-  $export['comment_anonymous_resource'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_dataset';
-  $strongarm->value = '1';
-  $export['comment_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_default_mode_dataset';
-  $strongarm->value = 1;
-  $export['comment_default_mode_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_default_mode_resource';
-  $strongarm->value = 1;
-  $export['comment_default_mode_resource'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_default_per_page_dataset';
-  $strongarm->value = '50';
-  $export['comment_default_per_page_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_default_per_page_resource';
-  $strongarm->value = '50';
-  $export['comment_default_per_page_resource'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_form_location_dataset';
-  $strongarm->value = 1;
-  $export['comment_form_location_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_form_location_resource';
-  $strongarm->value = 1;
-  $export['comment_form_location_resource'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_preview_dataset';
-  $strongarm->value = '1';
-  $export['comment_preview_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_preview_resource';
-  $strongarm->value = '1';
-  $export['comment_preview_resource'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_resource';
-  $strongarm->value = '1';
-  $export['comment_resource'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_subject_field_dataset';
-  $strongarm->value = 1;
-  $export['comment_subject_field_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'comment_subject_field_resource';
-  $strongarm->value = 1;
-  $export['comment_subject_field_resource'] = $strongarm;
+  $strongarm->name = 'chosen_minimum_single';
+  $strongarm->value = '0';
+  $export['chosen_minimum_single'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -173,9 +89,6 @@ function dkan_dataset_content_types_strongarm() {
         'identifier' => array(
           'weight' => '3',
         ),
-        'metatags' => array(
-          'weight' => 9,
-        ),
       ),
       'display' => array(
         'resources' => array(
@@ -184,7 +97,7 @@ function dkan_dataset_content_types_strongarm() {
             'visible' => TRUE,
           ),
           'teaser' => array(
-            'weight' => 1,
+            'weight' => '0',
             'visible' => TRUE,
           ),
         ),
@@ -193,28 +106,16 @@ function dkan_dataset_content_types_strongarm() {
             'weight' => '7',
             'visible' => TRUE,
           ),
-          'teaser' => array(
-            'weight' => 3,
-            'visible' => TRUE,
-          ),
         ),
         'identifier' => array(
           'default' => array(
             'weight' => '9',
             'visible' => TRUE,
           ),
-          'teaser' => array(
-            'weight' => 0,
-            'visible' => TRUE,
-          ),
         ),
         'modified_date' => array(
           'default' => array(
             'weight' => '6',
-            'visible' => TRUE,
-          ),
-          'teaser' => array(
-            'weight' => 2,
             'visible' => TRUE,
           ),
         ),
@@ -271,20 +172,6 @@ function dkan_dataset_content_types_strongarm() {
   $strongarm->name = 'jquery_update_jquery_version';
   $strongarm->value = '1.7';
   $export['jquery_update_jquery_version'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'language_content_type_dataset';
-  $strongarm->value = '0';
-  $export['language_content_type_dataset'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'language_content_type_resource';
-  $strongarm->value = '0';
-  $export['language_content_type_resource'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */

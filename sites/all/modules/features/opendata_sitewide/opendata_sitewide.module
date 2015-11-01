@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the opendata_sitewide feature.
+ */
+
+include_once 'opendata_sitewide.features.inc';

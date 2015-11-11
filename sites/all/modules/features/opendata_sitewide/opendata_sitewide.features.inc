@@ -5,6 +5,15 @@
  */
 
 /**
+ * Implements hook_ctools_plugin_api().
+ */
+function opendata_sitewide_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == "quicktabs" && $api == "quicktabs") {
+    return array("version" => "1");
+  }
+}
+
+/**
  * Implements hook_filter_default_formats_alter().
  */
 function opendata_sitewide_filter_default_formats_alter(&$data) {

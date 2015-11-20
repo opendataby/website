@@ -1,0 +1,17 @@
+name = feature_opendata_front
+description = Frontpage for Opendata.by site
+core = 7.x
+package = OpenData
+version = 7.x-1.0
+dependencies[] = page_manager
+dependencies[] = views
+dependencies[] = views_content
+dependencies[] = views_slideshow
+dependencies[] = views_slideshow_cycle
+dependencies[] = vscc
+features[ctools][] = page_manager:pages_default:1
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[page_manager_pages][] = frontpage
+features[views_view][] = _front_projects_in_slideshow
+features_exclude[dependencies][ctools] = ctools

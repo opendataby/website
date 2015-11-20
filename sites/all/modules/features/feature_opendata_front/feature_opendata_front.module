@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the feature_opendata_front feature.
+ */
+
+include_once 'feature_opendata_front.features.inc';

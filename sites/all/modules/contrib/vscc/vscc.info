@@ -1,0 +1,12 @@
+name = Views Slideshow Configurable Controls
+description = Provides configurable controls to views slideshow displays.
+dependencies[] = views_slideshow
+package = Views
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2015-05-11
+version = "7.x-1.0"
+core = "7.x"
+project = "vscc"
+datestamp = "1431325982"
+

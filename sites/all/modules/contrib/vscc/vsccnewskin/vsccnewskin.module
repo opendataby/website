@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Example of a module implementing a new skin for VSCC.
+ *
+ * This module intended as a template for your own skins.  To use it,
+ * you must copy, rename, and adapt it. The end result should be a
+ * ordinary Drupal module with "vscc" as a dependency.
+ *
+ * Note that this the example code assumes that the site's theme is
+ * "bartik".  If you use anoher theme, you also need to change the
+ * name of the theme function.
+ *
+ * See also: https://www.drupal.org/node/1599066
+ */
+
+/**
+ * Implements hook_vscc_skin_info().
+ */
+function vsccnewskin_vscc_skin_info() {
+  return array(
+    'sand_icons' => array(
+      'name' => t('New icons'),
+    )
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vsccnewskin_theme($existing, $type, $theme, $path) {
+  return array(
+    'vscc_element_sand_icons' => array(
+      'variables' => array('element' => NULL, 'vss_id' => NULL, 'view' => NULL, 'settings' => array(), 'location' => NULL, 'rows' => array()),
+    ),
+  );
+}
+
+/**
+ * Theme function pointing to images.
+ *
+ * Images may be kept anywhere. In this example they're in a
+ * subdirectory of the vsccnewskin module.
+ */
+function bartik_vscc_element_sand_icons($vars) {
+  $image_vars = array(
+     // 'path' => drupal_get_path('theme', 'bartik') . '/images/vscc/sand_' . $vars['element'] . '.png',
+    'path' => drupal_get_path('module', 'vsccnewskin') . '/images/vscc/sand_' . $vars['element'] . '.png',
+    'alt' => t($vars['element']),
+    'title' => t($vars['element']),
+  );
+  return theme('image', $image_vars);
+}

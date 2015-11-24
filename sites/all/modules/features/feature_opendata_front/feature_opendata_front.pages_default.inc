@@ -167,7 +167,7 @@ function feature_opendata_front_default_page_manager_pages() {
     $pane->uuid = 'c9c5a468-65d3-449e-ae7d-039cab656fc4';
     $display->content['new-c9c5a468-65d3-449e-ae7d-039cab656fc4'] = $pane;
     $display->panels['middle'][4] = 'new-c9c5a468-65d3-449e-ae7d-039cab656fc4';
-  $display->hide_title = PANELS_TITLE_FIXED;
+  $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = 'new-2df55a55-76f8-4f3d-b793-4326d678ebff';
   $handler->conf['display'] = $display;
   $page->default_handlers[$handler->name] = $handler;

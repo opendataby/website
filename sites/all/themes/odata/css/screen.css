@@ -64,7 +64,8 @@ html {
   line-height: 1; }
 
 body {
-  background-color: #2A2F4E; }
+  background-color: #2A2F4E; 
+  font-size:13px;}
 
 ol, ul {
   list-style: none; }
@@ -116,7 +117,7 @@ h3 {
     font-family: nerissemibold, Arial, sans-serif; }
 
 a {
-  color: #62ade3; }
+  color: #0040FF; }
   a:hover {
     color: #f03f3c;
     text-decoration: none; }
@@ -128,7 +129,8 @@ p {
 
 article p {
   margin: 0 0 1.25em 0;
-  font-size: 1.1em; }
+  font-size: 1.1em; 
+  font-size:13px;}
 
 strong {
   font-weight: bold; }
@@ -1565,4 +1567,23 @@ ul.action-links {
 
 #block-system-main h2 {
   margin-top:32px;
+}
+
+/*additional info table on dataset page*/
+
+section.group_additional .field-group-table-description,
+section.group_additional h4{
+  display:none;
+}	
+	
+section.group_additional table.group_additional 	{
+  margin-top:32px;
+}	
+	
+.group_additional .field-group-table-description,
+.group_additional h4,
+.group_additional thead,
+.field-name-field-license,
+.group_additional tr:nth-child(4) {
+  display:none;
 }

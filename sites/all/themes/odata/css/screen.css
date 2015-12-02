@@ -1570,7 +1570,13 @@ ul.action-links {
 }
 
 /*additional info table on dataset page*/
-.group_additional {
+
+section.group_additional .field-group-table-description,
+section.group_additional h4{
+  display:none;
+}	
+	
+section.group_additional table.group_additional 	{
   margin-top:32px;
 }	
 	

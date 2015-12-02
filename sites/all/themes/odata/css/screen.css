@@ -123,14 +123,19 @@ a {
     text-decoration: none; }
 
 p {
-  margin: 0 0 1.25em 0; }
+  margin: 0 0 1.25em 0; 
+  font-size:1.3em;}
   p:last-child {
     margin: 0 0 1.25em 0; }
 
+.heading {
+    font-size:1.3em;
+}
+
 article p {
   margin: 0 0 1.25em 0;
-  font-size: 1.1em; 
-  font-size:13px;}
+  font-size: 1.3em; 
+  }
 
 strong {
   font-weight: bold; }
@@ -141,18 +146,19 @@ strong {
 
 .breadcrumb {
   background: none;
-  border: none;
-  font-size: 20px;
-  list-style: none;
-  margin: 10px 0;
+  border:  none;
+  font-size: 40px;
+  font-weight: 700;
+  list-style: outside none none;
+  margin: 10px 0 24px 19px;
   padding: 0;
-  position: relative; }
+  position: relative;}
   .breadcrumb li {
     float: none; }
     .breadcrumb li a span {
       display: none; }
     .breadcrumb li.home-link a {
-      font-size: 1.3em; }
+      font-size: 1.4em; }
 
 .alert {
   position: relative; }
@@ -301,7 +307,10 @@ body {
     margin: 8px 0; }
 
 .field-name-field-tags .field-item {
-  display: inline-block; }
+  display: inline-block; 
+  height: 22px;
+  line-height: 21px;
+  }
 
 .field-type-taxonomy-term-reference label {
   display: block; }
@@ -454,7 +463,7 @@ body {
   margin-left: 3px; }
 
 #data-and-resources ul.resource-list li {
-  padding: 0 0 0 40px; }
+  padding: 0 0 0 0; }
 #data-and-resources ul.resource-list a.btn {
   display: block;
   margin: 0 0 25px 15px;
@@ -767,7 +776,7 @@ body {
   font-style: normal;
   display: inline-block;
   text-decoration: inherit;
-  font-size: 1.2em;
+  font-size: 1.3em;
   line-height: 1;
   position: relative;
   top: 1px;
@@ -891,7 +900,7 @@ body {
   font-style: normal;
   display: inline-block;
   text-decoration: inherit;
-  font-size: 1.2em;
+  font-size: 1.3em;
   line-height: 1;
   position: relative;
   top: 1px;
@@ -1212,9 +1221,10 @@ table.field-multiple-table th label {
     border-color: #d3ae7e; }
 
 #edit-submit:hover, #edit-submit:focus, #edit-submit:active {
-  background: #053a5c;
-  border-color: #053a5c;
-  color: #fff; }
+  background: #56BE65;
+  border-color: #56BE65;
+  color: #fff; 
+  border-radius:20px;}
 
 a.embed-link {
   -webkit-border-radius: 4px;
@@ -1237,7 +1247,7 @@ a.embed-link {
     content: '\f121';
     color: #fff;
     font-family: "FontAwesome";
-    font-size: 1.3em;
+    font-size: 1.4em;
     position: absolute;
     top: 5px;
     left: 10px; }
@@ -1312,7 +1322,7 @@ ul.action-links {
   .view-front-page-group-grid .span6 span .media-image img, .view-front-page-group-grid .col-lg-6 span .media-image img {
     margin: 5px 10px 5px 0; }
   .view-front-page-group-grid .span6 span h3.media-heading, .view-front-page-group-grid .col-lg-6 span h3.media-heading {
-    font-size: 1.3em;
+    font-size: 1.4em;
     margin: .5em 0;
     padding: 0; }
 
@@ -1330,7 +1340,7 @@ ul.action-links {
   width: 50%; }
 
 .view-group-block .views-field-title {
-  font-size: 1.2em;
+  font-size: 1.3em;
   font-weight: bold; }
 .view-group-block .views-field-nid a {
   background: #0a77bd;
@@ -1532,7 +1542,7 @@ ul.action-links {
     #data-and-resources ul.resource-list li {
       margin: .5em 0;
       min-height: 40px;
-      padding: 0 125px 0 40px;
+      padding: 0 125px 0 0;
       position: relative; }
       #data-and-resources ul.resource-list li span.links {
         margin-top: 0;
@@ -1586,4 +1596,14 @@ section.group_additional table.group_additional 	{
 .field-name-field-license,
 .group_additional tr:nth-child(4) {
   display:none;
+}
+
+/*rating*/
+.field-name-field-rating .field-label {
+  display:none;
+}
+
+table tbody th, 
+table td {
+  border:0 none transparent;
 }

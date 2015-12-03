@@ -297,10 +297,6 @@ function dkan_sitewide_other_access() {
   $node = menu_get_object();
   if (!empty($node->nid)) {
     $output = array(
-      'formats' => array(
-        '#type' => 'markup',
-        '#markup' => t('The information on this page (the dataset metadata) is also available in these formats.'),
-      ),
       'buttons' => array(
         '#prefix' => '<p class="btn-group">',
         '#suffix' => '</p>',
@@ -328,6 +324,10 @@ function dkan_sitewide_other_access() {
             ))),
           ),
         ),
+      ),
+      'question' => array(
+        'type' => 'markup',
+        '#markup' => t('<a class="help" href="/docs/book">?</a>')
       ),
       'dkan_api' => array(
         '#type' => 'markup',

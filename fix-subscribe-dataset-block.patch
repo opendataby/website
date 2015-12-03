@@ -1,0 +1,39 @@
+diff --git a/profiles/dkan/modules/dkan/dkan_sitewide/dkan_sitewide.blocks.inc b/profiles/dkan/modules/dkan/dkan_sitewide/dkan_sitewide.blocks.inc
+index 4dff285..f69bd5c 100755
+--- a/profiles/dkan/modules/dkan/dkan_sitewide/dkan_sitewide.blocks.inc
++++ b/profiles/dkan/modules/dkan/dkan_sitewide/dkan_sitewide.blocks.inc
+@@ -297,10 +297,6 @@ function dkan_sitewide_other_access() {
+   $node = menu_get_object();
+   if (!empty($node->nid)) {
+     $output = array(
+-      'formats' => array(
+-        '#type' => 'markup',
+-        '#markup' => t('The information on this page (the dataset metadata) is also available in these formats.'),
+-      ),
+       'buttons' => array(
+         '#prefix' => '<p class="btn-group">',
+         '#suffix' => '</p>',
+@@ -329,6 +325,10 @@ function dkan_sitewide_other_access() {
+           ),
+         ),
+       ),
++      'question' => array(
++        'type' => 'markup',
++        '#markup' => t('<a class="help" href="/docs/book">?</a>')
++      ),
+       'dkan_api' => array(
+         '#type' => 'markup',
+         '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com">DKAN API</a>') . '</small></p>',
+diff --git a/sites/all/themes/odata/css/screen.css b/sites/all/themes/odata/css/screen.css
+index 1663c81..e37c923 100644
+--- a/sites/all/themes/odata/css/screen.css
++++ b/sites/all/themes/odata/css/screen.css
+@@ -762,7 +762,7 @@ body {
+   display: block; }
+ #block-dkan-sitewide-dkan-sitewide-other-access p small {
+   display: block;
+-  margin-top: 60px; }
++  margin-top: 30px; }
+ #block-dkan-sitewide-dkan-sitewide-other-access .btn-group .btn:first-child {
+   background-image: url(../images/json.png);
+   background-repeat: no-repeat;

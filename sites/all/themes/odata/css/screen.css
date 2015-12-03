@@ -255,7 +255,8 @@ body {
   overflow: hidden;
   position: relative;
   z-index: 1; }
-  #featured .tint {
+  #featured .tint,
+  #featured .featured-inside  {
     background-color: #2a2f4e;
     background-image: url("/sites/all/themes/odata/images/man-image.jpg");
     background-repeat: no-repeat;
@@ -277,6 +278,12 @@ body {
     line-height: 1.33em;
     margin: 0 40px; }
 
+#featured-bottom,
+#featured-bottom-menu {
+    background-color: #333c71;
+}
+	
+	
 #top-content {
   margin: 20px; }
   #top-content .block {
@@ -1615,5 +1622,15 @@ section.group_additional table.group_additional 	{
 
 table tbody th, 
 table td {
-  border:0 none transparent;
+  border-top:0 none transparent;
+  border-right:0 none transparent;
+  border-left:0 none transparent;
+}
+
+
+
+/*front*/
+
+.view-front-datasets li {
+  float:left;
 }

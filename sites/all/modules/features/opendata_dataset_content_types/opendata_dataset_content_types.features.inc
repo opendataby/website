@@ -5,6 +5,18 @@
  */
 
 /**
+ * Implements hook_ctools_plugin_api().
+ */
+function opendata_dataset_content_types_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == "page_manager" && $api == "pages_default") {
+    return array("version" => "1");
+  }
+  if ($module == "strongarm" && $api == "strongarm") {
+    return array("version" => "1");
+  }
+}
+
+/**
  * Implements hook_field_default_field_bases_alter().
  */
 function opendata_dataset_content_types_field_default_field_bases_alter(&$data) {
@@ -104,20 +116,20 @@ function opendata_dataset_content_types_field_default_field_instances_alter(&$da
     $data['node-dataset-field_license']['display']['teaser']['weight'] = 21; /* WAS: 5 */
     $data['node-dataset-field_license']['label'] = 'Лицензия'; /* WAS: 'License' */
     $data['node-dataset-field_license']['widget']['settings']['available_options'] = 'cc-by|Creative Commons Attribution
-        cc-by-sa|Creative Commons Attribution Share-Alike
-        cc-zero|Creative Commons CCZero
-        cc-nc|Creative Commons Non-Commercial (Any)
-        gfdl|GNU Free Documentation License
-        notspecified|License Not Specified
-        odc-by|Open Data Commons Attribution License
-        odc-odbl|Open Data Commons Open Database License (ODbL)
-        odc-pddl|Open Data Commons Public Domain Dedication and Licence (PDDL)
-        other-at|Other (Attribution)
-        other-nc|Other (Non-Commercial)
-        other-closed|Other (Not Open)
-        other-open|Other (Open)
-        other-pd|Other (Public Domain)
-        uk-ogl|UK Open Government Licence (OGL)'; /* WAS: 'cc-by|Creative Commons Attribution
+            cc-by-sa|Creative Commons Attribution Share-Alike
+            cc-zero|Creative Commons CCZero
+            cc-nc|Creative Commons Non-Commercial (Any)
+            gfdl|GNU Free Documentation License
+            notspecified|License Not Specified
+            odc-by|Open Data Commons Attribution License
+            odc-odbl|Open Data Commons Open Database License (ODbL)
+            odc-pddl|Open Data Commons Public Domain Dedication and Licence (PDDL)
+            other-at|Other (Attribution)
+            other-nc|Other (Non-Commercial)
+            other-closed|Other (Not Open)
+            other-open|Other (Open)
+            other-pd|Other (Public Domain)
+            uk-ogl|UK Open Government Licence (OGL)'; /* WAS: 'cc-by|Creative Commons Attribution
     cc-by-sa|Creative Commons Attribution Share-Alike
     cc-zero|Creative Commons CCZero
     cc-nc|Creative Commons Non-Commercial (Any)

@@ -67,20 +67,20 @@ function opendata_dataset_content_types_features_override_default_overrides() {
   $overrides["field_instance.node-dataset-field_license.display|teaser|weight"] = 21;
   $overrides["field_instance.node-dataset-field_license.label"] = 'Лицензия';
   $overrides["field_instance.node-dataset-field_license.widget|settings|available_options"] = 'cc-by|Creative Commons Attribution
-      cc-by-sa|Creative Commons Attribution Share-Alike
-      cc-zero|Creative Commons CCZero
-      cc-nc|Creative Commons Non-Commercial (Any)
-      gfdl|GNU Free Documentation License
-      notspecified|License Not Specified
-      odc-by|Open Data Commons Attribution License
-      odc-odbl|Open Data Commons Open Database License (ODbL)
-      odc-pddl|Open Data Commons Public Domain Dedication and Licence (PDDL)
-      other-at|Other (Attribution)
-      other-nc|Other (Non-Commercial)
-      other-closed|Other (Not Open)
-      other-open|Other (Open)
-      other-pd|Other (Public Domain)
-      uk-ogl|UK Open Government Licence (OGL)';
+          cc-by-sa|Creative Commons Attribution Share-Alike
+          cc-zero|Creative Commons CCZero
+          cc-nc|Creative Commons Non-Commercial (Any)
+          gfdl|GNU Free Documentation License
+          notspecified|License Not Specified
+          odc-by|Open Data Commons Attribution License
+          odc-odbl|Open Data Commons Open Database License (ODbL)
+          odc-pddl|Open Data Commons Public Domain Dedication and Licence (PDDL)
+          other-at|Other (Attribution)
+          other-nc|Other (Non-Commercial)
+          other-closed|Other (Not Open)
+          other-open|Other (Open)
+          other-pd|Other (Public Domain)
+          uk-ogl|UK Open Government Licence (OGL)';
   $overrides["field_instance.node-dataset-field_license.widget|weight"] = 6;
   $overrides["field_instance.node-dataset-field_public_access_level.display|teaser|weight"] = 14;
   $overrides["field_instance.node-dataset-field_public_access_level.label"] = 'Уровень доступа';
@@ -116,8 +116,6 @@ function opendata_dataset_content_types_features_override_default_overrides() {
   $overrides["field_instance.node-resource-field_link_remote_file.settings|file_extensions"] = 'csv html xls json xlsx doc rdf txt jpg png gif tiff pdf odf ods odt tsv geojson xml zip tif';
   $overrides["field_instance.node-resource-field_upload.settings|file_directory"] = 'resources';
   $overrides["field_instance.node-resource-field_upload.settings|file_extensions"] = 'kml csv html xls json xlsx doc rdf txt jpg jpeg png gif tiff tif pdf odf ods odt tsv geojson xml zip';
-
-  // Exported overrides for: node
 
   // Exported overrides for: taxonomy
   $overrides["taxonomy.format.i18n_mode"] = 0;

@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the semantic panels module.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function semantic_panels_enable(){
+  if(!_semantic_panels_can_use_fences()){
+    // Notify user of fences awesomeness.
+    drupal_set_message(t('It is recommended to also install the <a href="@fences_link">Fences</a> module with Semantic Panels to access the Fences HTML element options.',
+        array('@fences_link' => url('http://drupal.org/project/fences'))),
+      'warning', FALSE);
+  }
+}

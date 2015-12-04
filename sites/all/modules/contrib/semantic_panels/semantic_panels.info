@@ -1,0 +1,13 @@
+name = Semantic Panels
+description = Semantic Panels
+core = 7.x
+package = Panels
+
+dependencies[] = panels
+dependencies[] = ctools
+; Information added by drupal.org packaging script on 2013-07-08
+version = "7.x-1.2"
+core = "7.x"
+project = "semantic_panels"
+datestamp = "1373291458"
+

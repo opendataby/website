@@ -1,0 +1,223 @@
+<?php
+/**
+ * @file
+ * Semantic Panels.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function semantic_panels_theme() {
+  $theme = array();
+
+  $theme['semantic_panels_pane'] = array(
+    'variables' => array(
+      'output' => array(),
+      'pane' => array(),
+      'display' => array(),
+    ),
+    'path' => drupal_get_path('module', 'semantic_panels') . '/templates',
+    'template' => 'semantic-panels-pane',
+  );
+
+  return $theme;
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function semantic_panels_ctools_plugin_directory($module, $plugin_type) {
+  if ($module === 'panels' && !empty($plugin_type)) {
+    return "plugins/{$plugin_type}";
+  }
+}
+
+/**
+ * Returns elements.
+ */
+function _semantic_panels_get_elements() {
+  static $elements = NULL;
+
+  if (!isset($elements)) {
+    if (_semantic_panels_can_use_fences()) {
+
+      $elements = array_merge(array(
+        '' => t('- Use default -'),
+        '0' => t('- None -')
+      ), _semantic_panels_get_fences_options('field'));
+
+    }
+    else {
+
+      // Fallback element options, grabbed from View's defaults.
+      $elements = variable_get('views_field_rewrite_elements', array(
+        '' => t('- Use default -'),
+        '0' => t('- None -'),
+        'div' => 'DIV',
+        'span' => 'SPAN',
+        'h1' => 'H1',
+        'h2' => 'H2',
+        'h3' => 'H3',
+        'h4' => 'H4',
+        'h5' => 'H5',
+        'h6' => 'H6',
+        'p' => 'P',
+        'strong' => 'STRONG',
+        'em' => 'EM',
+      ));
+    }
+  }
+
+  return $elements;
+}
+
+/**
+ * Returns attributes.
+ */
+function _semantic_panels_get_attributes() {
+  static $attributes = NULL;
+
+  if (!isset($attributes)) {
+    $elements = variable_get('semantic_panels_attributes', array(
+      'title' => 'title',
+      'target' => 'target',
+      'role' => 'role',
+      'tabindex' => 'tabindex',
+      'id' => 'id',
+      'lang' => 'lang',
+      'accesskey' => 'accesskey',
+    ));
+  }
+
+  return $elements;
+}
+
+/**
+ * Render an element as HTML.
+ */
+function _semantic_panels_get_html($element_key, $element_data, $pane_semantic_settings) {
+  $element_settings = $pane_semantic_settings[$element_key];
+  $element_output = render($element_data['content']);
+  $element_settings['type'] = _semantic_panels_get_type($element_settings['type'], $element_data['default_type']);
+
+  if (isset($element_settings['link_enabled']) && $element_settings['link_enabled'] && $element_settings['link']['path']) {
+
+    $token_replace_data = _semantic_panels_context_to_token_replace_data($element_data['context']);
+    $token_content = token_replace($element_settings['link']['path'], $token_replace_data);
+
+    // If token outputs a link (like the Link field) lets parse out the url.
+    if (preg_match('/<a.*\s+href="(?<url>[^"]*)"[>]*>/i', $token_content, $matches)) {
+      $path = $matches['url'];
+    }
+    else {
+      $path = $token_content;
+    }
+
+    // Remove tokens that have note been replaced with data.
+    $path = preg_replace('/\[[^[]+\]/', '', $path);
+
+    $options = array(
+      'html' => TRUE,
+      'attributes' => array(
+        'class' => explode(' ', $element_settings['class']),
+      ) + $element_settings['attributes_array']
+    );
+
+    if ($path != '') {
+      $element_output = l($element_output, $path, $options);
+    }
+  }
+
+  if ($element_settings['type']) {
+
+    $class = '';
+    if ($pane_semantic_settings['add_default_classes']) {
+      $class = $element_data['default_classes'];
+    }
+
+    if ($element_settings['class_enable'] && $element_settings['class']) {
+      if ($class) {
+        $class .= ' ';
+      }
+
+      $class .= $element_settings['class'];
+    }
+
+    $pre = '<' . $element_settings['type'];
+    if ($class) {
+      $pre .= ' class="' . $class . '"';
+    }
+    if(!empty($element_settings['attributes_array'])){
+      $pre .= ' ' . drupal_attributes($element_settings['attributes_array']);
+    }
+    $pre .= '>';
+    $suf = '</' . $element_settings['type'] . '>';
+
+    return $pre . $element_output . $suf;
+  }
+
+  return $element_output;
+}
+
+/**
+ * Get type.
+ */
+function _semantic_panels_get_type($type_setting, $default_type = 'div') {
+  if ($type_setting === '0') {
+    return '';
+  }
+
+  if ($type_setting === '') {
+    return $default_type;
+  }
+
+  if ($type_setting) {
+    return check_plain($type_setting);
+  }
+}
+
+function _semantic_panels_context_to_token_replace_data($contexts){
+  $return = array();
+  foreach($contexts as $context){
+    $return[$context->keyword] = $context->data;
+  }
+  return $return;
+}
+
+function _semantic_panels_can_use_fences(){
+  return module_exists('fences') && function_exists('fences_get_fences_options');
+}
+
+/**
+ * Same as _fences_get_fences_options() except:
+ *  - Skips element keys with underscore in them. Since that is 2 elements in one which wouldn't allow control over classes and other attributes
+ *  - Doesn't take no_wrapper into account when sorting.
+ */
+function _semantic_panels_get_fences_options($theme_hook) {
+  $options = array();
+
+  // Get the list of suggestions.
+  $fences = fences_get_fences_suggestion_info();
+  foreach (array_keys($fences[$theme_hook]) as $key) {
+    if(strpos($key, '_') === FALSE){
+      $tags = '';
+      if ($fences[$theme_hook][$key]['element'] && $fences[$theme_hook][$key]['element'] != $fences[$theme_hook][$key]['label']) {
+        $tags = ' — <' . implode('> <', explode(' ', $fences[$theme_hook][$key]['element'])) . '>';
+      }
+      $option = $fences[$theme_hook][$key]['label'] . $tags . ' — ' . $fences[$theme_hook][$key]['description'];
+      if (empty($fences[$theme_hook][$key]['groups'])) {
+        $options[$key] = $option;
+      }
+      else {
+        foreach ($fences[$theme_hook][$key]['groups'] as $optgroup) {
+          $options[$optgroup][$key] = $option;
+        }
+      }
+    }
+  }
+
+  // Sort the option groups
+  ksort($options);
+
+  return $options;
+}

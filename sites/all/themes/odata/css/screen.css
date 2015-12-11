@@ -515,3 +515,7 @@ ul.action-links { margin: 1em 0; }
   #data-and-resources ul.resource-list li span.links { margin-top: 0; position: absolute; top: 0px; right: 10px; }
   #data-and-resources ul.resource-list li span.links a { position: relative; display: inline-block; margin-left: 3px; } }
 @media (min-width: 992px) and (max-width: 1208px) { #nav-wrapper #block-dkan-sitewide-dkan-sitewide-search-bar { margin-right: 40px !important; } }
+#mini-panel-featured_groups { text-align: center; margin: 10px 0 10px 0; }
+#mini-panel-featured_groups .row { margin: 5px 0 0 0; }
+#mini-panel-featured_groups .views-field-field-image { margin-bottom: 2px; }
+#mini-panel-featured_groups a { font-family: nerissemibold Arial, sans-serif; font-size: 15px; color: #5a6c78; text-align: center; }

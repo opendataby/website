@@ -55,28 +55,18 @@ function feature_opendata_search_facetapi_default_facet_settings_alter(&$data) {
 }
 
 /**
- * Implements hook_path_breadcrumbs_settings_info_alter().
- */
-function feature_opendata_search_path_breadcrumbs_settings_info_alter(&$data) {
-  if (isset($data['dataset'])) {
-    $data['dataset']->data['paths'][0] = '<none>'; /* WAS: 'dataset' */
-    $data['dataset']->data['titles'][0] = 'Наборы данных'; /* WAS: 'Datasets' */
-    $data['dataset']->name = 'Dataset'; /* WAS: 'dataset' */
-    $data['dataset']->path = 'dataset'; /* WAS: 'node/%node' */
-    unset($data['dataset']->data['access']['logic']);
-    unset($data['dataset']->data['access']['plugins']);
-    unset($data['dataset']->data['arguments']['node']);
-    unset($data['dataset']->data['paths'][1]);
-    unset($data['dataset']->data['titles'][1]);
-  }
-}
-
-/**
  * Implements hook_default_search_api_index_alter().
  */
 function feature_opendata_search_default_search_api_index_alter(&$data) {
   if (isset($data['datasets'])) {
     $data['datasets']->options['fields']['field_author']['type'] = 'list<string>'; /* WAS: 'string' */
+    unset($data['datasets']->options['fields']['changed']);
+    unset($data['datasets']->options['fields']['field_license']);
+    unset($data['datasets']->options['fields']['field_resources:body:value']);
+    unset($data['datasets']->options['fields']['field_resources:field_format']);
+    unset($data['datasets']->options['fields']['og_group_ref']);
+    unset($data['datasets']->options['fields']['search_api_access_node']);
+    unset($data['datasets']->options['fields']['status']);
   }
 }
 
@@ -85,8 +75,17 @@ function feature_opendata_search_default_search_api_index_alter(&$data) {
  */
 function feature_opendata_search_default_search_api_server_alter(&$data) {
   if (isset($data['datasets'])) {
+    $data['datasets']->options['indexes']['datasets']['field_author']['column'] = 'value'; /* WAS: 'field_author' */
     $data['datasets']->options['indexes']['datasets']['field_author']['table'] = 'search_api_db_datasets_field_author_1'; /* WAS: 'search_api_db_datasets' */
     $data['datasets']->options['indexes']['datasets']['field_author']['type'] = 'list<string>'; /* WAS: 'string' */
+    $data['datasets']->options['indexes']['datasets']['search_api_viewed']['table'] = 'search_api_db_datasets_text_2'; /* WAS: 'search_api_db_datasets_text' */
+    unset($data['datasets']->options['indexes']['datasets']['changed']);
+    unset($data['datasets']->options['indexes']['datasets']['field_license']);
+    unset($data['datasets']->options['indexes']['datasets']['field_resources:body:value']);
+    unset($data['datasets']->options['indexes']['datasets']['field_resources:field_format']);
+    unset($data['datasets']->options['indexes']['datasets']['og_group_ref']);
+    unset($data['datasets']->options['indexes']['datasets']['search_api_access_node']);
+    unset($data['datasets']->options['indexes']['datasets']['status']);
   }
 }
 

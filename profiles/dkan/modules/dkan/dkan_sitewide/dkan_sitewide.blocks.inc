@@ -136,7 +136,7 @@ function dkan_sitewide_data_extent_block() {
        $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
        $output = "var dataExtent = " . $geojson;
        $output .= "; var map = L.map('map');
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a>'
         }).addTo(map);
 
@@ -173,7 +173,7 @@ function dkan_sitewide_license_block() {
         if (isset($license['uri'])) {
           $output = l($license['label'], $license['uri']) . '<br/>';
           $output .= l(
-            '<img class="open-data" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
+            '<img class="open-data" src="https://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]">',
             $license['uri'],
             array('html' => TRUE)
           );
@@ -297,6 +297,10 @@ function dkan_sitewide_other_access() {
   $node = menu_get_object();
   if (!empty($node->nid)) {
     $output = array(
+      'formats' => array(
+        '#type' => 'markup',
+        '#markup' => t('The information on this page (the dataset metadata) is also available in these formats.'),
+      ),
       'buttons' => array(
         '#prefix' => '<p class="btn-group">',
         '#suffix' => '</p>',
@@ -324,10 +328,6 @@ function dkan_sitewide_other_access() {
             ))),
           ),
         ),
-      ),
-      'question' => array(
-        'type' => 'markup',
-        '#markup' => t('<a class="help" href="/docs/book">?</a>')
       ),
       'dkan_api' => array(
         '#type' => 'markup',

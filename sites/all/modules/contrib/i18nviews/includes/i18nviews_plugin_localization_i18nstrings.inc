@@ -63,6 +63,13 @@ class i18nviews_plugin_localization_i18nstrings extends views_plugin_localizatio
    *   Array of keys for the string to be translated.
    */
   function stringid($keys) {
+
+    foreach ($keys as $key => $value) {
+      if (is_array($value)) {
+        $keys[$key] = implode(':', $value);
+      }
+    }
+
     return 'views:' . implode(':', $keys);
   }
 }

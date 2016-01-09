@@ -24,11 +24,19 @@ function webform_conditionals_form($form, &$form_state, $node) {
   else {
     $conditionals = $node->webform['conditionals'];
   }
-  // Empty out any conditionals that have no rules.
+  // Empty out any conditionals that have no rules or actions.
   foreach ($conditionals as $rgid => $conditional) {
-    if (empty($conditional['rules'])) {
+    if (empty($conditional['rules']) || empty($conditional['actions'])) {
       unset($conditionals[$rgid]);
     }
+  }
+
+  // Check the current topological sort order for the conditionals and report any errors,
+  // but only for actual form submissions and not for ajax-related form builds, such as
+  // adding or removing a condtion or conditional group.
+  if (empty($form_state['triggering_element']['#ajax'])) {
+    $node->webform['conditionals'] = $conditionals;
+    webform_get_conditional_sorter($node)->reportErrors($conditionals);
   }
 
   $form['#tree'] = TRUE;
@@ -48,6 +56,7 @@ function webform_conditionals_form($form, &$form_state, $node) {
 
   $source_list = webform_component_list($node, 'conditional', 'path', TRUE);
   $target_list = webform_component_list($node, TRUE, 'path', TRUE);
+  $components = $node->webform['components'];
   $delta = $form_state['conditional_count'];
   $weight = -$delta - 1;
   $index = 0;
@@ -64,12 +73,22 @@ function webform_conditionals_form($form, &$form_state, $node) {
       '#nid' => $node->nid,
       '#sources' => $source_list,
       '#actions' => array(
-        'hide' => t('hide'),
-        'show' => t('show'),
+        'show' => t('shown'),
+        'require' => t('required'),
+        'set' => t('set to'),
       ),
       '#targets' => $target_list,
       '#parents' => array('conditionals', $rgid),
     );
+    foreach ($conditional_group['actions'] as $action) {
+      $cid = $action['target'];
+      if ($action['action'] == 'require' && !$components[$cid]['required']) {
+        drupal_set_message(t('Component %title must be configured as Required for Webform to conditionally change its required status. <a href="!url">Configure %title.</a>',
+                             array('%title' => $components[$cid]['name'],
+                                   '!url' => url("node/{$node->nid}/webform/components/$cid", array('query' => array('destination' => "node/{$node->nid}/webform/conditionals"))))
+                             ), 'error');
+      }
+    }
     $form['conditionals'][$rgid]['weight'] = array(
       '#type' => 'weight',
       '#title' => t('Weight for rule group !rgid', array('!rgid' => $rgid)),
@@ -113,7 +132,7 @@ function webform_conditionals_form($form, &$form_state, $node) {
   // The estimate will be accurate because the form elements for this page are well known. Ajax use of this
   // page will not generate user-visible errors, so a preflight may be the only indication to the user that
   // the page is too long.
-  webform_input_vars_check($form, $form_state, '');
+  webform_input_vars_check($form, $form_state, 'conditionals', '');
   return $form;
 }
 
@@ -138,8 +157,14 @@ function webform_conditionals_form_add($form, &$form_state) {
       ),
     ),
     'andor' => 'and',
-    'action' => 'hide',
-    'target' => NULL,
+    'actions' => array(
+      array(
+        'target' => NULL,
+        'invert' => NULL,
+        'action' => NULL,
+        'argument' => NULL,
+      ),
+    ),
     'weight' => $weight + 1,
   );
   $form_state['rebuild'] = TRUE;
@@ -157,12 +182,40 @@ function webform_conditionals_form_validate($form, &$form_state) {
     return;
   }
 
+  $node = $form['#node'];
+  $components = $node->webform['components'];
+  $component_options = webform_component_options();
   foreach ($form_state['complete form']['conditionals'] as $conditional_key => $element) {
     if (substr($conditional_key, 0, 1) !== '#' && $conditional_key !== 'new') {
       $conditional = $element['conditional'];
+      $targets = array();
+      foreach ($conditional['actions'] as $action_key => $action) {
+        if (is_numeric($action_key)) {
+          $operation = $action['action']['#value'];
+          $target_id = $action['target']['#value'];
+          if (isset($targets[$target_id][$operation])) {
+            form_set_error('conditionals][' . $conditional_key . '][actions][' . $action_key . '][target',
+                           t('A operation %op cannot be made for a component more than once. (%target).',
+                             array('%op' => $action['action']['#options'][$operation],
+                                   '%target' => $components[$action['target']['#value']]['name'])));
+          }
+          $component_type = $node->webform['components'][$action['target']['#value']]['type'];
+          if (!webform_conditional_action_able($component_type, $action['action']['#value'])) {
+            form_set_error('conditionals][' . $conditional_key . '][actions][' . $action_key . '][action',
+                           t('A component of type %type can\'t be %action. (%target)',
+                             array(
+                                '%action' => $action['action']['#options'][$action['action']['#value']],
+                                '%type' => $component_options[$component_type],
+                                '%target' => $components[$action['target']['#value']]['name'])));
+          }
+          $targets[$target_id][$operation] = $target_id;
+        }
+      }
       foreach ($conditional['rules'] as $rule_key => $rule) {
-        if (substr($rule_key, 0, 1) !== '#' && $rule['source']['#value'] === $conditional['target']['#value']) {
-          form_set_error('conditionals][' . $conditional_key . '][rules][' . $rule_key . '][source', t('The subject of the conditional cannot be the same as the component that is shown or hidden (%target).', array('%target' => $conditional['target']['#options'][$conditional['target']['#value']])));
+        if (is_numeric($rule_key) && isset($targets[$rule['source']['#value']])) {
+          form_set_error('conditionals][' . $conditional_key . '][rules][' . $rule_key . '][source',
+                         t('The subject of the conditional cannot be the same as the component that is changed (%target).',
+                         array('%target' => $components[$rule['source']['#value']]['name'])));
         }
       }
     }
@@ -170,7 +223,7 @@ function webform_conditionals_form_validate($form, &$form_state) {
 
   // Form validation will not rebuild the form, so we need to ensure
   // necessary JavaScript will still exist.
-  _webform_conditional_expand_value_forms($form['#node']);
+  _webform_conditional_expand_value_forms($node);
 }
 
 /**
@@ -183,23 +236,18 @@ function webform_conditionals_form_submit($form, &$form_state) {
   unset($form_state['values']['conditionals']['new']);
 
   $conditionals = array();
-  $targets = array();
 
   // Fill in missing properties for each value so that it can save properly.
   // TODO: Remove hard-coded source and target type.
   foreach ($form_state['values']['conditionals'] as $rgid => $conditional) {
     $conditional['rgid'] = $rgid;
-    $conditional['target_type'] = 'component';
     foreach ($conditional['rules'] as $rid => $rule) {
       $conditional['rules'][$rid]['source_type'] = 'component';
     }
-    $conditionals[$rgid] = $conditional;
-    // Warn if there are multiple conditionals targetting the same component.
-    if (isset($targets[$conditional['target']])) {
-      drupal_set_message(t('More than one conditional hides or shows component "@name". Only the most-recently evaluated conditional will determine whether "@name" is displayed.',
-                           array('@name' => $node->webform['components'][$conditional['target']]['name'])), 'warning', FALSE);
+    foreach ($conditional['actions'] as $aid => $action) {
+      $conditional['actions'][$aid]['target_type'] = 'component';
     }
-    $targets[$conditional['target']] = TRUE;
+    $conditionals[$rgid] = $conditional;
   }
 
   $node->webform['conditionals'] = $conditionals;
@@ -241,7 +289,7 @@ function theme_webform_conditional_groups($variables) {
       }
       $even_odd = ($index + 1) % 2 ? 'odd' : 'even';
       $element[$key]['weight']['#attributes']['class'] = array('webform-conditional-weight');
-      $data = '<div class="webform-conditional-new">' . $data . t('Add a new condition: ') . drupal_render($element[$key]['new']) . '</div>';
+      $data = '<div class="webform-conditional-new">' . $data . t('Add a new condition:') . ' ' . drupal_render($element[$key]['new']) . '</div>';
       $output .= '<tr class="webform-conditional-new-row ' . $even_odd . '">';
       $output .= '<td>' . $data . '</td>';
       $output .= '<td>' . drupal_render($element[$key]['weight']) . '</td>';
@@ -311,7 +359,7 @@ function _webform_conditional_expand($element) {
     $element['rules'][$rid]['value'] = array(
       '#type' => 'textfield',
       '#title' => t('Value'),
-      '#size' => 30,
+      '#size' => 20,
       '#default_value' => $element['#default_value']['rules'][$rid]['value'],
     );
     $element['rules'][$rid]['remove'] = array(
@@ -360,18 +408,62 @@ function _webform_conditional_expand($element) {
   // Remove the last and/or.
   unset($element['rules'][$rid]['andor']);
 
-  $element['action'] = array(
-    '#type' => 'select',
-    '#title' => t('Action'),
-    '#options' => $element['#actions'],
-    '#default_value' => $element['#default_value']['action'],
-  );
-  $element['target'] = array(
-    '#type' => 'select',
-    '#title' => t('Operator'),
-    '#options' => $element['#targets'],
-    '#default_value' => $element['#default_value']['target'],
-  );
+  foreach ($element['#default_value']['actions'] as $aid => $action) {
+    $element['actions'][$aid]['target'] = array(
+      '#type' => 'select',
+      '#title' => t('Target'),
+      '#options' => $element['#targets'],
+      '#default_value' => $element['#default_value']['actions'][$aid]['target'],
+    );
+    $element['actions'][$aid]['invert'] = array(
+      '#type' => 'select',
+      '#title' => t('Is/Isn\'t'),
+      '#options' => array(
+        '0' => t('is'),
+        '1' => t('isn\'t'),
+      ),
+      '#default_value' => $element['#default_value']['actions'][$aid]['invert'],
+    );
+    $element['actions'][$aid]['action'] = array(
+      '#type' => 'select',
+      '#title' => t('Action'),
+      '#options' => $element['#actions'],
+      '#default_value' => $element['#default_value']['actions'][$aid]['action'],
+    );
+    $element['actions'][$aid]['argument'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Argument'),
+      '#size' => 20,
+      '#maxlength' => NULL,
+      '#default_value' => $element['#default_value']['actions'][$aid]['argument'],
+    );
+    $element['actions'][$aid]['remove'] = array(
+      '#type' => 'submit',
+      '#value' => t('-'),
+      '#submit' => array('webform_conditional_element_remove'),
+      '#name' => implode('_', $element['#parents']) . '_actions_' . $aid . '_remove',
+      '#attributes' => array('class' => array('webform-conditional-action-remove')),
+      '#ajax' => array(
+        'progress' => 'none',
+        'callback' => 'webform_conditional_element_ajax',
+        'wrapper' => $wrapper_id,
+        'event' => 'click',
+      ),
+    );
+    $element['actions'][$aid]['add'] = array(
+      '#type' => 'submit',
+      '#value' => t('+'),
+      '#submit' => array('webform_conditional_element_add'),
+      '#name' => implode('_', $element['#parents']) . '_actions_' . $aid . '_add',
+      '#attributes' => array('class' => array('webform-conditional-action-add')),
+      '#ajax' => array(
+        'progress' => 'none',
+        'callback' => 'webform_conditional_element_ajax',
+        'wrapper' => $wrapper_id,
+        'event' => 'click',
+      ),
+    );
+  }
 
   return $element;
 }
@@ -385,11 +477,9 @@ function _webform_conditional_expand($element) {
  * could have been done via AJAX, but having all forms available makes for a
  * faster user experience.
  *
- * @param $node
- *   The Webform node for which these forms are being generated.
- * @return
- *   An array settings suitable for adding to the page via JavaScript. This
- *   array contains the following keys:
+ * Added to the JavaScript settings is conditionalValues which contains
+ * an array settings suitable for adding to the page via JavaScript. This
+ * array contains the following keys:
  *   - operators: An array containing a map of data types, operators, and form
  *     keys. This array is structured as follows:
  *     @code
@@ -404,10 +494,11 @@ function _webform_conditional_expand($element) {
  *   - forms[$form_key][$source]: Or instead of a single form for all components,
  *     if each component requires its own form, key each component by its source
  *     value (currently always the component ID).
+ *
+ * @param $node
+ *   The Webform node for which these forms are being generated.
  */
-function _webform_conditional_expand_value_forms($node, $add_to_page = TRUE) {
-  static $value_forms_added;
-
+function _webform_conditional_expand_value_forms($node) {
   $operators = webform_conditional_operators();
   $data = array();
   foreach ($operators as $data_type => $operator_info) {
@@ -416,7 +507,7 @@ function _webform_conditional_expand_value_forms($node, $add_to_page = TRUE) {
       if (isset($data_operator_info['form callback'])) {
         $form_callback = $data_operator_info['form callback'];
         $data['operators'][$data_type][$operator]['form'] = $form_callback;
-        if ($form_callback !== FALSE && !isset($value_forms_added[$form_callback])) {
+        if ($form_callback !== FALSE && !isset($data['forms'][$form_callback])) {
           $data['forms'][$form_callback] = $form_callback($node);
         }
       }
@@ -429,12 +520,7 @@ function _webform_conditional_expand_value_forms($node, $add_to_page = TRUE) {
     }
   }
 
-  if (!isset($value_forms_added) && $add_to_page) {
-    $value_forms_added = TRUE;
-    drupal_add_js(array('webform' => array('conditionalValues' => $data)), 'setting');
-  }
-
-  return $data;
+  drupal_add_js(array('webform' => array('conditionalValues' => $data)), 'setting');
 }
 
 /**
@@ -467,13 +553,13 @@ function webform_conditional_element_add($form, &$form_state) {
 }
 
 /**
- * Submit handler for webform_conditional elements to remove a rule.
+ * Submit handler for webform_conditional elements to remove a rule or action.
  */
 function webform_conditional_element_remove($form, &$form_state) {
   $button = $form_state['clicked_button'];
   $parents = $button['#parents'];
   $action = array_pop($parents);
-  $current_rid = array_pop($parents);
+  $current_id = array_pop($parents);
 
   // Recurse through the form values until we find the root Webform conditional.
   $parent_values = &$form_state['values'];
@@ -483,8 +569,8 @@ function webform_conditional_element_remove($form, &$form_state) {
     }
   }
 
-  // Remove this rule from the list of conditionals.
-  unset($parent_values[$current_rid]);
+  // Remove this rule or action from the list of conditionals.
+  unset($parent_values[$current_id]);
 
   $form_state['rebuild'] = TRUE;
 }
@@ -504,6 +590,10 @@ function webform_conditional_element_ajax($form, $form_state) {
 
   $element = $form;
   foreach ($parents as $key) {
+    if (!isset($element[$key])) {
+      // The entire conditional has been removed
+      return '';
+    }
     $element = $element[$key];
   }
 
@@ -559,20 +649,39 @@ function theme_webform_conditional($variables) {
   }
 
   // Hide labels.
-  $element['action']['#title_display'] = 'none';
-  $element['target']['#title_display'] = 'none';
+  foreach (element_children($element['actions']) as $aid) {
+    // Hide labels.
+    $element['actions'][$aid]['target']['#title_display'] = 'none';
+    $element['actions'][$aid]['invert']['#title_display'] = 'none';
+    $element['actions'][$aid]['action']['#title_display'] = 'none';
+    $element['actions'][$aid]['argument']['#title_display'] = 'none';
 
-  $action = '<div class="webform-conditional-action">' . drupal_render($element['action']) . '</div>';
-  $target = '<div class="webform-conditional-target">' . drupal_render($element['target']) . '</div>';
+    $target = '<div class="webform-conditional-target">' . drupal_render($element['actions'][$aid]['target']) . '</div>';
+    $invert = '<div class="webform-conditional-invert">' . drupal_render($element['actions'][$aid]['invert']) . '</div>';
+    $action = '<div class="webform-conditional-action">' . drupal_render($element['actions'][$aid]['action']) . '</div>';
+    $argument = '<div class="webform-conditional-argument">' . drupal_render($element['actions'][$aid]['argument']) . '</div>';
 
-  $target_phrase = t('then !action !target', array(
-    '!action' => $action,
-    '!target' => $target,
-  ));
+    $target_phrase = t('then !target !invert !action !argument', array(
+      '!target' => $target,
+      '!invert' => $invert,
+      '!action' => $action,
+      '!argument' => $argument,
+    ));
 
-  $output .= '<div class="webform-container-inline">';
-  $output .= $target_phrase;
-  $output .= '</div>';
+    $output .= '<div class="webform-conditional-action">';
+    $output .= '<div class="webform-container-inline webform-conditional-condition">';
+    $output .= $target_phrase;
+    $output .= '</div>';
+
+    if (isset($element['actions'][$aid]['add']) || isset($element['actions'][$aid]['remove'])) {
+      $output .= '<span class="webform-conditional-operations webform-container-inline">';
+      $output .= drupal_render($element['actions'][$aid]['remove']);
+      $output .= drupal_render($element['actions'][$aid]['add']);
+      $output .= '</span>';
+    }
+
+    $output .= '</div>';
+  }
 
   $output .= '</div>';
 
@@ -674,15 +783,25 @@ function _webform_conditional_operator_info() {
     'comparison callback' => 'webform_conditional_operator_numeric_not_equal',
     'js comparison callback' => 'conditionalOperatorNumericNotEqual',
   );
+  $operators['numeric']['less_than'] = array(
+    'label' => t('is less than'),
+    'comparison callback' => 'webform_conditional_operator_numeric_less_than',
+    'js comparison callback' => 'conditionalOperatorNumericLessThan',
+  );
+  $operators['numeric']['less_than_equal'] = array(
+    'label' => t('is less than or equal'),
+    'comparison callback' => 'webform_conditional_operator_numeric_less_than_equal',
+    'js comparison callback' => 'conditionalOperatorNumericLessThanEqual',
+  );
   $operators['numeric']['greater_than'] = array(
     'label' => t('is greater than'),
     'comparison callback' => 'webform_conditional_operator_numeric_greater_than',
     'js comparison callback' => 'conditionalOperatorNumericGreaterThan',
   );
-  $operators['numeric']['less_than'] = array(
-    'label' => t('is less than'),
-    'comparison callback' => 'webform_conditional_operator_numeric_less_than',
-    'js comparison callback' => 'conditionalOperatorNumericLessThan',
+  $operators['numeric']['greater_than_equal'] = array(
+    'label' => t('is greater than or equal'),
+    'comparison callback' => 'webform_conditional_operator_numeric_greater_than_equal',
+    'js comparison callback' => 'conditionalOperatorNumericGreaterThanEqual',
   );
   $operators['numeric']['empty'] = array(
     'label' => t('is blank'),
@@ -710,6 +829,30 @@ function _webform_conditional_operator_info() {
     'js comparison callback' => 'conditionalOperatorStringNotEqual',
     'form callback' => 'webform_conditional_form_select',
   );
+  $operators['select']['less_than'] = array(
+    'label' => t('is before'),
+    'comparison callback' => 'webform_conditional_operator_select_less_than',
+    'js comparison callback' => 'conditionalOperatorSelectLessThan',
+    'form callback' => 'webform_conditional_form_select',
+  );
+  $operators['select']['less_than_equal'] = array(
+    'label' => t('is or is before'),
+    'comparison callback' => 'webform_conditional_operator_select_less_than_equal',
+    'js comparison callback' => 'conditionalOperatorSelectLessThanEqual',
+    'form callback' => 'webform_conditional_form_select',
+  );
+  $operators['select']['greater_than'] = array(
+    'label' => t('is after'),
+    'comparison callback' => 'webform_conditional_operator_select_greater_than',
+    'js comparison callback' => 'conditionalOperatorSelectGreaterThan',
+    'form callback' => 'webform_conditional_form_select',
+  );
+  $operators['select']['greater_than_equal'] = array(
+    'label' => t('is or is after'),
+    'comparison callback' => 'webform_conditional_operator_select_greater_than_equal',
+    'js comparison callback' => 'conditionalOperatorSelectGreaterThanEqual',
+    'form callback' => 'webform_conditional_form_select',
+  );
   $operators['select']['empty'] = array(
     'label' => t('is empty'),
     'comparison callback' => 'webform_conditional_operator_string_empty',
@@ -731,6 +874,13 @@ function _webform_conditional_operator_info() {
     'js comparison callback' => 'conditionalOperatorDateEqual',
     'form callback' => 'webform_conditional_form_date',
   );
+  $operators['date']['not_equal'] = array(
+    'label' => t('is not on'),
+    'comparison callback' => 'webform_conditional_operator_datetime_not_equal',
+    'comparison prepare js' => 'webform_conditional_prepare_date_js',
+    'js comparison callback' => 'conditionalOperatorDateNotEqual',
+    'form callback' => 'webform_conditional_form_date',
+  );
   $operators['date']['before'] = array(
     'label' => t('is before'),
     'comparison callback' => 'webform_conditional_operator_datetime_before',
@@ -738,11 +888,25 @@ function _webform_conditional_operator_info() {
     'js comparison callback' => 'conditionalOperatorDateBefore',
     'form callback' => 'webform_conditional_form_date',
   );
+  $operators['date']['before_equal'] = array(
+    'label' => t('is on or before'),
+    'comparison callback' => 'webform_conditional_operator_datetime_before_equal',
+    'comparison prepare js' => 'webform_conditional_prepare_date_js',
+    'js comparison callback' => 'conditionalOperatorDateBeforeEqual',
+    'form callback' => 'webform_conditional_form_date',
+  );
   $operators['date']['after'] = array(
     'label' => t('is after'),
     'comparison callback' => 'webform_conditional_operator_datetime_after',
     'comparison prepare js' => 'webform_conditional_prepare_date_js',
     'js comparison callback' => 'conditionalOperatorDateAfter',
+    'form callback' => 'webform_conditional_form_date',
+  );
+  $operators['date']['after_equal'] = array(
+    'label' => t('is on or after'),
+    'comparison callback' => 'webform_conditional_operator_datetime_after_equal',
+    'comparison prepare js' => 'webform_conditional_prepare_date_js',
+    'js comparison callback' => 'conditionalOperatorDateAfterEqual',
     'form callback' => 'webform_conditional_form_date',
   );
 
@@ -754,6 +918,13 @@ function _webform_conditional_operator_info() {
     'js comparison callback' => 'conditionalOperatorTimeEqual',
     'form callback' => 'webform_conditional_form_time',
   );
+  $operators['time']['not_equal'] = array(
+    'label' => t('is not at'),
+    'comparison callback' => 'webform_conditional_operator_datetime_not_equal',
+    'comparison prepare js' => 'webform_conditional_prepare_time_js',
+    'js comparison callback' => 'conditionalOperatorTimeNotEqual',
+    'form callback' => 'webform_conditional_form_time',
+  );
   $operators['time']['before'] = array(
     'label' => t('is before'),
     'comparison callback' => 'webform_conditional_operator_datetime_before',
@@ -761,11 +932,25 @@ function _webform_conditional_operator_info() {
     'js comparison callback' => 'conditionalOperatorTimeBefore',
     'form callback' => 'webform_conditional_form_time',
   );
+  $operators['time']['before_equal'] = array(
+    'label' => t('is at or before'),
+    'comparison callback' => 'webform_conditional_operator_datetime_before_equal',
+    'comparison prepare js' => 'webform_conditional_prepare_time_js',
+    'js comparison callback' => 'conditionalOperatorTimeBeforeEqual',
+    'form callback' => 'webform_conditional_form_time',
+  );
   $operators['time']['after'] = array(
     'label' => t('is after'),
     'comparison callback' => 'webform_conditional_operator_datetime_after',
     'comparison prepare js' => 'webform_conditional_prepare_time_js',
     'js comparison callback' => 'conditionalOperatorTimeAfter',
+    'form callback' => 'webform_conditional_form_time',
+  );
+  $operators['time']['after_equal'] = array(
+    'label' => t('is at or after'),
+    'comparison callback' => 'webform_conditional_operator_datetime_after_equal',
+    'comparison prepare js' => 'webform_conditional_prepare_time_js',
+    'js comparison callback' => 'conditionalOperatorTimeAfterEqual',
     'form callback' => 'webform_conditional_form_time',
   );
 
@@ -858,6 +1043,12 @@ function webform_conditional_insert($conditional) {
     $rule['rid'] = $rid;
     drupal_write_record('webform_conditional_rules', $rule);
   }
+  foreach ($conditional['actions'] as $aid => $action) {
+    $action['nid'] = $conditional['nid'];
+    $action['rgid'] = $conditional['rgid'];
+    $action['aid'] = $aid;
+    drupal_write_record('webform_conditional_actions', $action);
+  }
 }
 
 /**
@@ -880,6 +1071,10 @@ function webform_conditional_delete($node, $conditional) {
     ->condition('nid', $node->nid)
     ->condition('rgid', $conditional['rgid'])
     ->execute();
+  db_delete('webform_conditional_actions')
+    ->condition('nid', $node->nid)
+    ->condition('rgid', $conditional['rgid'])
+    ->execute();
 }
 
 /**
@@ -889,54 +1084,100 @@ function webform_conditional_delete($node, $conditional) {
  * settings. We remove unnecessary data structures and provide a "source map"
  * so that JavaScript can quickly determine if it needs to check rules when a
  * field on the page has been modified.
+ *
+ * @param object $node
+ *   The loaded node object, containing the webform.
+ * @param array $submission_data
+ *   The cid-indexed array of existing submission values to be included for
+ *   sources outside of the current page.
+ * @param integer $page_num
+ *   The number of the page for which javascript settings should be generated.
+ * @return array
+ *   Array of settings to be send to the browser as javascript settings.
  */
-function webform_conditional_prepare_javascript($node, $submission_data) {
+function webform_conditional_prepare_javascript($node, $submission_data, $page_num) {
   $settings = array(
     'ruleGroups' => array(),
     'sourceMap' => array(),
     'values' => array(),
   );
   $operators = webform_conditional_operators();
-  foreach ($node->webform['conditionals'] as $conditional) {
+  $conditionals = $node->webform['conditionals'];
+  $components = $node->webform['components'];
+  $topological_order = webform_get_conditional_sorter($node)->getOrder();
+  foreach ($topological_order[$page_num] as $conditional_spec) {
+    $conditional = $conditionals[$conditional_spec['rgid']];
+    $rgid_key = 'rgid_' . $conditional['rgid'];
     // Assemble the main conditional group settings.
-    if ($conditional['target_type'] == 'component') {
-      $target_component = $node->webform['components'][$conditional['target']];
-      $target_parents = webform_component_parent_keys($node, $target_component);
-      $target_id = 'webform-component--' . str_replace('_', '-', implode('--', $target_parents));
-      $settings['ruleGroups'][$conditional['rgid']]['target'] = $target_id;
-      $settings['ruleGroups'][$conditional['rgid']]['andor'] = $conditional['andor'];
-      $settings['ruleGroups'][$conditional['rgid']]['action'] = $conditional['action'];
+
+    $settings['ruleGroups'][$rgid_key] = array(
+      'andor' => $conditional['andor'],
+    );
+    foreach ($conditional['actions'] as $action) {
+      if ($action['target_type'] == 'component') {
+        $target_component = $components[$action['target']];
+        $target_parents = webform_component_parent_keys($node, $target_component);
+        $aid_key = 'aid_' . $action['aid'];
+        $action_settings = array(
+          'target' => 'webform-component--' . str_replace('_', '-', implode('--', $target_parents)),
+          'invert' => (int)$action['invert'],
+          'action' => $action['action'],
+          'argument' => $components[$action['target']]['type'] == 'markup' ? filter_xss_admin($action['argument']) : $action['argument'],
+        );
+        $settings['ruleGroups'][$rgid_key]['actions'][$aid_key] = $action_settings;
+      }
     }
     // Add on the list of rules to the conditional group.
     foreach ($conditional['rules'] as $rule) {
       if ($rule['source_type'] == 'component') {
-        $source_component = $node->webform['components'][$rule['source']];
+        $source_component = $components[$rule['source']];
         $source_parents = webform_component_parent_keys($node, $source_component);
         $source_id = 'webform-component--' . str_replace('_', '-', implode('--', $source_parents));
+        $rid_key = 'rid_' . $rule['rid'];
 
         // If this source has a value set, add that as a setting.
+        // NULL or array(NULL) should be sent as an empty array to simplify the jQuery.
         if (isset($submission_data[$source_component['cid']])) {
           $source_value = $submission_data[$source_component['cid']];
-          $settings['values'][$source_id] = is_array($source_value) ? $source_value : array($source_value);
+          $source_value = is_array($source_value) ? $source_value : array($source_value);
+          $settings['values'][$source_id] = $source_value === array(NULL) ? array() : $source_value;
         }
 
         $conditional_type = webform_component_property($source_component['type'], 'conditional_type');
         $operator_info = $operators[$conditional_type][$rule['operator']];
-        $rule_settings = array();
-        $rule_settings['source'] = $source_id;
-        $rule_settings['value'] = $rule['value'];
-        $rule_settings['callback'] = $operator_info['js comparison callback'];
+        $rule_settings = array(
+          'source' => $source_id,
+          'value' => $rule['value'],
+          'callback' => $operator_info['js comparison callback'],
+        );
         if (isset($operator_info['comparison prepare js'])) {
           $callback = $operator_info['comparison prepare js'];
           $rule_settings['value'] = $callback($rule['value']);
         }
-        $settings['ruleGroups'][$conditional['rgid']]['rules'][$rule['rid']] = $rule_settings;
-        $settings['sourceMap'][$source_id][$conditional['rgid']] = $conditional['rgid'];
+        $settings['ruleGroups'][$rgid_key]['rules'][$rid_key] = $rule_settings;
+        $settings['sourceMap'][$source_id][$rgid_key] = $rgid_key;
       }
     }
   }
 
   return $settings;
+}
+
+/**
+ * Determine whether a component type is capable of a given conditional action.
+ */
+function webform_conditional_action_able($component_type, $action) {
+  switch ($action) {
+    case 'show':
+      return TRUE;
+      // break;
+    case 'require':
+      return webform_component_feature($component_type, 'required');
+      // break;
+    default:
+      return webform_component_feature($component_type, "conditional_action_$action");
+      // break;
+  }
 }
 
 /**
@@ -1047,6 +1288,36 @@ function webform_conditional_operator_string_not_empty($input_values, $rule_valu
 }
 
 /**
+ * Conditional callback for select comparisons.
+ */
+function webform_conditional_operator_select_less_than($input_values, $rule_value, $component) {
+  return empty($input_values) ? FALSE : webform_compare_select($input_values[0], $rule_value, _webform_select_options($component, TRUE)) < 0;
+}
+
+/**
+ * Conditional callback for select comparisons.
+ */
+function webform_conditional_operator_select_less_than_equal($input_values, $rule_value, $component) {
+  $comparison = empty($input_values) ? NULL : webform_compare_select($input_values[0], $rule_value, _webform_select_options($component, TRUE));
+  return $comparison < 0 || $comparison === 0;
+}
+
+/**
+ * Conditional callback for select comparisons.
+ */
+function webform_conditional_operator_select_greater_than($input_values, $rule_value, $component) {
+  return empty($input_values) ? FALSE : webform_compare_select($input_values[0], $rule_value, _webform_select_options($component, TRUE)) > 0;
+}
+
+/**
+ * Conditional callback for select comparisons.
+ */
+function webform_conditional_operator_select_greater_than_equal($input_values, $rule_value, $component) {
+  $comparison = empty($input_values) ? NULL : webform_compare_select($input_values[0], $rule_value, _webform_select_options($component, TRUE));
+  return $comparison > 0 || $comparison === 0;
+}
+
+/**
  * Conditional callback for numeric comparisons.
  */
 function webform_conditional_operator_numeric_equal($input_values, $rule_value) {
@@ -1063,6 +1334,21 @@ function webform_conditional_operator_numeric_not_equal($input_values, $rule_val
 /**
  * Conditional callback for numeric comparisons.
  */
+function webform_conditional_operator_numeric_less_than($input_values, $rule_value) {
+  return empty($input_values) ? FALSE : webform_compare_floats($input_values[0], $rule_value) < 0;
+}
+
+/**
+ * Conditional callback for numeric comparisons.
+ */
+function webform_conditional_operator_numeric_less_than_equal($input_values, $rule_value) {
+  $comparison = empty($input_values) ? NULL : webform_compare_floats($input_values[0], $rule_value);
+  return $comparison < 0 || $comparison === 0;
+}
+
+/**
+ * Conditional callback for numeric comparisons.
+ */
 function webform_conditional_operator_numeric_greater_than($input_values, $rule_value) {
   return empty($input_values) ? FALSE : webform_compare_floats($input_values[0], $rule_value) > 0;
 }
@@ -1070,8 +1356,9 @@ function webform_conditional_operator_numeric_greater_than($input_values, $rule_
 /**
  * Conditional callback for numeric comparisons.
  */
-function webform_conditional_operator_numeric_less_than($input_values, $rule_value) {
-  return empty($input_values) ? FALSE : webform_compare_floats($input_values[0], $rule_value) < 0;
+function webform_conditional_operator_numeric_greater_than_equal($input_values, $rule_value) {
+  $comparison = empty($input_values) ? NULL : webform_compare_floats($input_values[0], $rule_value);
+  return $comparison > 0 || $comparison === 0;
 }
 
 /**
@@ -1085,9 +1372,24 @@ function webform_conditional_operator_datetime_equal($input_values, $rule_value)
 /**
  * Conditional callback for date and time comparisons.
  */
+function webform_conditional_operator_datetime_not_equal($input_values, $rule_value) {
+  return !webform_conditional_operator_datetime_equal($input_values, $rule_value);
+}
+
+/**
+ * Conditional callback for date and time comparisons.
+ */
 function webform_conditional_operator_datetime_after($input_values, $rule_value) {
   $input_values = webform_conditional_value_datetime($input_values);
   return empty($input_values) ? FALSE : webform_strtotime($input_values[0]) > webform_strtotime($rule_value);
+}
+
+/**
+ * Conditional callback for date and time comparisons.
+ */
+function webform_conditional_operator_datetime_after_equal($input_values, $rule_value) {
+  return webform_conditional_operator_datetime_after($input_values, $rule_value) ||
+         webform_conditional_operator_datetime_equal($input_values, $rule_value);
 }
 
 /**
@@ -1099,6 +1401,14 @@ function webform_conditional_operator_datetime_before($input_values, $rule_value
 }
 
 /**
+ * Conditional callback for date and time comparisons.
+ */
+function webform_conditional_operator_datetime_before_equal($input_values, $rule_value) {
+  return webform_conditional_operator_datetime_before($input_values, $rule_value) ||
+         webform_conditional_operator_datetime_equal($input_values, $rule_value);
+}
+
+/**
  * Utility function to convert incoming time and dates into strings.
  */
 function webform_conditional_value_datetime($input_values) {
@@ -1107,4 +1417,27 @@ function webform_conditional_value_datetime($input_values) {
   // Convert dates into a string.
   $input_values = isset($input_values['month']) ? array(webform_date_string($input_values, 'date')) : $input_values;
   return $input_values;
+}
+
+/**
+ * Utility function to compare values of a select component.
+ * @param string $a
+ *   First select option key to compare
+ * @param string $b
+ *   Second select option key to compare
+ * @param array $options
+ *   Associative array where the $a and $b are within the keys
+ * @return integer based upon position of $a and $b in $options
+ *   -N if $a above (<) $b
+ *   0 if $a = $b
+ *   +N if $a is below (>) $b
+ */
+function webform_compare_select($a, $b, $options) {
+  // Select keys that are integer-like strings are numberic indices in PHP.
+  // Convert the array keys to an array of strings.
+  $options_array = array_map(function($i) {return (string) $i; }, array_keys($options));
+  $a_position = array_search($a, $options_array, TRUE);
+  $b_position = array_search($b, $options_array, TRUE);
+  return ($a_position === FALSE || $a_position === FALSE) ? NULL : $a_position - $b_position;
+
 }

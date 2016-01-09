@@ -10,7 +10,7 @@
 $view = new view();
 $view->name = 'webform_results';
 $view->description = '';
-$view->tag = 'default';
+$view->tag = 'webform';
 $view->base_table = 'webform_submissions';
 $view->human_name = 'Webform Results';
 $view->core = 7;
@@ -129,7 +129,7 @@ $handler->display->display_options['fields']['webform_all_fields']['field'] = 'w
 $handler->display->display_options['fields']['webform_all_fields']['label'] = '';
 $handler->display->display_options['fields']['webform_all_fields']['exclude'] = TRUE;
 $handler->display->display_options['fields']['webform_all_fields']['alter']['nl2br'] = TRUE;
-
+$handler->display->display_options['fields']['webform_all_fields']['format'] = 'text';
 /* Contextual filter: Webform submissions: Node */
 $handler->display->display_options['arguments']['nid']['id'] = 'nid';
 $handler->display->display_options['arguments']['nid']['table'] = 'webform_submissions';

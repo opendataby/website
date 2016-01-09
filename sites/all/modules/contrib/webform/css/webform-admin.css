@@ -24,6 +24,13 @@
   margin-left: 20px;
 }
 
+/* Component table */
+.webform-component-formkey,
+.webform-component-value {
+  max-width: 7em;
+  word-wrap: break-word;
+}
+
 /* Analysis pages */
 .webform-analysis-component {
   width: 33.33%;
@@ -77,6 +84,9 @@
   width: 12px;
   height: 12px;
   margin: 0 2px 2px;
+}
+.webform-component-select-suffix {
+  margin-top: 10px;
 }
 .webform-select-list-format table {
   border: 1px solid;
@@ -144,6 +154,7 @@ html.js div.webform-position {
 tr.webform-add-form .tabledrag-changed {
   display: none;
 }
+#webform-emails tr.webform-add-form,
 #webform-components tr.webform-add-form {
   background-color: inherit;
 }
@@ -164,12 +175,13 @@ td.webform-email-option {
   padding-left: 1em;
   padding-right: 8em;
   margin-left: 3em;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 .webform-conditional-new {
   text-align: right;
-  margin-left: 8em;
+  margin-left: 11em;
+  padding-right: 0;
 }
 
 .webform-conditional-if {

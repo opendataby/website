@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Provides install/uninstall functions for Drop Guard module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function dropguard_requirements($phase) {
+  $requirements = array();
+
+  // Ensure that we are in the runtime phase.
+  if ($phase != 'runtime') {
+    return $requirements;
+  }
+
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  if (!extension_loaded('openssl')) {
+    $requirements['dropguard'] = array(
+      'title' => $t('Drop Guard'),
+      'severity' => REQUIREMENT_ERROR,
+      'value' => $t('<a href="@url">OpenSSL extension</a> is missing.', array('@url' => 'http://php.net/manual/en/book.openssl.php')),
+    );
+  }
+  else {
+    $requirements['dropguard'] = array(
+      'title' => $t('Drop Guard'),
+      'severity' => REQUIREMENT_OK,
+      'value' => $t('OpenSSL extension is enabled.'),
+    );
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function dropguard_uninstall() {
+  variable_del('dropguard_client_id');
+  variable_del('dropguard_openssl_public_key');
+}
+
+/**
+* Implements hook_enable
+*/
+function dropguard_enable() {
+  $link = l(t('drop-guard.net'), 'http://drop-guard.net');
+  $settings_link = l(t('Drop Guard settings'), 'admin/config/services/dropguard');
+  drupal_set_message(t('To automate your Drupal updates, sign up for free at !link, create a new project and follow the instructions. After this step you have all information to enter the credentials in the !settings.', array('!link' => $link, '!settings' => $settings_link)));
+}

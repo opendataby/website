@@ -1,0 +1,43 @@
+@keyframes ajaxCommentsNodeJsShow {
+    0% { display:none ; opacity: 0;}
+    1% {display: block ; opacity: 0;}
+    100% {display: block ; opacity: 1;}
+}
+
+@-webkit-keyframes ajaxCommentsNodeJsShow {
+    0% { display:none ; opacity: 0;}
+    1% {display: block ; opacity: 0;}
+    100% {display: block ; opacity: 1;}
+}
+@-moz-keyframes ajaxCommentsNodeJsShow {
+    0% { display:none ; opacity: 0;}
+    1% {display: block ; opacity: 0;}
+    100% {display: block ; opacity: 1;}
+}
+@-o-keyframes ajaxCommentsNodeJsShow {
+    0% { display:none ; opacity: 0;}
+    1% {display: block ; opacity: 0;}
+    100% {display: block ; opacity: 1;}
+}
+@keyframes ajaxCommentsNodeJsShow {
+    0% { display:none ; opacity: 0;}
+    1% {display: block ; opacity: 0;}
+    100% {display: block ; opacity: 1;}
+}
+
+.ajax-comments-nodejs-new {
+    -webkit-animation: ajaxCommentsNodeJsShow 1s;
+    -moz-animation:    ajaxCommentsNodeJsShow 1s;
+    -o-animation:      ajaxCommentsNodeJsShow 1s;
+    animation:         ajaxCommentsNodeJsShow 1s;
+    background-color: #E9EDF1;
+}
+
+.ajax-comments-nodejs-updated {
+    -webkit-animation: ajaxCommentsNodeJsShow 1s;
+    -moz-animation:    ajaxCommentsNodeJsShow 1s;
+    -o-animation:      ajaxCommentsNodeJsShow 1s;
+    animation:         ajaxCommentsNodeJsShow 1s;
+    background-color: #FFEEB4;
+}
+

@@ -6,4 +6,13 @@
 function ajax_comments_uninstall() {
   variable_del('ajax_comments_node_types');
   variable_del('ajax_comments_notify');
+  variable_del('ajax_comments_disable_scroll');
 }
+
+/**
+ * Remove "View modes" settings.
+ */
+function ajax_comments_update_7100(&$sandbox) {
+  variable_del('ajax_comments_view_modes');
+}
+

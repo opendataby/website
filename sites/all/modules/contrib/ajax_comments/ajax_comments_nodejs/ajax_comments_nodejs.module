@@ -2,5 +2,189 @@
 
 /**
  * @file
- *  Right now this is a stub. Please use this to commit patches.
+ *  AJAX Comments Nodejs Integration module file
  */
+
+/**
+ * Implements hook_preprocess_node()
+ */
+function ajax_comments_nodejs_process_node(&$variables) {
+  if (isset($variables['content']['comments']) && $variables['node']->comment == COMMENT_NODE_OPEN && ajax_comments_node_type_active($variables['node']->type, $variables['elements']['#view_mode'])) {
+    // Enable channel for current node.
+    nodejs_send_content_channel_token('ajax_comments_nodejs_' . $variables['node']->nid);
+    drupal_add_js(drupal_get_path('module', 'ajax_comments_nodejs') . '/nodejs.ajaxcomments.js', array('type' => 'file'));
+    drupal_add_js(drupal_get_path('module', 'ajax_comments') .'/ajax_comments.js', array('type' => 'file'));
+    drupal_add_css(drupal_get_path('module', 'ajax_comments_nodejs') .'/ajax_comments_nodejs.css', array('type' => 'file'));
+  }
+}
+
+/**
+ * Implements hook_comment_update()
+ */
+function ajax_comments_nodejs_comment_update($comment) {
+  $authToken = !empty($_SESSION['nodejs_config']['authToken']) ? $_SESSION['nodejs_config']['authToken'] : 0;
+
+  $nodejs_comment = (object) array(
+    'channel' => 'ajax_comments_nodejs_' . $comment->nid,
+    'callback' => 'ajaxCommentsNodejs',
+    'authToken' => $authToken,
+    'action' => 'updated',
+    'cid' => $comment->cid,
+  );
+
+  nodejs_send_content_channel_message($nodejs_comment);
+}
+
+/**
+ * Implements hook_comment_insert()
+ */
+function ajax_comments_nodejs_comment_insert($comment) {
+  $authToken = !empty($_SESSION['nodejs_config']['authToken']) ? $_SESSION['nodejs_config']['authToken'] : 0;
+
+  $nodejs_comment = (object) array(
+    'channel' => 'ajax_comments_nodejs_' . $comment->nid,
+    'callback' => 'ajaxCommentsNodejs',
+    'authToken' => $authToken,
+    'action' => 'added',
+    'cid' => $comment->cid,
+  );
+
+  nodejs_send_content_channel_message($nodejs_comment);
+}
+
+/**
+ * Implements hook_comment_delete()
+ */
+function ajax_comments_nodejs_comment_delete($comment) {
+  $authToken = !empty($_SESSION['nodejs_config']['authToken']) ? $_SESSION['nodejs_config']['authToken'] : 0;
+  $nodejs_comment = (object) array(
+    'channel' => 'ajax_comments_nodejs_' . $comment->nid,
+    'callback' => 'ajaxCommentsNodejs',
+    'authToken' => $authToken,
+    'commands' => array(ajax_command_invoke('.comment-wrapper-' . $comment->cid, 'remove')),
+  );
+  nodejs_send_content_channel_message($nodejs_comment);
+}
+
+/**
+ * Implements hook_menu().
+ */
+function ajax_comments_nodejs_menu() {
+  $items['ajax_comments_nodejs/view/added/%'] = array(
+    'page callback' => '_ajax_comments_nodejs_view_added',
+    'page arguments' => array(3),
+    'delivery callback' => 'ajax_deliver',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['ajax_comments_nodejs/view/updated/%'] = array(
+    'page callback' => '_ajax_comments_nodejs_view_updated',
+    'page arguments' => array(3),
+    'delivery callback' => 'ajax_deliver',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements _ajax_comments_nodejs_view_added().
+ */
+function _ajax_comments_nodejs_view_added($cid) {
+  $commands = array();
+
+  if (!empty($cid)) {
+    $comment = comment_load($cid);
+    $node = node_load($comment->nid, NULL, TRUE);
+    if ($comment) {
+      $can_view_comments = user_access('access comments') && ($comment->status == COMMENT_PUBLISHED) && node_access('view', $node);
+      $can_admin_comments = user_access('administer comments') && node_access('view', $node);
+      if ($can_view_comments || $can_admin_comments) {
+        $comment->ajax_comments_nodejs_class = 'ajax-comments-nodejs-new';
+        $comment_build = comment_view($comment, $node);
+        $comment_output = drupal_render($comment_build);
+
+        /**
+         * comment_goodnes module and comment_sort_created compatibility:
+         * 1 - Older first
+         * 2 - Newer first
+         */
+        $sort = 1;
+        if (module_exists('comment_goodness')) {
+          $sort = variable_get('comment_default_sorting_' . $node->type, comment_goodness_OLDER_FIRST);
+        }
+        else if (module_exists('comment_sort_created')) {
+          $sort = variable_get('comment_sort_created_order_' . $node->type) == COMMENT_SORT_CREATED_OLDER_FIRST ? 1 : 2;
+        }
+        $mode = variable_get('comment_default_mode_' . $node->type, COMMENT_MODE_THREADED);
+        if ($mode == COMMENT_MODE_THREADED && $comment->pid > 0) {
+          // Reply in threaded mode
+          $commands[] = array('command' => 'ajaxCommentsAddDummyDivAfter', 'selector' => '.comment-wrapper-' . $comment->pid, 'class' => 'indented');
+          if ($sort == 1) {
+            // Newer first.
+            $commands[] = array('command' => 'ajaxCommentsAppend', 'selector' => '.comment-wrapper-' . $comment->pid . ' + .indented', 'html' => $comment_output);
+          }
+          else {
+            // Older first.
+            $commands[] = array('command' => 'ajaxCommentsPrepend', 'selector' => '.comment-wrapper-' . $comment->pid . ' + .indented', 'html' => $comment_output);
+          }
+        }
+        else {
+          // Flat mode or not reply to comment
+          if ($sort == 1) {
+            // Newer first.
+            $commands[] = array('command' => 'ajaxCommentsAfter', 'selector' => '.comment-wrapper-nid-' . $comment->nid . ' > .ajax-comment-wrapper:last', 'html' => $comment_output);
+          }
+          else {
+            // Older first.
+            $commands[] = array('command' => 'ajaxCommentsBefore', 'selector' => '.comment-wrapper-nid-' . $comment->nid . '> .ajax-comment-wrapper:first', 'html' => $comment_output);
+          }
+        }
+      }
+    }
+  }
+
+  $output = array('#type' => 'ajax', '#commands' => $commands);
+  return $output;
+}
+
+/**
+ * Implements _ajax_comments_nodejs_view_updated().
+ */
+function _ajax_comments_nodejs_view_updated($cid) {
+  $commands = array();
+
+  if (!empty($cid)) {
+    $comment = comment_load($cid);
+    $node = node_load($comment->nid, NULL, TRUE);
+    if ($comment) {
+      $can_view_comments = user_access('access comments') && ($comment->status == COMMENT_PUBLISHED) && node_access('view', $node);
+      $can_admin_comments = user_access('administer comments') && node_access('view', $node);
+      if ($can_view_comments || $can_admin_comments) {
+        $comment->ajax_comments_nodejs_class = 'ajax-comments-nodejs-updated';
+        $comment_build = comment_view($comment, $node);
+        $comment_output = drupal_render($comment_build);
+        //Update existing comment
+        $commands[] = array('command' => 'ajaxCommentsReplace', 'selector' => '.comment-wrapper-' . $comment->cid, 'html' => $comment_output);
+      }
+      else {
+        // Unpublish/Hide existing comment
+        $commands[] = ajax_command_invoke('.comment-wrapper-' . $comment->cid, 'remove');
+      }
+    }
+  }
+
+  $output = array('#type' => 'ajax', '#commands' => $commands);
+  return $output;
+}
+
+/**
+ * Process variables for comment.tpl.php. *
+ */
+function ajax_comments_nodejs_preprocess_comment(&$variables) {
+  if (isset($variables['comment']->ajax_comments_nodejs_class)) {
+    $variables['classes_array'][] = $variables['comment']->ajax_comments_nodejs_class;
+  }
+}

@@ -9,9 +9,9 @@
  */
 function feature_opendata_dataset_strongarm_alter(&$data) {
   if (isset($data['pathauto_node_dataset_pattern'])) {
-    $data['pathauto_node_dataset_pattern']->value = 'dataset/[node:nid]'; /* WAS: 'dataset/[node:title]' */
+    unset($data['pathauto_node_dataset_pattern']);
   }
   if (isset($data['pathauto_node_resource_pattern'])) {
-    $data['pathauto_node_resource_pattern']->value = 'dataset/[node:field-dataset-ref:0:nid]/resource/[node:uuid]'; /* WAS: 'dataset/[node:field-dataset-ref:0:title]/resource/[node:uuid]' */
+    unset($data['pathauto_node_resource_pattern']);
   }
 }

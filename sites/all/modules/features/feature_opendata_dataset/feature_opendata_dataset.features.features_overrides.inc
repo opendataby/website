@@ -12,8 +12,8 @@ function feature_opendata_dataset_features_override_default_overrides() {
   $overrides = array();
 
   // Exported overrides for: variable
-  $overrides["variable.pathauto_node_dataset_pattern.value"] = 'dataset/[node:nid]';
-  $overrides["variable.pathauto_node_resource_pattern.value"] = 'dataset/[node:field-dataset-ref:0:nid]/resource/[node:uuid]';
+  $overrides["variable.pathauto_node_dataset_pattern.pathauto_node_dataset_pattern"]["DELETED"] = TRUE;
+  $overrides["variable.pathauto_node_resource_pattern.pathauto_node_resource_pattern"]["DELETED"] = TRUE;
 
  return $overrides;
 }

@@ -19,6 +19,7 @@ function feature_opendata_search_features_override_default_overrides() {
   $overrides["facetapi.search_api@datasets:block:og_group_ref.search_api@datasets:block:og_group_ref"]["DELETED"] = TRUE;
 
   // Exported overrides for: node
+  $overrides["node.dataset.dataset"]["DELETED"] = TRUE;
 
  return $overrides;
 }

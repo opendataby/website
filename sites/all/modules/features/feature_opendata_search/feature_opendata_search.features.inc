@@ -24,3 +24,12 @@ function feature_opendata_search_facetapi_default_facet_settings_alter(&$data) {
     unset($data['search_api@datasets:block:og_group_ref']);
   }
 }
+
+/**
+ * Implements hook_node_info_alter().
+ */
+function feature_opendata_search_node_info_alter(&$data) {
+  if (isset($data['dataset'])) {
+    unset($data['dataset']);
+  }
+}

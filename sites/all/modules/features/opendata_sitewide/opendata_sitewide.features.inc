@@ -18,7 +18,7 @@ function opendata_sitewide_ctools_plugin_api($module = NULL, $api = NULL) {
  */
 function opendata_sitewide_filter_default_formats_alter(&$data) {
   if (isset($data['html'])) {
-    unset($data['html']['filters']['filter_html']);
+    unset($data['html']);
   }
 }
 
@@ -27,9 +27,9 @@ function opendata_sitewide_filter_default_formats_alter(&$data) {
  */
 function opendata_sitewide_strongarm_alter(&$data) {
   if (isset($data['admin_theme'])) {
-    $data['admin_theme']->value = 'seven'; /* WAS: 'nuboot_radix' */
+    unset($data['admin_theme']);
   }
   if (isset($data['colorizer_cssfile'])) {
-    $data['colorizer_cssfile']->value = ''; /* WAS: 'colorizer/colorizer.css' */
+    unset($data['colorizer_cssfile']);
   }
 }

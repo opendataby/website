@@ -12,11 +12,11 @@ function opendata_sitewide_features_override_default_overrides() {
   $overrides = array();
 
   // Exported overrides for: filter
-  $overrides["filter.html.filters|filter_html"]["DELETED"] = TRUE;
+  $overrides["filter.html.html"]["DELETED"] = TRUE;
 
   // Exported overrides for: variable
-  $overrides["variable.admin_theme.value"] = 'seven';
-  $overrides["variable.colorizer_cssfile.value"] = '';
+  $overrides["variable.admin_theme.admin_theme"]["DELETED"] = TRUE;
+  $overrides["variable.colorizer_cssfile.colorizer_cssfile"]["DELETED"] = TRUE;
 
  return $overrides;
 }

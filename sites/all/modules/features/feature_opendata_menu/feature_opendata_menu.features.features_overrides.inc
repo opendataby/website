@@ -12,12 +12,8 @@ function feature_opendata_menu_features_override_default_overrides() {
   $overrides = array();
 
   // Exported overrides for: menu_links
-  $overrides["menu_links.main-menu_about:node/1.link_title"] = 'О нас';
-  $overrides["menu_links.main-menu_about:node/1.weight"] = -43;
-  $overrides["menu_links.main-menu_add-dataset:node/add/dataset.customized"] = 1;
-  $overrides["menu_links.main-menu_add-dataset:node/add/dataset.hidden"] = 1;
-  $overrides["menu_links.main-menu_add-dataset:node/add/dataset.link_title"] = 'Добавить набор данных';
-  $overrides["menu_links.main-menu_add-dataset:node/add/dataset.weight"] = -48;
+  $overrides["menu_links.main-menu_about:node/1.main-menu_about:node/1"]["DELETED"] = TRUE;
+  $overrides["menu_links.main-menu_add-dataset:node/add/dataset.main-menu_add-dataset:node/add/dataset"]["DELETED"] = TRUE;
 
  return $overrides;
 }

@@ -1,7 +1,5 @@
 <?php
 /**
  * @file
- * Code for the feature_opendata_user feature.
+ * Drupal needs this blank file.
  */
-
-include_once 'feature_opendata_user.features.inc';

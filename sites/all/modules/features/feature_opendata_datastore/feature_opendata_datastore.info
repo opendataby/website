@@ -6,7 +6,3 @@ version = 7.x-1.0
 project = feature_opendata_datastore
 dependencies[] = dkan_datastore
 features[features_api][] = api:2
-features[features_override_items][] = views_view.datasets
-features[features_overrides][] = search_api_index.datasets.datasets
-features[features_overrides][] = search_api_server.datasets.datasets
-features[features_overrides][] = views_view.datasets.datasets

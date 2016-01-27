@@ -29,6 +29,9 @@ function opendata_sitewide_strongarm_alter(&$data) {
   if (isset($data['admin_theme'])) {
     unset($data['admin_theme']);
   }
+  if (isset($data['bueditor_roles'])) {
+    unset($data['bueditor_roles']);
+  }
   if (isset($data['colorizer_cssfile'])) {
     unset($data['colorizer_cssfile']);
   }

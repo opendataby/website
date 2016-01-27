@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the OpenData Schema feature.
+ */
+
+include_once 'feature_opendata_schema.features.inc';

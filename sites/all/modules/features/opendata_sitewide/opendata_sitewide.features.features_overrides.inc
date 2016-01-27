@@ -16,6 +16,7 @@ function opendata_sitewide_features_override_default_overrides() {
 
   // Exported overrides for: variable
   $overrides["variable.admin_theme.admin_theme"]["DELETED"] = TRUE;
+  $overrides["variable.bueditor_roles.bueditor_roles"]["DELETED"] = TRUE;
   $overrides["variable.colorizer_cssfile.colorizer_cssfile"]["DELETED"] = TRUE;
 
  return $overrides;

@@ -35,7 +35,7 @@ function dkan_sitewide_search_db_default_search_api_index() {
     "server" : "datasets",
     "item_type" : "node",
     "options" : {
-      "datasource" : { "bundles" : [ "dataset", "resource", "group", "dkan_data_story", "data_dashboard", "page"] },
+      "datasource" : { "bundles" : [ "dataset" ] },
       "index_directly" : 1,
       "cron_limit" : "50",
       "fields" : {
@@ -52,8 +52,7 @@ function dkan_sitewide_search_db_default_search_api_index() {
         "search_api_language" : { "type" : "string" },
         "search_api_viewed" : { "type" : "text" },
         "status" : { "type" : "boolean" },
-        "title" : { "type" : "string" },
-        "type" : { "type" : "string" }
+        "title" : { "type" : "string" }
       },
       "data_alter_callbacks" : {
         "search_api_alter_node_access" : { "status" : 1, "weight" : "0", "settings" : [] },
@@ -209,12 +208,6 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "table" : "search_api_db_datasets",
             "column" : "changed",
             "type" : "date",
-            "boost" : "1.0"
-          },
-          "type" : {
-            "table" : "search_api_db_datasets",
-            "column" : "type",
-            "type" : "string",
             "boost" : "1.0"
           }
         }

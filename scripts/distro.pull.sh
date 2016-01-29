@@ -1,6 +1,6 @@
 #!/bin/bash
 GITURL="https://github.com/NuCivic/dkan.git"
-BRANCH="7.x-1.11-RC2"
+BRANCH="7.x-1.10"
 PREFIX="projects/dkan"
 echo "Pulling in latest updates on branch $BRANCH from remote $GITURL."
 

@@ -1,4 +1,3 @@
-docroot
 libraries
 modules/contrib
 modules/nucivic
@@ -14,4 +13,3 @@ test/dkan
 test/local.yml
 assets/*
 .idea
-behat.local.yml

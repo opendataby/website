@@ -8,3 +8,4 @@ Module includes:
 + Search API Server and Index for Stories.
 + Stories search page.
 + Main Menu Entry for Stories search page.
++ Storyteller role and permissions

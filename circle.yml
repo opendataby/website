@@ -29,28 +29,32 @@ checkout:
 dependencies:
 
   cache_directories:
-     #- "dkan/test/vendor"
-     #- "~/.composer"
+     - "test/vendor"
+     - "~/.composer"
      - "~/.drush"
-     # Disable cachine sql install backups for now.
-     #- "backups"
-     - "dkan/test/sites/default"
-  pre:
-    - echo "memory_limit = 256M" > ~/.phpenv/versions/5.5.11/etc/conf.d/memory.ini
+     - "~/backups"
+     - "test/sites/default"
   override:
-    - printenv
+    - 'composer install --prefer-source --no-interaction':
+        pwd:
+          test
     - mkdir $CIRCLE_ARTIFACTS/junit
-    # Install latest Drush 8.
+    # Install latest Drush 7.
     #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - 'composer global require --prefer-source --no-interaction drush/drush:8.0.1'
-    # Install ahoy
-    - 'sudo wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy && sudo chown $USER /usr/local/bin/ahoy && sudo chmod +x /usr/local/bin/ahoy'
-    - 'bash dkan-init.sh dkan'
-    - 'ahoy dkan drupal-rebuild $DATABASE_URL'
-    - 'ahoy dkan remake'
-    - 'ahoy dkan reinstall'
-    - 'ahoy drush --yes runserver :8888':
+    - 'composer global require --prefer-source --no-interaction drush/drush:8.0.0-rc2'
+    - 'drush make --prepare-install drupal-org-core.make drupal --yes'
+    - 'rsync -av . drupal/profiles/dkan --exclude drupal'
+    - 'rsync -av drupal/ test'
+    - 'drush -y make --no-core --contrib-destination=./ drupal-org.make --no-recursion --concurrency=3':
+        pwd:
+          test/profiles/dkan
+    - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
+    - 'bash circle-install.sh':
+        pwd:
+          test
+    - 'drush --yes runserver :8888':
         background: true
+        pwd: test
 
     # Setup display for selenium
     #- sh -e /etc/init.d/xvfb start
@@ -79,11 +83,26 @@ database:
 ## Customize test commands
 test:
   override:
-    - bash dkan/test/circle-behat.sh docroot/profiles/dkan/test/features:
+    - cd test; bash circle-behat.sh:
+        parallel: true
+        files:
+          - test/features/administrator.feature
+          - test/features/panels.feature
+          - test/features/groups.feature
+          - test/features/dataset.feature
+          - test/features/datastore.feature
+          - test/features/editor.feature
+          - test/features/home.feature
+          - test/features/search.feature
+          - test/features/widgets.feature
+          - test/features/recline.feature
+          - test/features/data_dashboard.feature
+          - test/features/dkan_data_story_ui.feature
+          - test/features/role_storyteller.feature
+    - cd test; bash features-tests.sh:
         parallel: true
   post:
-    - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
-        parallel: true
+    - cp -a assets $CIRCLE_ARTIFACTS
 #    - bundle exec rake jasmine:ci: # add an extra test type
 #        environment:
 #          RAILS_ENV: test

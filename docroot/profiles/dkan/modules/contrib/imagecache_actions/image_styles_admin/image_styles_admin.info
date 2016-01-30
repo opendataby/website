@@ -1,0 +1,6 @@
+name = Image styles admin
+description = Provides additional administrative functionality to duplicate, export or import image styles.
+package = Media
+core = 7.x
+
+dependencies[] = image

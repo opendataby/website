@@ -1,0 +1,8 @@
+name = Schema
+description = "The Schema module provides functionality built on the Schema API."
+package = Database
+core = 7.x
+configure = admin/structure/schema/settings
+files[] = engines/mysql.inc
+files[] = engines/pgsql.inc
+files[] = tests/schema_regression.test

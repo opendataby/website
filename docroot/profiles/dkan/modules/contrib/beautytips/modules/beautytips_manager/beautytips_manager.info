@@ -1,0 +1,7 @@
+
+name = BeautyTips Manager
+description = Adds graphical manager for creating custom beautytips.
+package = User interface
+core = 7.x
+dependencies[] = beautytips
+dependencies[] = ctools

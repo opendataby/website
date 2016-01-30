@@ -1,0 +1,4 @@
+name = Schema test
+core = 7.x
+hidden = TRUE
+files[] = SchemaTestDatabaseConnection.php

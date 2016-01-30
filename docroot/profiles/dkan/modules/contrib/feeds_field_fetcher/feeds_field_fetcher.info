@@ -1,0 +1,5 @@
+name = Feeds Field Fetcher
+description = Offers Link and File Field Fetchers for Feeds module.
+package = Feeds
+core = 7.x
+dependencies[] = feeds

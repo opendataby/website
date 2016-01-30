@@ -1,0 +1,7 @@
+name = Imagecache Custom Actions
+description = Provides the custom and subroutine image effects.
+package = Media
+core = 7.x
+
+dependencies[] = imagecache_actions
+dependencies[] = image

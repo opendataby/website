@@ -1,0 +1,6 @@
+name = "Entity RDF module tests"
+description = "Support module for Entity RDF module testing."
+package = Testing
+version = VERSION
+core = 7.x
+hidden = TRUE

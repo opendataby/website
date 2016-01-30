@@ -1,0 +1,6 @@
+name = Link iframe formatter
+description = Defines a formatter that renders a link like an iframe
+core = 7.x
+package = Fields
+
+dependencies[] = link

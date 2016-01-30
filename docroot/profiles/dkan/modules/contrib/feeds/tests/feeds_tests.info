@@ -1,0 +1,10 @@
+name = "Feeds module tests"
+description = "Support module for Feeds related testing."
+package = Testing
+version = VERSION
+core = 7.x
+test_dependencies[] = date
+test_dependencies[] = feeds_xpathparser
+test_dependencies[] = link
+test_dependencies[] = i18n_taxonomy
+hidden = TRUE

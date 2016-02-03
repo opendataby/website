@@ -1,0 +1,18 @@
+<project name="open data" default="build">
+    <target name="update" description="Run the drush commands to update the database">
+        <exec dir="${drupal.root}" command="drush runbsu" logoutput="true" level="info"/>
+        <exec dir="${drupal.root}" command="drush rr" logoutput="true" level="info"/>
+        <exec dir="${drupal.root}" command="drush updb -y" logoutput="true" level="info"/>
+        <exec dir="${drupal.root}" command="drush master-execute --scope=${master.scope} -y" logoutput="true" level="info"/>
+        <exec dir="${drupal.root}" command="drush cc all" logoutput="true" level="info"/>
+        <exec dir="${drupal.root}" command="drush fra -y" logoutput="true" level="info"/>
+        <exec dir="${drupal.root}" command="drush cc all" logoutput="true" level="info"/>
+    </target>
+
+    <target name="master" description="Run the master module to enable/disable modules">
+        <exec dir="${drupal.root}" command="drush master-execute --scope=${master.scope} -y" logoutput="true" level="info"/>
+    </target>
+
+    <property name="drupal.root" value="${phing.dir}/docroot" />
+    <property name="master.scope" value="dev" />
+</project>

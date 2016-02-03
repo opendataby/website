@@ -1,0 +1,9 @@
+<?php
+
+/**
+ * @file
+ * Empty module file, as master 7.x-2.x is still a module.
+ */
+
+// Include common master functionality, as that may be needed by master_ui.
+include_once 'master.common.inc';

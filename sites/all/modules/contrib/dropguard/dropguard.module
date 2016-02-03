@@ -1,0 +1,246 @@
+<?php
+
+/**
+ * @file
+ * Contains hook definitions for Drop Guard module.
+ */
+
+/**
+ * Constants definition.
+ */
+define('DROPGUARD_DISTRIBUTION_IS_SOLID', 1);
+
+/**
+ * Implements hook_menu().
+ */
+function dropguard_menu() {
+
+  // Admin page to manage module's configurations.
+  $items['admin/config/services/dropguard'] = array(
+    'title' => 'Drop Guard',
+    'description' => 'Manage Drop Guard settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dropguard_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'admin.inc',
+    'file path' => drupal_get_path('module', 'dropguard') . '/includes',
+  );
+
+  // Page which is requested by Drop Guard service.
+  // Exposes info about enabled modules.
+  $items['admin/dropguard/%/%'] = array(
+    'page callback' => 'dropguard_site_info_callback',
+    'page arguments' => array(3),
+    'access callback' => 'dropguard_site_info_access',
+    'access arguments' => array(2, 3),
+    'type' => MENU_CALLBACK,
+    'file' => 'pages.inc',
+    'file path' => drupal_get_path('module', 'dropguard') . '/includes',
+  );
+
+  return $items;
+}
+
+/**
+ * Access callback for page which exposes info about a web site.
+ *
+ * @param $client_id
+ *   Client ID in Drop Guard system.
+ *
+ * @param $type
+ *   Type of request. Currently supported two types:
+ *   - connect. Checks if Drop Guard is able to connect to this web site.
+ *   - modules. Returns array with information about enabled modules/themes.
+ *
+ * @return boolean
+ *   Access permission.
+ */
+function dropguard_site_info_access($client_id, $type) {
+
+  // Ensure that request type is in the list of possible values.
+  if (!in_array($type, array('connect', 'modules'))) {
+    return FALSE;
+  }
+
+  // Make sure that the request contains public key and info about way to
+  // update distribution.
+  if (empty($_POST['public_key']) || !isset($_POST['distribution_update'])) {
+    return FALSE;
+  }
+  $public_key = $_POST['public_key'];
+
+  // Make sure that client ID and public keys from Drop Guard matches
+  // credentials on this web site.
+  $current_client_id = variable_get('dropguard_client_id');
+  $current_public_key = variable_get('dropguard_openssl_public_key');
+  if ($client_id != $current_client_id || $public_key != $current_public_key) {
+    return FALSE;
+  }
+
+  // Make sure that request comes from Drop Guard service.
+  // TODO: Uncomment when Drop Guard will be publicly available.
+  //$allowed_ip = gethostbyname('drop-guard.net');
+  //if (!empty($allowed_ip) && $allowed_ip != ip_address()) {
+  //  return FALSE;
+  //}
+
+  // If openssl extension is disabled, then we can't allow Drop Guard to
+  // get any data from this side, because it might be insecure. Remember,
+  // security is on the first place!
+  if (!extension_loaded('openssl')) {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+/**
+ * Returns info about site's enabled modules and themes.
+ *
+ * @param $distribution_update
+ *   Contains value which indicates how distribution should be updated
+ *   (if it is enabled in the current project).
+ *
+ * @return array
+ *   List of enabled modules, themes, profiles and Drupal core which
+ *   should be tracked for possible updates.
+ */
+function dropguard_enabled_projects_info($distribution_update) {
+
+  // Get list of modules and themes.
+  $projects = system_list('module_enabled') + list_themes();
+
+  // Check if web site is running on a custom profile.
+  $custom_profile = _dropguard_custom_profile_installed();
+
+  // Drupal doesn't support profile inheritance out of the box. But there are
+  // several patches which allow to do it. To cover that rare case we have to
+  // support base profile integration as well.
+  $custom_base_profile = variable_get('install_base_profile');
+
+  $enabled_projects = array();
+  foreach ($projects as $project) {
+
+    // We don't care about disabled and core's projects.
+    $project_is_enabled = !empty($project->status);
+    $core_project = !empty($project->info['package']) && $project->info['package'] == 'Core';
+
+    // If project doesn't have datestamp from drupal.org bot, then it was not
+    // downloaded from drupal.org or was modified. We can track only projects
+    // which were downloaded from drupal.org.
+    $no_datestamp = empty($project->info['datestamp']);
+    if (!$project_is_enabled || $core_project || $no_datestamp) {
+      continue;
+    }
+
+    // Drop Guard also need a path to project. This is necessary to help
+    // Drop Guard to find a proper project location and replace it with a new
+    // version.
+    $project_path = drupal_get_path($project->type, $project->name);
+
+    // If project doesn't have a path, it means that most likely it was removed
+    // from the code, but not from the database. To prevent issues with such
+    // projects, we also have to exclude them from list of tracked projects.
+    if (empty($project_path)) {
+      continue;
+    }
+
+    // Here is implemented distribution support.
+    foreach (array($custom_profile, $custom_base_profile) as $profile) {
+      if (!empty($profile)) {
+
+        // If current project is actually a profile, then mark it as a profile
+        // for Drop Guard.
+        if ($profile == $project->name) {
+          $project->type = 'profile';
+        }
+
+        // If distribution should be updated as a solid project then we have to
+        // remove all modules and themes which are inside of the current
+        // distribution from the list of tracked projects.
+        if ($distribution_update == DROPGUARD_DISTRIBUTION_IS_SOLID) {
+          $profile_path = drupal_get_path('profile', $profile);
+          if (strpos($project_path, $profile_path . '/') === 0) {
+            continue(2);
+          }
+        }
+        // If each module and theme inside of distribution should be updated
+        // separately then we shouldn't check for distribution update, because
+        // it may override updates for modules and themes inside of it.
+        elseif ($profile == $project->name) {
+          continue(2);
+        }
+      }
+    }
+
+    // We need to have info only about base modules or themes. For example,
+    // we don't need to retrieve information about views_ui module, because it
+    // is part of views module, and if views_ui will have updates, then these
+    // updates will be reflected inside of views project.
+    $base_project = !empty($project->info['project']) && $project->name == $project->info['project'];
+
+    // Collect info about base modules.
+    if ($base_project) {
+      $enabled_projects[$project->name] = array(
+        'name' => $project->info['name'],
+        'version' => $project->info['version'],
+        'type' => $project->type,
+        'path' => $project_path,
+        'datestamp' => $project->info['datestamp'],
+      );
+    }
+  }
+
+  // Add info about drupal core. It have to be in the list for sure!
+  $enabled_projects['drupal'] = array(
+    'name' => 'Drupal',
+    'version' => VERSION,
+    'type' => 'core',
+    'path' => '',
+  );
+
+  return $enabled_projects;
+}
+
+/**
+ * Encrypts data.
+ *
+ * @param $data
+ *   Data which has to be encrypted.
+ *
+ * @return string
+ *   Base64-encoded and encrypted data.
+ */
+function dropguard_encrypt($data) {
+
+  // Make string from data, if it is not a string yet.
+  $data = !is_string($data) ? serialize($data) : $data;
+
+  // Encrypt the data to $encrypted using the public key.
+  $public_key = variable_get('dropguard_openssl_public_key');
+
+  // Generate random password.
+  $password = user_password();
+
+  // We can't encrypt data with public method directly, because
+  // openssl_public_encrypt() method doesn't work with big strings. So we have
+  // to encrypt data with random password first, then encrypt a random password
+  // with public key and send it to the Drop Guard. So no one will decrypt the
+  // data unless he got decrypted password, which is encrypted with public key
+  // and can be decrypted only with private key.
+  $encrypted_data = @openssl_encrypt($data, 'aes128', $password);
+  openssl_public_encrypt($password, $encrypted_password, base64_decode($public_key));
+
+  return array(
+    'data' => base64_encode($encrypted_data),
+    'password' => base64_encode($encrypted_password)
+  );
+}
+
+/**
+ * Checks if current web site uses custom distribution.
+ */
+function _dropguard_custom_profile_installed() {
+  $profile = variable_get('install_profile', 'standard');
+  return in_array($profile, array('minimal', 'standard', 'testing')) ? FALSE : $profile;
+}

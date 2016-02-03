@@ -1,0 +1,3 @@
+Drop Guard is a service to automate Drupal updates with integration into development and deployment workflows. To use Drop Guard with your Drupal installation you need to install this module. It will collect data about installed modules and themes and send this information securely encrypted to Drop Guard. Then Drop Guard will retrieve available updates for your site and care about the updates automatically, together with integration with your deployment processes.
+
+If you want to see how it works from a conceptional point of view, watch the video at the Drop Guard site at http://dropguard.net

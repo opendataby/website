@@ -1,2 +1,23 @@
-sites/default/default.settings.php
-sites/default/settings.local.php
+# Ignore PHPSTORM configs.
+.idea
+
+# dev generated files
+*.map
+
+# mac stuff...
+.DS_Store
+
+# Ignore configuration files that may contain sensitive information.
+sites/*/settings.local.php
+docroot/.htaccess
+
+# Ignore paths that contain user-generated content.
+docroot/sites/*/files
+docroot/sites/*/private
+
+# local settings and modules
+docroot/sites/all/modules/dev
+
+# Composer
+/vendor
+

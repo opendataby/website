@@ -26,3 +26,5 @@ ln -s ../.htaccess
 echo "Symlinking robots.txt to docroot/robots.txt"
 rm robots.txt
 ln -s ../robots.txt
+echo "Removing default .gitignore file"
+rm .gitignore

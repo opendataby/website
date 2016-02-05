@@ -1,0 +1,11 @@
+name = Open Data Dataset
+description = Open Data Dataset configs
+core = 7.x
+package = OpenData
+version = 7.x-1.0
+project = feature_opendata_dataset
+features[features_api][] = api:2
+features_override_items[] = variable.pathauto_node_dataset_pattern
+features_override_items[] = variable.pathauto_node_resource_pattern
+features_overrides[] = variable.pathauto_node_dataset_pattern.pathauto_node_dataset_pattern
+features_overrides[] = variable.pathauto_node_resource_pattern.pathauto_node_resource_pattern

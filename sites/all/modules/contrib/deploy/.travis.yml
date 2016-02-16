@@ -1,0 +1,63 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+
+mysql:
+  database: drupal
+  username: root
+  encoding: utf8
+
+env:
+  - PATH=$PATH:/home/travis/.composer/vendor/bin
+
+before_install:
+  # Update Composer so that the Drush installation doesn't fail.
+  - composer selfupdate
+
+install:
+  # Install Apache.
+  - sudo apt-get update
+  - sudo apt-get install apache2 libapache2-mod-fastcgi
+
+  # Set up PHP-FPM.
+  - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+  - sudo a2enmod rewrite actions fastcgi alias
+  - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+
+  # Set up the Apache vhost.
+  - sudo cp -f $TRAVIS_BUILD_DIR/.travis/apache-vhost.conf /etc/apache2/sites-available/default
+  - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$TRAVIS_BUILD_DIR/../drupal?g" --in-place /etc/apache2/sites-available/default
+  - sudo service apache2 restart
+
+  # Install Drush.
+  - composer global require drush/drush:7.*
+
+  # Checkout a directory structure with all dependencies.
+  - git clone --depth 1 --branch 7.x http://git.drupal.org/project/drupal.git $TRAVIS_BUILD_DIR/../drupal
+  - git clone --depth 1 --branch 7.x-1.x http://git.drupal.org/project/entity.git $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/entity
+  - git clone --depth 1 --branch 7.x-1.x http://git.drupal.org/project/entity_dependency.git $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/entity_dependency
+  - git clone --depth 1 --branch 7.x-1.x http://git.drupal.org/project/uuid.git $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/uuid
+  - git clone --depth 1 --branch 7.x-1.x http://git.drupal.org/project/ctools.git $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/ctools
+  - git clone --depth 1 --branch 7.x-3.x http://git.drupal.org/project/services.git $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/services
+  - wget https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php -O  $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/services/servers/rest_server/lib/spyc.php
+  - git clone --depth 1 --branch 7.x-2.x http://git.drupal.org/project/features.git $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/features
+  - git clone --depth 1 --branch 7.x-2.x http://git.drupal.org/project/libraries.git $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/libraries
+  - ln -s $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../drupal/sites/all/modules/deploy
+
+  # Install the site that will host our tests.
+  - cd $TRAVIS_BUILD_DIR/../drupal
+  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes site-install --db-url=mysql://root:@127.0.0.1/drupal testing
+
+before_script:
+  # Enable required modules and ignore any output to not break the test.
+  - drush --yes pm-enable simpletest deploy deploy_auto_plan deploy_adhoc_plan
+
+script:
+  # Run the tests and make sure we exit with the right status.
+  - php scripts/run-tests.sh --verbose --color --php `which php` --url http://127.0.0.1 --xml /tmp "Deployment"
+  - if [[ `grep -e 'type="\(failure\|exception\)"\|Fatal error' /tmp/*TestCase.xml` ]]; then exit 1; fi

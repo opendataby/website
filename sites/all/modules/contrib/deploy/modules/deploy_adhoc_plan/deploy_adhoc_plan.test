@@ -1,0 +1,58 @@
+<?php
+/**
+ * @file
+ * Ad Hoc Deployment Plans module tests.
+ */
+
+/**
+ * Test a full deployment with the ad hoc deployment functionality.
+ */
+class DeployAdhocPlanTestCase extends DeployWebTestCase {
+
+  protected $manage_add_to_plan = FALSE;
+
+  protected $origin_modules = array('entity', 'ctools', 'uuid', 'deploy', 'deploy_ui', 'deploy_auto_plan', 'deploy_adhoc_plan', 'deploy_example');
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Ad hoc deployment setup',
+      'description' => 'Test a full deployment between two sites, based on the provided example feature.',
+      'group' => 'Deployment'
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUpSiteSpecifics($key) {
+    if ($key == 'deploy_origin') {
+      variable_set('deploy_adhoc_plan_name', 'deploy_example_plan');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function testDeployment() {
+    $adhoc_plan_name = $this->randomName();
+
+    $user = $this->drupalCreateUser(array('create deploy plan adhoc'));
+    $this->drupalLogin($user);
+    $this->drupalGet('<front>', array('query' => array('deploy_adhoc_plan' => $adhoc_plan_name)));
+
+    $template_plan = deploy_plan_load(variable_get('deploy_adhoc_plan_name'));
+    $adhoc_plan = deploy_plan_load($adhoc_plan_name);
+
+    $this->assertTrue((
+      $template_plan->export_type == EXPORT_IN_CODE &&
+      !empty($adhoc_plan->pid) && $adhoc_plan->export_type == EXPORT_IN_DATABASE
+    ), 'Adhoc plan was successfully cloned.');
+
+    $this->assertEqual(deploy_auto_plan_get_session(), $adhoc_plan_name, 'Auto plan session was initialized.');
+
+    $this->runScenario($adhoc_plan_name);
+  }
+}

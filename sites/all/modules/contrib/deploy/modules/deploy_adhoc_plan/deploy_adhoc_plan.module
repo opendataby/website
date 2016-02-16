@@ -1,0 +1,108 @@
+<?php
+/**
+ * @file
+ * Code for ad hoc deployment plans.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function deploy_adhoc_plan_menu() {
+  $items = array();
+
+  $items['admin/config/content/deploy-adhoc-plan'] = array(
+    'title' => 'Ad Hoc Deployment Plan',
+    'description' => 'Administer ad hoc deployment plans',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('deploy_adhoc_plan_settings'),
+    'access arguments' => array('administer deploy plan adhoc'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function deploy_adhoc_plan_permission() {
+  return array(
+    'create deploy plan adhoc' => array(
+      'title' => t('Create Ad Hoc Deployment Plans'),
+      'description' => t('Create ad hoc deployment plan.'),
+    ),
+    'administer deploy plan adhoc' => array(
+      'title' => t('Administer Ad Hoc Deployment Plans'),
+      'description' => t('Configure ad hoc deployment plan settings.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_init().
+ */
+function deploy_adhoc_plan_init() {
+  // Check for adhoc query parameter.
+  if (user_is_logged_in() && !empty($_GET['deploy_adhoc_plan'])) {
+
+    // Load deploy plan if it exists.
+    $adhoc = $_GET['deploy_adhoc_plan'];
+    $plan = deploy_plan_load($adhoc);
+
+    // If deploy plan doesn't exist, try to create it.
+    if (empty($plan) && user_access('create deploy plan adhoc')) {
+      $plan = deploy_adhoc_plan_create($adhoc);
+    }
+
+    // If plan exists, create auto deploy session otherwise display message.
+    if ($plan) {
+      deploy_auto_plan_set_session($adhoc);
+    }
+    else {
+      drupal_set_message(t('Failed to create deployment plan.'), 'warning');
+    }
+  }
+}
+
+/**
+ * Admin settings form.
+ */
+function deploy_adhoc_plan_settings($form, $form_state) {
+
+  $plans = _deploy_auto_plan_plans_list();
+
+  if (!count($plans)) {
+    $msg = t('No deployment plans configured.');
+    if (module_exists('deploy_ui') && user_access('administer deployments')) {
+      $url = url('admin/structure/deploy/plans');
+      $msg = t('No deployment plans configured. <a href="!url">Add a plan</a>.', array('!url' => $url));
+    }
+    return array('text' => array('#markup' => $msg));
+  }
+
+  $form['deploy_adhoc_plan_name'] = array(
+    '#type' => 'select',
+    '#title' => t('Plan'),
+    '#description' => t('Select a deployment plan to use as a template when creating new ad hoc plans.'),
+    '#empty_option' => t('- None -'),
+    '#options' => $plans,
+    '#default_value' => variable_get('deploy_adhoc_plan_name'),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Helper function to create ad hoc plan if default is defined.
+ */
+function deploy_adhoc_plan_create($adhoc) {
+  $default = variable_get('deploy_adhoc_plan_name');
+  if ($default) {
+    $plan = deploy_plan_load($default);
+    unset($plan->pid);
+    $plan->export_type = NULL;
+    $plan->name = $adhoc;
+    $plan->title = $adhoc;
+    $plan->description = t('Ad hoc deployment plan');
+    return deploy_plan_save($plan);
+  }
+}

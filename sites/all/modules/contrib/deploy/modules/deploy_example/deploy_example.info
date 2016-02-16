@@ -1,0 +1,18 @@
+core = "7.x"
+dependencies[] = "deploy"
+dependencies[] = "deploy_ui"
+dependencies[] = "features"
+description = "Example feature of a deployment setup. Works well with the UUID Services Example feature on the endpoint site."
+features[ctools][] = "deploy:deploy_endpoints:1"
+features[ctools][] = "deploy:deploy_plans:1"
+features[deploy_endpoints][] = "deploy_example_endpoint"
+features[deploy_plans][] = "deploy_example_plan"
+name = "Deploy Example"
+package = "Features"
+
+; Information added by Drupal.org packaging script on 2015-10-05
+version = "7.x-2.0-beta1"
+core = "7.x"
+project = "deploy"
+datestamp = "1444072457"
+

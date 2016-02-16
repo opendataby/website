@@ -1,0 +1,14 @@
+name = "Entity Dependency API"
+description = "Provides an API to define dependencies between entities, and also a useful iterator class."
+core = "7.x"
+
+files[] = EntityDependencyIterator.inc
+files[] = EntityDependencyIteratorInterface.inc
+files[] = entity_dependency.test
+
+; Information added by Drupal.org packaging script on 2014-09-23
+version = "7.x-1.0-alpha2"
+core = "7.x"
+project = "entity_dependency"
+datestamp = "1411455382"
+

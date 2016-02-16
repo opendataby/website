@@ -1,0 +1,221 @@
+<?php
+
+/**
+ * @file
+ * Deploy Auto Plan module functions.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function deploy_auto_plan_permission() {
+  return array(
+    'administer deploy plan auto' => array(
+      'title' => t('Administer Automagic Deployment Plans'),
+      'description' => t('Configure automagic deployment plans settings.'),
+    ),
+  );
+}
+
+/**
+ * Helper function to set a session value
+ *
+ * @param string
+ *   The plan name.
+ */
+function deploy_auto_plan_set_session($value) {
+  // Because the Drupal 7 testing framework is not the greatest this world have
+  // seen we need to provide an alternative "session storage" in order to test
+  // this. The regular sessions are messed up for some reason.
+  // This is very hacky and will not work for all test cases, but it does the
+  // job for now.
+  $test_info = &$GLOBALS['drupal_test_info'];
+  if ($test_info) {
+    variable_set('deploy_auto_plan_user_plan__testing', $value);
+    return;
+  }
+  $_SESSION['deploy_auto_plan_user_plan'] = $value;
+}
+
+/**
+ * Helper function to get a session value
+ *
+ * @return string|FALSE
+ *   The plan name or FALSE when not exist in session
+ */
+function deploy_auto_plan_get_session() {
+  // Don't ask why, or see explanation in deploy_auto_plan_set_session() if you
+  // really want to know why (but you don't, trust me).
+  $test_info = &$GLOBALS['drupal_test_info'];
+  if ($test_info) {
+    return variable_get('deploy_auto_plan_user_plan__testing', FALSE);
+  }
+  if(isset($_SESSION['deploy_auto_plan_user_plan'])){
+    return $_SESSION['deploy_auto_plan_user_plan'];
+  }
+
+  return FALSE;
+}
+
+/**
+ * Helper function to destory a session value
+ */
+function deploy_auto_plan_del_session() {
+  unset($_SESSION['deploy_auto_plan_user_plan']);
+}
+
+/**
+ * Implements hook_menu().
+ */
+function deploy_auto_plan_menu() {
+  $items = array();
+
+  $items['admin/config/content/deploy-auto-plan'] = array(
+    'title' => 'Automagic Deployment Plan',
+    'description' => 'Administer automagic deployment plans',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('deploy_auto_plan_settings'),
+    'access arguments' => array('administer deploy plan auto'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function deploy_auto_plan_entity_insert($entity, $type) {
+  _deploy_auto_plan_entity_save($entity, $type);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function deploy_auto_plan_entity_update($entity, $type) {
+  _deploy_auto_plan_entity_save($entity, $type);
+}
+
+/* *
+ * Implements hook_entity_delete()
+ * /
+// This isn't needed as it is handled by deploy.manager out of the box.
+function deploy_auto_plan_entity_delete($entity, $type) {
+}
+*/
+
+/**
+ * Admin settings form.
+ */
+function deploy_auto_plan_settings($form, $form_state) {
+
+  $plans = _deploy_auto_plan_plans_list();
+
+  if (!count($plans)) {
+    $msg = t('No deployment plans configured.');
+    if (module_exists('deploy_ui') && user_access('administer deployments')) {
+      $url = url('admin/structure/deploy/plans');
+      $msg = t('No deployment plans configured. <a href="!url">Add a plan</a>.', array('!url' => $url));
+    }
+    return array('text' => array('#markup' => $msg));
+  }
+
+  $form['text'] = array(
+    '#markup' => t('Select which deployment plan all modified entities should be added to.'),
+  );
+
+  $form['deploy_auto_plan_name'] = array(
+    '#type' => 'select',
+    '#title' => t('Plan'),
+    '#empty_option' => t('- None -'),
+    '#options' => $plans,
+    '#default_value' => variable_get('deploy_auto_plan_name', NULL),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Handles an entity being saved.
+ *
+ * @param $entity
+ *   The entity object.
+ * @param $type
+ *   The type of entity being updated (i.e. node, user, comment).
+ */
+function _deploy_auto_plan_entity_save($entity, $type) {
+  $plan_name = deploy_auto_plan_get_plan();
+
+  $info = entity_get_info($type);
+  if (!$plan_name || empty($info['entity keys']['uuid'])) {
+    // we only care about entities with UUIDs.
+    return;
+  }
+
+  // Allow other modules to alter whether or not the entity should be added.
+  $status = TRUE;
+  drupal_alter('deploy_auto_plan_status', $status, $type, $entity);
+  if (!$status) {
+    // If status is FALSE then don't add the entity to the plan.
+    return;
+  }
+
+  deploy_manager_add_to_plan($plan_name, $type, $entity);
+}
+
+/**
+ * Helper function to get a plan name
+ *
+ * @return string
+ *   The plan name.
+ */
+function deploy_auto_plan_get_plan() {
+  $user_plan_name = deploy_auto_plan_get_session();
+  if ($user_plan_name) {
+    return $user_plan_name;
+  }
+
+  return variable_get('deploy_auto_plan_name', NULL);
+}
+
+ /**
+ * Fetches a list of deployment plans.
+ *
+ * @return array
+ *   The list of available plans.
+ */
+function _deploy_auto_plan_plans_list() {
+  $options = array();
+  $conditions = array('aggregator_plugin' => 'DeployAggregatorManaged');
+
+  $plans = deploy_plan_load_all($conditions);
+  foreach ($plans as $plan) {
+    $options[$plan->name] = $plan->title;
+  }
+
+  return $options;
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function deploy_auto_plan_ctools_plugin_api($module, $api) {
+  if ($module == 'entity_dependency' && $api == 'iterator') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_entity_dependency_iterator().
+ */
+function deploy_auto_plan_entity_dependency_iterator() {
+  $plugins = array();
+
+  $plugins['no_dependency'] = array(
+    'title' => t('No Dependency Iterator'),
+    'description' => t('This iterator assumes depedencies are already includd in the plan.'),
+    'handler' => 'NoDependencyIterator',
+    'file' => 'plugins/iterator/deploy_auto_plan.NoDependencyIterator.class.php',
+  );
+
+  return $plugins;
+}

@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ * Deploy services module functions.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function deploy_services_permission() {
+  $perms = array();
+
+  $perms['diff deployment plans'] = array(
+    'title' => t('Review diffs of deployment plans.'),
+    'description' => t('Generate and review diffs of deployment plans to see the changes in the plan.'),
+  );
+
+  return $perms;
+}
+

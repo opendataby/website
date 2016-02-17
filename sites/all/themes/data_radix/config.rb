@@ -4,7 +4,7 @@ require "compass_radix";
 require File.join(File.dirname(__FILE__), 'extensions/css_splitter/css_splitter.rb');
 
 # Set environment [development, production]
-environment = :production
+environment = :development
 
 # Set this to the root of your project when deployed:
 http_path = "/"

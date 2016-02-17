@@ -5,7 +5,7 @@
   margin-left: 10px;
   margin-right: 10px;
 }
-.navbar-default .navbar-collapse, 
+.navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
   padding: 0;
   vertical-align: top;
@@ -193,9 +193,9 @@
   background:$brand-primary;
   border-color:$brand-primary;
 }
-.btn-primary:hover, 
-.btn-primary:focus, 
-.btn-primary:active, 
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
 .btn-primary.active {
   background:$brand-secondary;
   border-color:$brand-secondary;
@@ -223,8 +223,8 @@ a.embed-link {
   margin:1em 0;
   text-decoration: none;
 }
-a.embed-link:hover, 
-a.embed-link:focus, 
+a.embed-link:hover,
+a.embed-link:focus,
 a.embed-link:active {
   //background:$brand-secondary;
   color:#fff;
@@ -248,7 +248,11 @@ ul.action-links {
   margin:1em 15px;
 }
 
-.btn:active, 
+.btn:active,
 .btn.active {
   @include box-shadow(none);
+}
+
+.navigation-wrapper {
+  background: $brand-primary;
 }

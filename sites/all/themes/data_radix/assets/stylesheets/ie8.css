@@ -1,12 +1,56 @@
-.panel-top { -ms-behavior: url(/backgroundsize.min.htc); }
-.panel-top .tint { background: #0A77BD; opacity: 0.5; filter: alpha(opacity=50); -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; }
+/* line 6, ../sass/ie8.scss */
+.panel-top {
+  -ms-behavior: url(/backgroundsize.min.htc);
+}
+/* line 8, ../sass/ie8.scss */
+.panel-top .tint {
+  background: #2a2f4e;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+}
 
-.format-label { font-size: 0; }
+/* line 15, ../sass/ie8.scss */
+.format-label {
+  font-size: 0;
+}
 
-.radix-layouts-sidebar .pane-block { border: 1px solid #ddd; }
+/* line 18, ../sass/ie8.scss */
+.radix-layouts-sidebar .pane-block {
+  border: 1px solid #ddd;
+}
 
-.field-type-taxonomy-term-reference label { display: block; }
-.field-type-taxonomy-term-reference input.form-control { height: auto; }
-.field-type-taxonomy-term-reference .field-item a { display: inline-block; padding: 0; font-size: 12px; line-height: 1.25em; border-radius: none; background-image: none; margin: 1px 1em .75em 0; position: relative; color: #0A77BD; border: none; border-left: 0; z-index: 2; }
-.field-type-taxonomy-term-reference .field-item a:after, .field-type-taxonomy-term-reference .field-item a:before { display: none; }
-.field-type-taxonomy-term-reference .field-item a:hover:after, .field-type-taxonomy-term-reference .field-item a:hover { background: inherit; color: #002245; text-decoration: underline; }
+/* line 22, ../sass/ie8.scss */
+.field-type-taxonomy-term-reference label {
+  display: block;
+}
+/* line 25, ../sass/ie8.scss */
+.field-type-taxonomy-term-reference input.form-control {
+  height: auto;
+}
+/* line 29, ../sass/ie8.scss */
+.field-type-taxonomy-term-reference .field-item a {
+  display: inline-block;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.25em;
+  border-radius: none;
+  background-image: none;
+  margin: 1px 1em .75em 0;
+  position: relative;
+  color: #2a2f4e;
+  border: none;
+  border-left: 0;
+  z-index: 2;
+}
+/* line 42, ../sass/ie8.scss */
+.field-type-taxonomy-term-reference .field-item a:after, .field-type-taxonomy-term-reference .field-item a:before {
+  display: none;
+}
+/* line 47, ../sass/ie8.scss */
+.field-type-taxonomy-term-reference .field-item a:hover:after,
+.field-type-taxonomy-term-reference .field-item a:hover {
+  background: inherit;
+  color: #002245;
+  text-decoration: underline;
+}

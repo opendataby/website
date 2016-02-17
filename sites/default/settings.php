@@ -586,6 +586,7 @@ $conf['master_modules'] = array(
     'blog',
     'feature_od_dataset',
     'feature_od_sitewide',
+    'feature_od_content_types',
   ),
   'local' => array(),
   'dev' => array(),

@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the Open Data Content Types feature.
- */
-
-include_once 'feature_od_content_types.features.inc';

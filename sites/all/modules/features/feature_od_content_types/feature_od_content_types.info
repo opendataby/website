@@ -1,0 +1,10 @@
+name = Open Data Content Types
+core = 7.x
+package = OpenData
+version = 7.x-1.0
+dependencies[] = dkan_dataset_content_types
+features[features_api][] = api:2
+features[features_override_items][] = field_base.field_upload
+features[features_override_items][] = field_instance.node-resource-field_upload
+features[features_overrides][] = field_base.field_upload.field_upload
+features[features_overrides][] = field_instance.node-resource-field_upload.node-resource-field_upload

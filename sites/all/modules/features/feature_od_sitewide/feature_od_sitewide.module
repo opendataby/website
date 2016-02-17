@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the Open Data Sitewide feature.
- */
-
-include_once 'feature_od_sitewide.features.inc';

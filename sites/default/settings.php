@@ -584,7 +584,6 @@ $conf['master_modules'] = array(
     'node_export',
     'blog',
     'feature_od_dataset',
-    'feature_od_sitewide',
 
   ),
   'local' => array(),

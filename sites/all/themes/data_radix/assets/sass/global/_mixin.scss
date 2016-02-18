@@ -83,8 +83,8 @@
   line-height: 1.4em;
   @include border-radius(4px);
 }
-%button:hover, 
-%button:focus, 
+%button:hover,
+%button:focus,
 %button:active {
   // background:$brand-secondary;
   // border-color:$brand-secondary;
@@ -97,6 +97,7 @@
   padding: 5px 12px;
   line-height: 1.4em;
   vertical-align: top;
+  background-color: #0b4498;
 }
 
 %screenreader {
@@ -114,7 +115,7 @@
   white-space: -o-pre-wrap;   /* Opera 7 */
   white-space: -moz-pre-wrap; /* Mozilla */
   white-space: -hp-pre-wrap;  /* HP Printers */
-  word-wrap: break-word;      /* IE 5+ */    
+  word-wrap: break-word;      /* IE 5+ */
   word-break: break-word;
 }
 

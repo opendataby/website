@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the Open Data Dataset feature.
- */
-
-include_once 'feature_od_dataset.features.inc';

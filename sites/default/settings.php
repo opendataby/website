@@ -583,8 +583,7 @@ $conf['master_modules'] = array(
     'dropguard',
     'node_export',
     'blog',
-    'feature_od_dataset',
-
+    'fe_block',
   ),
   'local' => array(),
   'dev' => array(),

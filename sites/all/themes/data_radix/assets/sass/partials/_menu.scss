@@ -210,6 +210,15 @@
 .form-actions #edit-submit:active {
   background: darken($brand-success,10%);
   border-color: darken($brand-success,10%);
+  color: $brand-primary;
+}
+
+.form-actions #edit-preview-changes,
+.form-actions #edit-preview-changes:hover,
+.form-actions #edit-preview-changes:focus,
+.form-actions #edit-preview-changes:active {
+  background: darken($brand-success,10%);
+  border-color: darken($brand-success,10%);
   color: #fff;
 }
 

@@ -40,9 +40,10 @@ body.maintenance-page .form-actions .btn:active:first-child {
   padding: 5px 12px;
   line-height: 1.4em;
   vertical-align: top;
+  background-color: #0b4498;
 }
 
-/* line 102, ../sass/global/_mixin.scss */
+/* line 103, ../sass/global/_mixin.scss */
 #dkan-sitewide-dataset-search-form label,
 #dkan-sitewide-dataset-search-form--2 label, #region-branding #block-dkan-sitewide-dkan-sitewide-search-bar label {
   position: absolute;
@@ -13612,10 +13613,20 @@ body.maintenance-page .form-actions .active.btn:first-child {
 .form-actions #edit-submit:active {
   background: #449d44;
   border-color: #449d44;
-  color: #fff;
+  color: #2a2f4e;
 }
 
 /* line 216, ../sass/partials/_menu.scss */
+.form-actions #edit-preview-changes,
+.form-actions #edit-preview-changes:hover,
+.form-actions #edit-preview-changes:focus,
+.form-actions #edit-preview-changes:active {
+  background: #449d44;
+  border-color: #449d44;
+  color: #fff;
+}
+
+/* line 225, ../sass/partials/_menu.scss */
 a.embed-link {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -13628,7 +13639,7 @@ a.embed-link {
   text-decoration: none;
 }
 
-/* line 226, ../sass/partials/_menu.scss */
+/* line 235, ../sass/partials/_menu.scss */
 a.embed-link:hover,
 a.embed-link:focus,
 a.embed-link:active {
@@ -13636,7 +13647,7 @@ a.embed-link:active {
   text-decoration: none;
 }
 
-/* line 233, ../sass/partials/_menu.scss */
+/* line 242, ../sass/partials/_menu.scss */
 a.embed-link:before {
   content: '\f121';
   color: #fff;
@@ -13647,25 +13658,25 @@ a.embed-link:before {
   left: 10px;
 }
 
-/* line 242, ../sass/partials/_menu.scss */
+/* line 251, ../sass/partials/_menu.scss */
 textarea.embed-code {
   width: 100%;
   margin-bottom: 1em;
 }
 
-/* line 247, ../sass/partials/_menu.scss */
+/* line 256, ../sass/partials/_menu.scss */
 ul.action-links {
   margin: 1em 15px;
 }
 
-/* line 251, ../sass/partials/_menu.scss */
+/* line 260, ../sass/partials/_menu.scss */
 .btn:active,
 .btn.active {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-/* line 256, ../sass/partials/_menu.scss */
+/* line 265, ../sass/partials/_menu.scss */
 .navigation-wrapper {
   background: #2a2f4e;
 }

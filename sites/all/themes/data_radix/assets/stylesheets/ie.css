@@ -4712,10 +4712,20 @@ body.maintenance-page .form-actions .active.btn:first-child {
 .form-actions #edit-submit:active {
   background: #449d44;
   border-color: #449d44;
-  color: #fff;
+  color: #2a2f4e;
 }
 
 /* line 216, ../sass/partials/_menu.scss */
+.form-actions #edit-preview-changes,
+.form-actions #edit-preview-changes:hover,
+.form-actions #edit-preview-changes:focus,
+.form-actions #edit-preview-changes:active {
+  background: #449d44;
+  border-color: #449d44;
+  color: #fff;
+}
+
+/* line 225, ../sass/partials/_menu.scss */
 a.embed-link {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -4728,7 +4738,7 @@ a.embed-link {
   text-decoration: none;
 }
 
-/* line 226, ../sass/partials/_menu.scss */
+/* line 235, ../sass/partials/_menu.scss */
 a.embed-link:hover,
 a.embed-link:focus,
 a.embed-link:active {
@@ -4736,7 +4746,7 @@ a.embed-link:active {
   text-decoration: none;
 }
 
-/* line 233, ../sass/partials/_menu.scss */
+/* line 242, ../sass/partials/_menu.scss */
 a.embed-link:before {
   content: '\f121';
   color: #fff;
@@ -4747,25 +4757,25 @@ a.embed-link:before {
   left: 10px;
 }
 
-/* line 242, ../sass/partials/_menu.scss */
+/* line 251, ../sass/partials/_menu.scss */
 textarea.embed-code {
   width: 100%;
   margin-bottom: 1em;
 }
 
-/* line 247, ../sass/partials/_menu.scss */
+/* line 256, ../sass/partials/_menu.scss */
 ul.action-links {
   margin: 1em 15px;
 }
 
-/* line 251, ../sass/partials/_menu.scss */
+/* line 260, ../sass/partials/_menu.scss */
 .btn:active,
 .btn.active {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-/* line 256, ../sass/partials/_menu.scss */
+/* line 265, ../sass/partials/_menu.scss */
 .navigation-wrapper {
   background: #2a2f4e;
 }
@@ -6247,4 +6257,68 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   background: inherit;
   border: none;
   color: inherit;
+}
+/* line 20, ../sass/partials/_admin.scss */
+.views-edit-view .footer {
+  background: inherit;
+}
+
+/* line 26, ../sass/partials/_admin.scss */
+.modal-content .panels-root-content-box a.btn {
+  white-space: normal;
+}
+/* line 29, ../sass/partials/_admin.scss */
+.modal-content .panel-title {
+  padding-right: 55px;
+}
+
+/* line 34, ../sass/partials/_admin.scss */
+.views-displays .secondary .open > a:hover {
+  color: #666;
+}
+
+/* line 37, ../sass/partials/_admin.scss */
+input.form-submit.features-refresh-button {
+  background: #2a2f4e;
+}
+
+/* line 3, ../sass/partials/_recline.scss */
+.recline-pager .pagination li {
+  vertical-align: middle;
+}
+/* line 5, ../sass/partials/_recline.scss */
+.recline-pager .pagination li a {
+  line-height: 1em;
+  padding: 0 10px;
+}
+/* line 8, ../sass/partials/_recline.scss */
+.recline-pager .pagination li a.btn {
+  line-height: 32px;
+}
+/* line 13, ../sass/partials/_recline.scss */
+.recline-pager .pagination input {
+  height: 20px;
+  font-size: .8em;
+}
+
+/* line 19, ../sass/partials/_recline.scss */
+.recline-data-explorer .form-control {
+  border-color: #ccc;
+}
+/* line 22, ../sass/partials/_recline.scss */
+.recline-data-explorer .btn {
+  border: 1px solid #ccc;
+  font-size: 14px;
+  padding: 0px 12px;
+  line-height: 32px;
+}
+
+/* line 29, ../sass/partials/_recline.scss */
+.dropdown-menu.slick-contextmenu {
+  background: #fff;
+}
+/* line 31, ../sass/partials/_recline.scss */
+.dropdown-menu.slick-contextmenu li {
+  padding-left: 5px;
+  padding-right: 5px;
 }

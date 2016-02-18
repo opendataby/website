@@ -25,14 +25,6 @@ function blog_views_api($module = NULL, $api = NULL) {
  */
 function blog_node_info() {
   $items = array(
-    'blog_page' => array(
-      'name' => t('Страница блога'),
-      'base' => 'node_content',
-      'description' => '',
-      'has_title' => '1',
-      'title_label' => t('Title'),
-      'help' => '',
-    ),
     'blog_post' => array(
       'name' => t('Пост блога'),
       'base' => 'node_content',
@@ -42,5 +34,6 @@ function blog_node_info() {
       'help' => '',
     ),
   );
+  drupal_alter('node_info', $items);
   return $items;
 }

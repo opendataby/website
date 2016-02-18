@@ -11,11 +11,12 @@ section.col-sm-9 {
 
 #featured,
 .panel-top {
-  background-position:50% 50%;
+  background-position:50% 4%;
   background-size:cover !important;
   overflow:hidden;
   position: relative;
   z-index: 0;
+  height: 300px;
   .tint {
     // Let colorizer supply the background color.
     //background-color:rgba(10 , 119 , 189, .45);

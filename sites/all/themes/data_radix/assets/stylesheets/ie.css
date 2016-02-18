@@ -3947,13 +3947,14 @@ section.col-sm-9 {
 /* line 12, ../sass/partials/_layout.scss */
 #featured,
 .panel-top {
-  background-position: 50% 50%;
+  background-position: 50% 4%;
   background-size: cover !important;
   overflow: hidden;
   position: relative;
   z-index: 0;
+  height: 300px;
 }
-/* line 19, ../sass/partials/_layout.scss */
+/* line 20, ../sass/partials/_layout.scss */
 #featured .tint,
 .panel-top .tint {
   position: absolute;
@@ -3961,7 +3962,7 @@ section.col-sm-9 {
   width: 100%;
   z-index: -1;
 }
-/* line 27, ../sass/partials/_layout.scss */
+/* line 28, ../sass/partials/_layout.scss */
 #featured .pane-dkan-sitewide-demo-front-dkan-demo-front .pane-title,
 #featured .pane-views-popular-tags-block .pane-title,
 #featured .pane-dkan-sitewide-demo-front-dkan-add-front .pane-title,
@@ -3970,14 +3971,14 @@ section.col-sm-9 {
 .panel-top .pane-dkan-sitewide-demo-front-dkan-add-front .pane-title {
   display: none;
 }
-/* line 32, ../sass/partials/_layout.scss */
+/* line 33, ../sass/partials/_layout.scss */
 #featured .container,
 .panel-top .container {
   padding: 30px 0;
   position: relative;
   z-index: 5;
 }
-/* line 37, ../sass/partials/_layout.scss */
+/* line 38, ../sass/partials/_layout.scss */
 #featured .pane-block,
 #featured .panel-pane,
 #featured .block-content,
@@ -3988,28 +3989,28 @@ section.col-sm-9 {
   line-height: 1.33em;
   margin: 0 15px;
 }
-/* line 44, ../sass/partials/_layout.scss */
+/* line 45, ../sass/partials/_layout.scss */
 #featured a,
 .panel-top a {
   color: #ffffff;
 }
 
-/* line 48, ../sass/partials/_layout.scss */
+/* line 49, ../sass/partials/_layout.scss */
 #top-content {
   margin: 20px;
 }
-/* line 50, ../sass/partials/_layout.scss */
+/* line 51, ../sass/partials/_layout.scss */
 #top-content .block {
   padding: 10px;
   text-align: center;
 }
-/* line 53, ../sass/partials/_layout.scss */
+/* line 54, ../sass/partials/_layout.scss */
 #top-content .block h2.block-title {
   border: none;
   color: #333333;
   font-size: 1.6em;
 }
-/* line 59, ../sass/partials/_layout.scss */
+/* line 60, ../sass/partials/_layout.scss */
 #top-content [class*="col-"] {
   background-color: #ccc;
   border-left: 4px solid #ffffff;
@@ -4017,7 +4018,7 @@ section.col-sm-9 {
   margin-bottom: -99999px;
   padding-bottom: 99999px;
 }
-/* line 67, ../sass/partials/_layout.scss */
+/* line 68, ../sass/partials/_layout.scss */
 #top-content .row {
   overflow: hidden;
 }
@@ -6246,68 +6247,4 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   background: inherit;
   border: none;
   color: inherit;
-}
-/* line 20, ../sass/partials/_admin.scss */
-.views-edit-view .footer {
-  background: inherit;
-}
-
-/* line 26, ../sass/partials/_admin.scss */
-.modal-content .panels-root-content-box a.btn {
-  white-space: normal;
-}
-/* line 29, ../sass/partials/_admin.scss */
-.modal-content .panel-title {
-  padding-right: 55px;
-}
-
-/* line 34, ../sass/partials/_admin.scss */
-.views-displays .secondary .open > a:hover {
-  color: #666;
-}
-
-/* line 37, ../sass/partials/_admin.scss */
-input.form-submit.features-refresh-button {
-  background: #2a2f4e;
-}
-
-/* line 3, ../sass/partials/_recline.scss */
-.recline-pager .pagination li {
-  vertical-align: middle;
-}
-/* line 5, ../sass/partials/_recline.scss */
-.recline-pager .pagination li a {
-  line-height: 1em;
-  padding: 0 10px;
-}
-/* line 8, ../sass/partials/_recline.scss */
-.recline-pager .pagination li a.btn {
-  line-height: 32px;
-}
-/* line 13, ../sass/partials/_recline.scss */
-.recline-pager .pagination input {
-  height: 20px;
-  font-size: .8em;
-}
-
-/* line 19, ../sass/partials/_recline.scss */
-.recline-data-explorer .form-control {
-  border-color: #ccc;
-}
-/* line 22, ../sass/partials/_recline.scss */
-.recline-data-explorer .btn {
-  border: 1px solid #ccc;
-  font-size: 14px;
-  padding: 0px 12px;
-  line-height: 32px;
-}
-
-/* line 29, ../sass/partials/_recline.scss */
-.dropdown-menu.slick-contextmenu {
-  background: #fff;
-}
-/* line 31, ../sass/partials/_recline.scss */
-.dropdown-menu.slick-contextmenu li {
-  padding-left: 5px;
-  padding-right: 5px;
 }

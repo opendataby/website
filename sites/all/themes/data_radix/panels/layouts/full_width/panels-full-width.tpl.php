@@ -13,7 +13,7 @@ if($file):
 else :
   $background_option = theme_get_setting('background_option');
   if(empty($background_option)):
-    $uri = 'profiles/dkan/themes/contrib/nuboot_radix/assets/images/hero.jpg';
+    $uri = 'sites/all/themes/data_radix/assets/images/hero.jpg';
     $tint = 'tint';
     $bg_color = 'transparent';
     $path = file_create_url($uri);

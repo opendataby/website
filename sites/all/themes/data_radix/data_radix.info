@@ -59,8 +59,8 @@ settings[toggle_favicon] = 1
 settings[toggle_main_menu] = 1
 settings[toggle_secondary_menu] = 1
 settings[logo_path] = 'profiles/dkan/themes/contrib/nuboot_radix/logo.svg'
-settings[hero_path] = 'profiles/dkan/themes/contrib/nuboot_radix/assets/images/hero.jpg'
-settings[copyright][value] = 'Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>'
+settings[hero_path] = 'sites/all/themes/data_radix/assets/images/hero.jpg'
+settings[copyright][value] = 'Powered by <a href="http://opendata.by">Открытые Данные Беларуси</a>'
 settings[copyright][format] = 'html'
 
 ; Breadcrumbs

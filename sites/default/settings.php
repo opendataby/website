@@ -584,6 +584,7 @@ $conf['master_modules'] = array(
     'node_export',
     'blog',
     'fe_block',
+    'feature_od_projects',
   ),
   'local' => array(),
   'dev' => array(),

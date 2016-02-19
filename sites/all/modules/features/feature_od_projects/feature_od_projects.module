@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Open Data Projects feature.
+ */
+
+include_once 'feature_od_projects.features.inc';

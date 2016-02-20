@@ -4830,6 +4830,25 @@ ul.action-links {
   margin: 0;
 }
 
+/* line 43, ../sass/partials/_page.scss */
+.view-Projects ul {
+  list-style-type: none;
+}
+/* line 45, ../sass/partials/_page.scss */
+.view-Projects ul li {
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+/* line 48, ../sass/partials/_page.scss */
+.view-Projects ul li h3.title {
+  margin-top: 0;
+}
+/* line 51, ../sass/partials/_page.scss */
+.view-Projects ul li img {
+  float: left;
+  margin-right: 5px;
+}
+
 /* line 4, ../sass/partials/_view.scss */
 .front .view-popular-tags {
   margin-top: 20px;
@@ -6240,85 +6259,3 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   .panel-full-width .panel-bottom .panel-col-third .inside {
     margin: 20px 15px;
   }
-}
-/* line 2, ../sass/partials/_admin.scss */
-.admin-list dt, .admin-list dd {
-  display: inline-block;
-  float: none;
-  vertical-align: top;
-}
-
-/* line 10, ../sass/partials/_admin.scss */
-.views-edit-view .action-list input.btn,
-.views-edit-view .action-list input.btn:active,
-.views-edit-view .action-list input.btn:focus,
-.views-edit-view .action-list input.btn:hover,
-.views-edit-view .action-list input[type="submit"]:hover {
-  background: inherit;
-  border: none;
-  color: inherit;
-}
-/* line 20, ../sass/partials/_admin.scss */
-.views-edit-view .footer {
-  background: inherit;
-}
-
-/* line 26, ../sass/partials/_admin.scss */
-.modal-content .panels-root-content-box a.btn {
-  white-space: normal;
-}
-/* line 29, ../sass/partials/_admin.scss */
-.modal-content .panel-title {
-  padding-right: 55px;
-}
-
-/* line 34, ../sass/partials/_admin.scss */
-.views-displays .secondary .open > a:hover {
-  color: #666;
-}
-
-/* line 37, ../sass/partials/_admin.scss */
-input.form-submit.features-refresh-button {
-  background: #2a2f4e;
-}
-
-/* line 3, ../sass/partials/_recline.scss */
-.recline-pager .pagination li {
-  vertical-align: middle;
-}
-/* line 5, ../sass/partials/_recline.scss */
-.recline-pager .pagination li a {
-  line-height: 1em;
-  padding: 0 10px;
-}
-/* line 8, ../sass/partials/_recline.scss */
-.recline-pager .pagination li a.btn {
-  line-height: 32px;
-}
-/* line 13, ../sass/partials/_recline.scss */
-.recline-pager .pagination input {
-  height: 20px;
-  font-size: .8em;
-}
-
-/* line 19, ../sass/partials/_recline.scss */
-.recline-data-explorer .form-control {
-  border-color: #ccc;
-}
-/* line 22, ../sass/partials/_recline.scss */
-.recline-data-explorer .btn {
-  border: 1px solid #ccc;
-  font-size: 14px;
-  padding: 0px 12px;
-  line-height: 32px;
-}
-
-/* line 29, ../sass/partials/_recline.scss */
-.dropdown-menu.slick-contextmenu {
-  background: #fff;
-}
-/* line 31, ../sass/partials/_recline.scss */
-.dropdown-menu.slick-contextmenu li {
-  padding-left: 5px;
-  padding-right: 5px;
-}

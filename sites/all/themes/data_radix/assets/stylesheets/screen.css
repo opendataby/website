@@ -13731,6 +13731,25 @@ ul.action-links {
   margin: 0;
 }
 
+/* line 43, ../sass/partials/_page.scss */
+.view-Projects ul {
+  list-style-type: none;
+}
+/* line 45, ../sass/partials/_page.scss */
+.view-Projects ul li {
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+/* line 48, ../sass/partials/_page.scss */
+.view-Projects ul li h3.title {
+  margin-top: 0;
+}
+/* line 51, ../sass/partials/_page.scss */
+.view-Projects ul li img {
+  float: left;
+  margin-right: 5px;
+}
+
 /* line 4, ../sass/partials/_view.scss */
 .front .view-popular-tags {
   margin-top: 20px;

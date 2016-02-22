@@ -13750,6 +13750,12 @@ ul.action-links {
   margin-right: 5px;
 }
 
+/* line 61, ../sass/partials/_page.scss */
+.views_slideshow_cycle_teaser_section .views-slideshow-cycle-main-frame-row-item {
+  float: left;
+  width: 32%;
+}
+
 /* line 4, ../sass/partials/_view.scss */
 .front .view-popular-tags {
   margin-top: 20px;

@@ -13,7 +13,7 @@ function feature_od_projects_field_default_field_bases() {
   // Exported field_base: 'field_project_image'
   $field_bases['field_project_image'] = array(
     'active' => 1,
-    'cardinality' => 1,
+    'cardinality' => 5,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_project_image',

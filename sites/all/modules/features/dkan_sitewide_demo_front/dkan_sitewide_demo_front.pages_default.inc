@@ -99,17 +99,13 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     $display->content['new-8aa431e2-a9e8-4d73-b043-aa57ecbf0947'] = $pane;
     $display->panels['middle'][0] = 'new-8aa431e2-a9e8-4d73-b043-aa57ecbf0947';
     $pane = new stdClass();
-    $pane->pid = 'new-c31041ac-ab43-416f-8dfe-8333a6389d17';
+    $pane->pid = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
     $pane->panel = 'middle';
-    $pane->type = 'block';
-    $pane->subtype = 'quicktabs-live_stream';
+    $pane->type = 'views_panes';
+    $pane->subtype = 'Projects-front_slideshow';
     $pane->shown = TRUE;
     $pane->access = array();
-    $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
-      'override_title_heading' => 'h2',
-    );
+    $pane->configuration = array();
     $pane->cache = array();
     $pane->style = array(
       'settings' => NULL,
@@ -118,9 +114,9 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     $pane->extras = array();
     $pane->position = 1;
     $pane->locks = array();
-    $pane->uuid = 'c31041ac-ab43-416f-8dfe-8333a6389d17';
-    $display->content['new-c31041ac-ab43-416f-8dfe-8333a6389d17'] = $pane;
-    $display->panels['middle'][1] = 'new-c31041ac-ab43-416f-8dfe-8333a6389d17';
+    $pane->uuid = '1233cfbe-d4d6-41a0-926e-29feec02bb39';
+    $display->content['new-1233cfbe-d4d6-41a0-926e-29feec02bb39'] = $pane;
+    $display->panels['middle'][1] = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
     $pane = new stdClass();
     $pane->pid = 'new-e9a59ddf-15b0-4a29-8ef6-ef460ba539e0';
     $pane->panel = 'top-first';

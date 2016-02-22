@@ -38,7 +38,7 @@
   margin: 0;
 }
 
-// Projects view
+// Projects view.
 .view-Projects {
   ul {
     list-style-type: none;
@@ -55,3 +55,12 @@
     }
   }
 }
+
+// Slideshow of Projects on home.
+.views_slideshow_cycle_teaser_section {
+  .views-slideshow-cycle-main-frame-row-item {
+    float: left;
+    width: 32%;
+  }
+}
+

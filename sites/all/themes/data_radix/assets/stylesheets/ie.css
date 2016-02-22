@@ -4849,6 +4849,12 @@ ul.action-links {
   margin-right: 5px;
 }
 
+/* line 61, ../sass/partials/_page.scss */
+.views_slideshow_cycle_teaser_section .views-slideshow-cycle-main-frame-row-item {
+  float: left;
+  width: 32%;
+}
+
 /* line 4, ../sass/partials/_view.scss */
 .front .view-popular-tags {
   margin-top: 20px;
@@ -6250,12 +6256,4 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   .panel-full-width .panel-bottom .panel-col-third {
     width: 100%;
     float: none;
-  }
-  /* line 17, ../sass/partials/_responsive.scss */
-  .panel-full-width .panel-top .panel-col-first .inside,
-  .panel-full-width .panel-top .panel-col-second .inside,
-  .panel-full-width .panel-bottom .panel-col-first .inside,
-  .panel-full-width .panel-bottom .panel-col-second .inside,
-  .panel-full-width .panel-bottom .panel-col-third .inside {
-    margin: 20px 15px;
   }

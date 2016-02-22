@@ -13,11 +13,49 @@
     {
       "type": "composer",
       "url": "https://packagist.drupal-composer.org"
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "drupal/phingdrushtask",
+        "version": "7.1.2",
+        "type": "drupal-drush",
+        "dist": {
+          "url": "http://ftp.drupal.org/files/projects/phingdrushtask-7.x-1.2.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "opendata/jcarousel",
+        "version": "0.2.9",
+        "type": "drupal-library",
+        "dist": {
+          "url": "https://github.com/jsor/jcarousel/archive/0.2.9.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "opendata/jquery.cycle",
+        "version": "3.0.3",
+        "type": "drupal-library",
+        "dist": {
+          "url": "http://malsup.github.io/jquery.cycle.all.js",
+          "type": "file"
+        }
+      }
     }
   ],
   "require": {
     "composer/installers": "^1.0.20",
-    "cweagans/composer-patches": "~1.0"
+    "cweagans/composer-patches": "~1.0",
+    "opendata/jquery.cycle": "3.0.3",
+    "opendata/jcarousel": "0.2.9"
   },
   "require-dev": {
     "behat/mink": "~1.6",
@@ -38,7 +76,9 @@
       "docroot/core": ["type:drupal-core"],
       "docroot/sites/all/modules/contrib/{$name}": ["type:drupal-module"],
       "docroot/profiles/contrib/{$name}": ["type:drupal-profile"],
-      "docroot/sites/all/themes/contrib/{$name}": ["type:drupal-theme"]
+      "docroot/sites/all/themes/contrib/{$name}": ["type:drupal-theme"],
+      "docroot/sites/all/libraries/{$name}/": ["type:drupal-library"],
+      "docroot/sites/all/drush/{$name}/": ["type:drupal-drush"]
     }
   }
 }

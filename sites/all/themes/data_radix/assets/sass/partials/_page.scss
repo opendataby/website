@@ -54,13 +54,18 @@
       }
     }
   }
+  .front-all-projects-link {
+    text-align: center;
+    text-transform: uppercase;
+  }
 }
 
 // Slideshow of Projects on home.
 .views_slideshow_cycle_teaser_section {
   .views-slideshow-cycle-main-frame-row-item {
     float: left;
-    width: 32%;
+    width: 24%;
+    text-align: center;
   }
 }
 

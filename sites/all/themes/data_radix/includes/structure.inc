@@ -7,7 +7,7 @@
 /**
  * Implements hook_css_alter().
  */
-function nuboot_radix_css_alter(&$css) {
+function data_radix_css_alter(&$css) {
   $radix_path = drupal_get_path('theme', 'radix');
 
   // Radix now includes compiled stylesheets for demo purposes.
@@ -22,7 +22,7 @@ function nuboot_radix_css_alter(&$css) {
 /**
  * Implements hook_js_alter().
  */
-function nuboot_radix_js_alter(&$javascript) {
+function data_radix_js_alter(&$javascript) {
   $radix_path = drupal_get_path('theme', 'radix');
   // Remove radix-script.js - using patched version in scripts directory.
   // Hash usage in radix-script.js breaks with use of a hash map in URL. https://www.drupal.org/node/2426513.
@@ -32,7 +32,7 @@ function nuboot_radix_js_alter(&$javascript) {
 /**
  * Implements hook_preprocess().
  */
-function nuboot_radix_preprocess(&$variables, $hook) {
+function data_radix_preprocess(&$variables, $hook) {
   // Panel heading tag.
   $variables['title_heading'] = 'h2';
 }
@@ -40,7 +40,7 @@ function nuboot_radix_preprocess(&$variables, $hook) {
 /**
  * Implements template_preprocess_page().
  */
-function nuboot_radix_preprocess_page(&$variables) {
+function data_radix_preprocess_page(&$variables) {
   // Logo file -- assumes default file is logo.svg.
   $logo = theme_get_setting('toggle_logo');
   $theme = variable_get('theme_default');
@@ -54,7 +54,7 @@ function nuboot_radix_preprocess_page(&$variables) {
         $variables['logo'] = '/' . drupal_get_path('theme', $theme ) . '/logo.svg';
       }
       else {
-        $variables['logo'] = '/' . drupal_get_path('theme', $theme ) . '/logo.png'; 
+        $variables['logo'] = '/' . drupal_get_path('theme', $theme ) . '/logo.png';
       }
     }
     elseif($logo_file) {

@@ -169,7 +169,7 @@ function radix_preprocess_page(&$variables) {
   $variables['main_menu']['#theme_wrappers'] = array();
 
   // Add a copyright message.
-  $variables['copyright'] = t('Drupal is a registered trademark of Dries Buytaert.');
+  $variables['copyright'] = t('Igor is a registered trademark of Dries Buytaert.');
 
   // Display a message if Sass has not been compiled.
 //  $theme_path = drupal_get_path('theme', $GLOBALS['theme']);

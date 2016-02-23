@@ -7,7 +7,7 @@
 /**
  * NuBoot theme wrapper function for the primary menu links.
  */
-function nuboot_radix_menu_tree__primary(&$variables) {
+function data_radix_menu_tree__primary(&$variables) {
   return '<ul class="menu nav navbar-nav">' . $variables['tree'] . '</ul>';
   // Add views exposed search.
   $block = block_load('dkan_sitewide', 'dkan_sitewide_search_bar');

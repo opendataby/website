@@ -13749,11 +13749,17 @@ ul.action-links {
   float: left;
   margin-right: 5px;
 }
+/* line 57, ../sass/partials/_page.scss */
+.view-Projects .front-all-projects-link {
+  text-align: center;
+  text-transform: uppercase;
+}
 
-/* line 61, ../sass/partials/_page.scss */
+/* line 65, ../sass/partials/_page.scss */
 .views_slideshow_cycle_teaser_section .views-slideshow-cycle-main-frame-row-item {
   float: left;
-  width: 32%;
+  width: 24%;
+  text-align: center;
 }
 
 /* line 4, ../sass/partials/_view.scss */

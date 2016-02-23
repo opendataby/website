@@ -2,7 +2,7 @@
 /**
  * Implements hook_form_alter().
  */
-function nuboot_radix_form_alter(&$form, &$form_state, $form_id) {
+function data_radix_form_alter(&$form, &$form_state, $form_id) {
   //drupal_set_message('<pre>' . print_r($form, TRUE) . '</pre>');
   switch ($form_id) {
     case 'colorizer_admin_settings':

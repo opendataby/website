@@ -7,20 +7,20 @@
 /**
  * Implements theme_settings().
  */
-function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
+function data_radix_form_system_theme_settings_alter(&$form, &$form_state) {
   //drupal_set_message('<pre>' . print_r($form, TRUE) . '</pre>');
   // Ensure this include file is loaded when the form is rebuilt from the cache.
-  $form_state['build_info']['files']['form'] = drupal_get_path('theme', 'nuboot_radix') . '/theme-settings.php';
+  $form_state['build_info']['files']['form'] = drupal_get_path('theme', 'data_radix') . '/theme-settings.php';
 
   // Add theme settings here.
-  $form['nuboot_radix_theme_settings'] = array(
+  $form['data_radix_theme_settings'] = array(
     '#title' => t('Theme Settings'),
     '#type' => 'fieldset',
   );
 
   // Copyright.
   $copyright = theme_get_setting('copyright');
-  $form['nuboot_radix_theme_settings']['copyright'] = array(
+  $form['data_radix_theme_settings']['copyright'] = array(
     '#title' => t('Copyright'),
     '#type' => 'text_format',
     '#format' => 'html',
@@ -37,13 +37,13 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
   $form['hero']['hero_file'] = array(
     '#type' => 'managed_file',
     '#title' => t('Upload a new photo for the hero section background'),
-    '#description' => t('<p>The hero unit is the large featured area located on the front page. 
-      This theme supplies a default background image for this area. You may upload a different 
+    '#description' => t('<p>The hero unit is the large featured area located on the front page.
+      This theme supplies a default background image for this area. You may upload a different
       photo here and it will replace the default background image.</p><p>Max. file size: 2 MB
       <br>Recommended pixel size: 1920 x 400<br>Allowed extensions: .png .jpg .jpeg</p>'),
     '#required' => FALSE,
     '#upload_location' => file_default_scheme() . '://theme/backgrounds/',
-    '#default_value' => theme_get_setting('hero_file'), 
+    '#default_value' => theme_get_setting('hero_file'),
     '#upload_validators' => array(
       'file_validate_extensions' => array('gif png jpg jpeg'),
     ),
@@ -66,7 +66,7 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
     '#description' => t('<p>Be sure to also add a .png version of your logo with the <em>Upload logo image</em> field above for older browsers that do not support .svg files. Both files should have the same name, only the suffix should change (i.e. logo.png & logo.svg).</p>'),
     '#required' => FALSE,
     '#upload_location' => file_default_scheme() . '://',
-    '#default_value' => theme_get_setting('svg_logo'), 
+    '#default_value' => theme_get_setting('svg_logo'),
     '#upload_validators' => array(
       'file_validate_extensions' => array('svg'),
     ),

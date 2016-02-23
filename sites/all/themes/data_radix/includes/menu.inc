@@ -7,7 +7,7 @@
 /**
  * Overrides theme_menu_local_tasks().
  */
-function nuboot_radix_menu_local_tasks(&$variables) {
+function data_radix_menu_local_tasks(&$variables) {
   $output = '';
 
   if (!empty($variables['primary'])) {
@@ -30,7 +30,7 @@ function nuboot_radix_menu_local_tasks(&$variables) {
 /**
  * Overrides theme_menu_local_task().
  */
-function nuboot_radix_menu_local_task($variables) {
+function data_radix_menu_local_task($variables) {
   $link = $variables['element']['#link'];
   $link_text = $link['title'];
   $icon_type = '';

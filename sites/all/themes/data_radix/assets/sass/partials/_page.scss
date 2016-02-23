@@ -57,6 +57,20 @@
   .front-all-projects-link {
     text-align: center;
     text-transform: uppercase;
+    a {
+      color: $brand-primary;
+      border-radius: 13px;
+      border: 2px solid $brand-primary;
+      padding: 5px 15px;
+      font-size: 14px;
+    }
+  }
+}
+
+.pane-projects-front-slideshow {
+  h2 {
+    font-weight: normal;
+    font-size: 30px;
   }
 }
 
@@ -67,5 +81,9 @@
     width: 24%;
     text-align: center;
   }
+}
+
+.front-block-site-description {
+  font-size: 19px;
 }
 

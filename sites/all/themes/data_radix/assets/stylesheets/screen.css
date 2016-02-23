@@ -13754,12 +13754,31 @@ ul.action-links {
   text-align: center;
   text-transform: uppercase;
 }
+/* line 60, ../sass/partials/_page.scss */
+.view-Projects .front-all-projects-link a {
+  color: #2a2f4e;
+  border-radius: 13px;
+  border: 2px solid #2a2f4e;
+  padding: 5px 15px;
+  font-size: 14px;
+}
 
-/* line 65, ../sass/partials/_page.scss */
+/* line 71, ../sass/partials/_page.scss */
+.pane-projects-front-slideshow h2 {
+  font-weight: normal;
+  font-size: 30px;
+}
+
+/* line 79, ../sass/partials/_page.scss */
 .views_slideshow_cycle_teaser_section .views-slideshow-cycle-main-frame-row-item {
   float: left;
   width: 24%;
   text-align: center;
+}
+
+/* line 86, ../sass/partials/_page.scss */
+.front-block-site-description {
+  font-size: 19px;
 }
 
 /* line 4, ../sass/partials/_view.scss */

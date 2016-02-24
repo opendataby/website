@@ -585,6 +585,7 @@ $conf['master_modules'] = array(
     'blog',
     'fe_block',
     'feature_od_projects',
+    'google_analytics',
   ),
   'local' => array(),
   'dev' => array(),

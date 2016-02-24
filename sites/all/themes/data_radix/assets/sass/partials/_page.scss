@@ -87,3 +87,14 @@
   font-size: 19px;
 }
 
+// Blog
+.node-type-blog-post.not-logged-in .tabs--primary,
+.node-type-blog-post.not-logged-in .submitted {
+  display: none;
+}
+
+.view-display-id-blog_page {
+  ul {
+    list-style-type: none;
+  }
+}

@@ -6,6 +6,7 @@ dependencies[] = ctools
 dependencies[] = dkan_dataset_content_types
 dependencies[] = entity
 dependencies[] = features
+dependencies[] = semanticviews
 dependencies[] = strongarm
 dependencies[] = text
 dependencies[] = views

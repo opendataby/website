@@ -13781,6 +13781,17 @@ ul.action-links {
   font-size: 19px;
 }
 
+/* line 91, ../sass/partials/_page.scss */
+.node-type-blog-post.not-logged-in .tabs--primary,
+.node-type-blog-post.not-logged-in .submitted {
+  display: none;
+}
+
+/* line 97, ../sass/partials/_page.scss */
+.view-display-id-blog_page ul {
+  list-style-type: none;
+}
+
 /* line 4, ../sass/partials/_view.scss */
 .front .view-popular-tags {
   margin-top: 20px;
@@ -14192,6 +14203,11 @@ div.horizontal-tabs {
 /* line 170, ../sass/partials/_form.scss */
 #body-add-more-wrapper .panel-body {
   padding: 0;
+}
+
+/* line 176, ../sass/partials/_form.scss */
+.views-reset-button input[type="submit"] {
+  color: black;
 }
 
 /* line 6, ../sass/partials/_node.scss */

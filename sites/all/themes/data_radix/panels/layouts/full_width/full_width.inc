@@ -10,6 +10,7 @@ $plugin = array(
     'top-first' => t('Top First Column'),
     'top-second' => t('Top Second Column'),
     'middle' => t('Middle Row'),
+    'middle-bottom' => t('Middle Row Bottom'),
     'bottom-first' => t('Bottom First Column'),
     'bottom-second' => t('Bottom Second Column'),
     'bottom-third' => t('Bottom Third Column'),

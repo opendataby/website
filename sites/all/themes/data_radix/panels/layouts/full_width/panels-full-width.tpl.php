@@ -49,6 +49,14 @@ endif;
     </div>
   <?php endif; ?>
 
+  <?php if($content['middle-bottom']): ?>
+    <div class="panel-middle-bottom panel-row">
+      <div class="container">
+        <div class="inside"><?php print $content['middle-bottom']; ?></div>
+      </div>
+    </div>
+  <?php endif; ?>
+
   <?php if($content['bottom-first'] || $content['bottom-second'] || $content['bottom-third']): ?>
     <div class="panel-bottom panel-row">
       <div class="container">

@@ -1,5 +1,5 @@
 
-.panel-full-width { 
+.panel-full-width {
 /*  overflow: hidden;  */
   margin-top: 0;
   padding-top: 0;
@@ -7,15 +7,17 @@
 
 .panel-full-width .panel-top,
 .panel-full-width .panel-middle,
-.panel-full-width .panel-bottom { 
-  width: 100%; 
+.panel-full-width .panel-middle-bottom,
+.panel-full-width .panel-bottom {
+  width: 100%;
   clear: both;
 }
 
 .panel-full-width .panel-col-first .inside,
 .panel-full-width .panel-col-second .inside,
 .panel-full-width .panel-col-third .inside,
-.panel-full-width .panel-middle .inside {
+.panel-full-width .panel-middle .inside,
+.panel-full-width .panel-middle-bottom .inside {
   margin: 15px;
 }
 

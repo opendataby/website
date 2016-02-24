@@ -69,6 +69,7 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
       'bottom-second' => NULL,
       'bottom-third' => NULL,
       'bottom-fourth' => NULL,
+      'middle-bottom' => NULL,
     ),
   );
   $display->cache = array();
@@ -100,7 +101,7 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     $display->panels['middle'][0] = 'new-8aa431e2-a9e8-4d73-b043-aa57ecbf0947';
     $pane = new stdClass();
     $pane->pid = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
-    $pane->panel = 'middle';
+    $pane->panel = 'middle-bottom';
     $pane->type = 'views_panes';
     $pane->subtype = 'Projects-front_slideshow';
     $pane->shown = TRUE;
@@ -112,11 +113,11 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 1;
+    $pane->position = 0;
     $pane->locks = array();
     $pane->uuid = '1233cfbe-d4d6-41a0-926e-29feec02bb39';
     $display->content['new-1233cfbe-d4d6-41a0-926e-29feec02bb39'] = $pane;
-    $display->panels['middle'][1] = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
+    $display->panels['middle-bottom'][0] = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
     $pane = new stdClass();
     $pane->pid = 'new-e9a59ddf-15b0-4a29-8ef6-ef460ba539e0';
     $pane->panel = 'top-first';
@@ -132,7 +133,10 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => 'front-block-site-description',
+    );
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = array();
@@ -183,6 +187,31 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     $pane->uuid = '11969a4b-795a-40df-8d66-91f6daec6c20';
     $display->content['new-11969a4b-795a-40df-8d66-91f6daec6c20'] = $pane;
     $display->panels['top-first'][2] = 'new-11969a4b-795a-40df-8d66-91f6daec6c20';
+    $pane = new stdClass();
+    $pane->pid = 'new-ab17edbb-ca9c-441a-b9c9-0eac961027cf';
+    $pane->panel = 'top-second';
+    $pane->type = 'custom';
+    $pane->subtype = 'custom';
+    $pane->shown = FALSE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'admin_title' => '',
+      'title' => '',
+      'body' => 'Пиши на info@opendata.by',
+      'format' => 'html',
+      'substitute' => TRUE,
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 0;
+    $pane->locks = array();
+    $pane->uuid = 'ab17edbb-ca9c-441a-b9c9-0eac961027cf';
+    $display->content['new-ab17edbb-ca9c-441a-b9c9-0eac961027cf'] = $pane;
+    $display->panels['top-second'][0] = 'new-ab17edbb-ca9c-441a-b9c9-0eac961027cf';
   $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = 'new-e9a59ddf-15b0-4a29-8ef6-ef460ba539e0';
   $handler->conf['display'] = $display;

@@ -89,6 +89,9 @@
 
 // Blog
 .node-type-blog-post.not-logged-in .tabs--primary,
+.node-type-project.not-logged-in .tabs--primary,
+.node-type-page.not-logged-in .tabs--primary,
+.node-type-dataset.not-logged-in .tabs--primary,
 .node-type-blog-post.not-logged-in .submitted {
   display: none;
 }

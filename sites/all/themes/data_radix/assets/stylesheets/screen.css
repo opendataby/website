@@ -13783,11 +13783,14 @@ ul.action-links {
 
 /* line 91, ../sass/partials/_page.scss */
 .node-type-blog-post.not-logged-in .tabs--primary,
+.node-type-project.not-logged-in .tabs--primary,
+.node-type-page.not-logged-in .tabs--primary,
+.node-type-dataset.not-logged-in .tabs--primary,
 .node-type-blog-post.not-logged-in .submitted {
   display: none;
 }
 
-/* line 97, ../sass/partials/_page.scss */
+/* line 100, ../sass/partials/_page.scss */
 .view-display-id-blog_page ul {
   list-style-type: none;
 }

@@ -4509,7 +4509,7 @@ header#header {
 .navbar-default .user-menu li > a:active,
 .navbar-default .user-menu li > a:hover,
 .navbar-default .user-menu li > a:focus {
-  background: #002245;
+  background: #2a2f4e;
   color: #FFFFFF;
   text-decoration: none;
 }
@@ -4592,7 +4592,7 @@ header#header {
   .navbar-default .navbar-nav .dropdown-menu li > a:hover,
   .navbar-default .navbar-nav .dropdown-menu li > a:focus,
   .navbar-default .navbar-nav .dropdown-menu li > a:active {
-    background: #002245;
+    background: #2a2f4e;
     color: #ffffff;
     clear: both;
   }
@@ -4778,6 +4778,13 @@ ul.action-links {
 /* line 265, ../sass/partials/_menu.scss */
 .navigation-wrapper {
   background: #2a2f4e;
+}
+
+/* line 269, ../sass/partials/_menu.scss */
+.navbar-default .navbar-nav > a,
+.navbar-default .navbar-nav > a:hover,
+.navbar-default .navbar-nav > a:focus {
+  background-color: #2a2f4e;
 }
 
 /* line 4, ../sass/partials/_page.scss */

@@ -37,15 +37,33 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'router_path' => 'node/%',
     'link_title' => 'О нас',
     'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
+      'attributes' => array(),
       'identifier' => 'main-menu_-:node/1',
     ),
     'module' => 'menu',
     'hidden' => 0,
     'external' => 0,
     'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -44,
+    'customized' => 1,
+  );
+  // Exported menu link: main-menu_:<front>
+  $menu_links['main-menu_:<front>'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => '<front>',
+    'router_path' => '',
+    'link_title' => 'Справка',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Справка',
+      ),
+      'identifier' => 'main-menu_:<front>',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 1,
+    'has_children' => 1,
     'expanded' => 0,
     'weight' => -45,
     'customized' => 1,
@@ -89,6 +107,48 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'expanded' => 0,
     'weight' => -49,
     'customized' => 1,
+  );
+  // Exported menu link: main-menu_:node/469
+  $menu_links['main-menu_:node/469'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'node/469',
+    'router_path' => 'node/%',
+    'link_title' => 'Разработчикам',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Разработчикам и журналистам',
+      ),
+      'identifier' => 'main-menu_:node/469',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -49,
+    'customized' => 1,
+    'parent_identifier' => 'main-menu_:<front>',
+  );
+  // Exported menu link: main-menu_:node/470
+  $menu_links['main-menu_:node/470'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'node/470',
+    'router_path' => 'node/%',
+    'link_title' => 'Глоссарий',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Глоссарий',
+      ),
+      'identifier' => 'main-menu_:node/470',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -50,
+    'customized' => 1,
+    'parent_identifier' => 'main-menu_:<front>',
   );
   // Exported menu link: main-menu_:projects
   $menu_links['main-menu_:projects'] = array(
@@ -144,7 +204,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -44,
+    'weight' => -43,
     'customized' => 1,
   );
 
@@ -153,10 +213,13 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Add Dataset');
   t('Stories');
   t('Блог');
+  t('Глоссарий');
   t('Группы данных');
   t('Данные');
   t('О нас');
   t('Проекты');
+  t('Разработчикам');
+  t('Справка');
 
   return $menu_links;
 }

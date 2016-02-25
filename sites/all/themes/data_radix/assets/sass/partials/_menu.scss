@@ -45,7 +45,7 @@
       &:active,
       &:hover,
       &:focus {
-        background: $brand-secondary;
+        background: $brand-primary;
         color: #FFFFFF;
         text-decoration:none;
       }
@@ -105,7 +105,7 @@
       &:hover,
       &:focus,
       &:active {
-        background: $brand-secondary;
+        background: $brand-primary;
         color: #ffffff;
         clear: both;
       }
@@ -264,4 +264,10 @@ ul.action-links {
 
 .navigation-wrapper {
   background: $brand-primary;
+}
+
+.navbar-default .navbar-nav > a,
+.navbar-default .navbar-nav > a:hover,
+.navbar-default .navbar-nav > a:focus{
+  background-color: $brand-primary;
 }

@@ -12929,6 +12929,28 @@ section.col-sm-9 {
   background-color: #eef2f9;
 }
 
+/* line 77, ../sass/partials/_layout.scss */
+.footer {
+  background-color: #2a2f4e;
+  color: white;
+}
+/* line 80, ../sass/partials/_layout.scss */
+.footer a {
+  color: white;
+}
+/* line 82, ../sass/partials/_layout.scss */
+.footer a :hover {
+  color: white;
+}
+/* line 86, ../sass/partials/_layout.scss */
+.footer .copyright {
+  margin-top: 10px;
+}
+/* line 88, ../sass/partials/_layout.scss */
+.footer .copyright a:hover {
+  color: white;
+}
+
 /* line 4, ../sass/partials/_structure.scss */
 body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;

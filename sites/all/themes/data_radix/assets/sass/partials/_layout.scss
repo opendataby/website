@@ -73,3 +73,20 @@ section.col-sm-9 {
 .panel-middle-bottom {
   background-color: $brand-blueish;
 }
+
+.footer {
+  background-color: $brand-primary;
+  color: white;
+  a {
+    color: white;
+    :hover {
+      color: white;
+    }
+  }
+  .copyright {
+    margin-top: 10px;
+    a:hover {
+      color: white;
+    }
+  }
+}

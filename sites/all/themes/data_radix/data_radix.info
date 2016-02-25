@@ -60,7 +60,7 @@ settings[toggle_main_menu] = 1
 settings[toggle_secondary_menu] = 1
 settings[logo_path] = 'sites/all/themes/data_radix/logo.png'
 settings[hero_path] = 'sites/all/themes/data_radix/assets/images/hero.jpg'
-settings[copyright][value] = 'Powered by <a href="http://opendata.by">Открытые Данные Беларуси</a>'
+settings[copyright][value] = 'Есть вопросы? Пишите нам на HELP@OPENDATA.BY'
 settings[copyright][format] = 'html'
 
 ; Breadcrumbs

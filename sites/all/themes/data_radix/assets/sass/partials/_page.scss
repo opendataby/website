@@ -31,11 +31,28 @@
 }
 
 #footer {
-  margin:0 ;
+  margin:20px 0 0 0 ;
 }
 .footer {
   padding:40px 0;
   margin: 0;
+  background-color: $brand-primary;
+  color: white;
+  border-top: solid;
+  border-width: 5px;
+  border-color: $brand-redish;
+  a {
+    color: white;
+    :hover {
+      color: white;
+    }
+  }
+  .copyright {
+    margin-top: 10px;
+    a:hover {
+      color: white;
+    }
+  }
 }
 
 // Projects view.
@@ -90,4 +107,8 @@
   ul {
     list-style-type: none;
   }
+}
+
+.view-display-id-block_recent_blogs h2 a {
+  color: $brand-redish;
 }

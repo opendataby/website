@@ -207,10 +207,132 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -43,
     'customized' => 1,
   );
+  // Exported menu link: menu-footer-menu_-:node/1
+  $menu_links['menu-footer-menu_-:node/1'] = array(
+    'menu_name' => 'menu-footer-menu',
+    'link_path' => 'node/1',
+    'router_path' => 'node/%',
+    'link_title' => 'О нас',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-footer-menu_-:node/1',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -45,
+    'customized' => 1,
+  );
+  // Exported menu link: menu-footer-menu_:blog
+  $menu_links['menu-footer-menu_:blog'] = array(
+    'menu_name' => 'menu-footer-menu',
+    'link_path' => 'blog',
+    'router_path' => 'blog',
+    'link_title' => 'Блог',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-footer-menu_:blog',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -46,
+    'customized' => 1,
+  );
+  // Exported menu link: menu-footer-menu_:dataset
+  $menu_links['menu-footer-menu_:dataset'] = array(
+    'menu_name' => 'menu-footer-menu',
+    'link_path' => 'dataset',
+    'router_path' => 'dataset',
+    'link_title' => 'Данные',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-footer-menu_:dataset',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -50,
+    'customized' => 1,
+  );
+  // Exported menu link: menu-footer-menu_:projects
+  $menu_links['menu-footer-menu_:projects'] = array(
+    'menu_name' => 'menu-footer-menu',
+    'link_path' => 'projects',
+    'router_path' => 'projects',
+    'link_title' => 'Проекты',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-footer-menu_:projects',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -49,
+    'customized' => 1,
+  );
+  // Exported menu link: menu-footer-menu_facebook-:https://www.facebook.com/groups/opendataby
+  $menu_links['menu-footer-menu_facebook-:https://www.facebook.com/groups/opendataby'] = array(
+    'menu_name' => 'menu-footer-menu',
+    'link_path' => 'https://www.facebook.com/groups/opendataby',
+    'router_path' => '',
+    'link_title' => 'Facebook группа',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-footer-menu_facebook-:https://www.facebook.com/groups/opendataby',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 1,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -48,
+    'customized' => 1,
+  );
+  // Exported menu link: menu-footer-menu_google-:https://groups.google.com/forum/#!forum/opendata-belarus
+  $menu_links['menu-footer-menu_google-:https://groups.google.com/forum/#!forum/opendata-belarus'] = array(
+    'menu_name' => 'menu-footer-menu',
+    'link_path' => 'https://groups.google.com/forum/#!forum/opendata-belarus',
+    'router_path' => '',
+    'link_title' => 'Google группа',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-footer-menu_google-:https://groups.google.com/forum/#!forum/opendata-belarus',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 1,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -47,
+    'customized' => 1,
+  );
 
   // Translatables
   // Included for use with string extractors like potx.
   t('Add Dataset');
+  t('Facebook группа');
+  t('Google группа');
   t('Stories');
   t('Блог');
   t('Глоссарий');

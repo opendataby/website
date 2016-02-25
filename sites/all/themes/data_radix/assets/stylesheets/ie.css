@@ -4792,6 +4792,11 @@ ul.action-links {
   background-color: #2a2f4e;
 }
 
+/* line 275, ../sass/partials/_menu.scss */
+#block-menu-menu-footer-menu li {
+  float: left;
+}
+
 /* line 4, ../sass/partials/_page.scss */
 #page-header {
   padding: 0 15px;

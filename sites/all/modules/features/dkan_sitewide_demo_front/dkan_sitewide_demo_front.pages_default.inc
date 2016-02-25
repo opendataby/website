@@ -101,7 +101,7 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     $display->panels['middle'][0] = 'new-8aa431e2-a9e8-4d73-b043-aa57ecbf0947';
     $pane = new stdClass();
     $pane->pid = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
-    $pane->panel = 'middle-bottom';
+    $pane->panel = 'middle';
     $pane->type = 'views_panes';
     $pane->subtype = 'Projects-front_slideshow';
     $pane->shown = TRUE;
@@ -113,11 +113,46 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 0;
+    $pane->position = 1;
     $pane->locks = array();
     $pane->uuid = '1233cfbe-d4d6-41a0-926e-29feec02bb39';
     $display->content['new-1233cfbe-d4d6-41a0-926e-29feec02bb39'] = $pane;
-    $display->panels['middle-bottom'][0] = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
+    $display->panels['middle'][1] = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
+    $pane = new stdClass();
+    $pane->pid = 'new-bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3';
+    $pane->panel = 'middle-bottom';
+    $pane->type = 'views';
+    $pane->subtype = 'blog';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_pager_settings' => 0,
+      'use_pager' => 0,
+      'nodes_per_page' => '3',
+      'pager_id' => '0',
+      'offset' => '0',
+      'more_link' => 0,
+      'feed_icons' => 0,
+      'panel_args' => 0,
+      'link_to_view' => 0,
+      'args' => '',
+      'url' => '',
+      'display' => 'block_recent_blogs',
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 0;
+    $pane->locks = array();
+    $pane->uuid = 'bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3';
+    $display->content['new-bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3'] = $pane;
+    $display->panels['middle-bottom'][0] = 'new-bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3';
     $pane = new stdClass();
     $pane->pid = 'new-e9a59ddf-15b0-4a29-8ef6-ef460ba539e0';
     $pane->panel = 'top-first';

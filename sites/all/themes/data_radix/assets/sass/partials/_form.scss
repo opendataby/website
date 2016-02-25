@@ -178,3 +178,17 @@ div.horizontal-tabs {
   }
 }
 
+.rounded-button {
+  text-align: center;
+  text-transform: uppercase;
+  a {
+    color: $brand-primary;
+    border-radius: 13px;
+    border: 2px solid $brand-primary;
+    padding: 5px 15px;
+    font-size: 14px;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+}

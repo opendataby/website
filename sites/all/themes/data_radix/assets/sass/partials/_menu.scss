@@ -266,7 +266,7 @@ ul.action-links {
   background: $brand-primary;
 }
 
-.navbar-default .navbar-nav > a,
+.navbar-default .navbar-nav .active > a,
 .navbar-default .navbar-nav > a:hover,
 .navbar-default .navbar-nav > a:focus{
   background-color: $brand-primary;

@@ -26,5 +26,6 @@ features[menu_links][] = menu-footer-menu_:blog
 features[menu_links][] = menu-footer-menu_:dataset
 features[menu_links][] = menu-footer-menu_:projects
 features[menu_links][] = menu-footer-menu_facebook-:https://www.facebook.com/groups/opendataby
+features[menu_links][] = menu-footer-menu_github-:https://github.com/opendataby
 features[menu_links][] = menu-footer-menu_google-:https://groups.google.com/forum/#!forum/opendata-belarus
 features_exclude[menu_links][navigation_import:import] = navigation_import:import

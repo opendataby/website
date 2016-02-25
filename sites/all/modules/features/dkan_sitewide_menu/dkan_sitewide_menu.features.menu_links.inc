@@ -224,7 +224,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -45,
+    'weight' => -44,
     'customized' => 1,
   );
   // Exported menu link: menu-footer-menu_:blog
@@ -244,7 +244,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -46,
+    'weight' => -45,
     'customized' => 1,
   );
   // Exported menu link: menu-footer-menu_:dataset
@@ -307,6 +307,26 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'weight' => -48,
     'customized' => 1,
   );
+  // Exported menu link: menu-footer-menu_github-:https://github.com/opendataby
+  $menu_links['menu-footer-menu_github-:https://github.com/opendataby'] = array(
+    'menu_name' => 'menu-footer-menu',
+    'link_path' => 'https://github.com/opendataby',
+    'router_path' => '',
+    'link_title' => 'GitHub репозиторий',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-footer-menu_github-:https://github.com/opendataby',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 1,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -46,
+    'customized' => 1,
+  );
   // Exported menu link: menu-footer-menu_google-:https://groups.google.com/forum/#!forum/opendata-belarus
   $menu_links['menu-footer-menu_google-:https://groups.google.com/forum/#!forum/opendata-belarus'] = array(
     'menu_name' => 'menu-footer-menu',
@@ -332,6 +352,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   // Included for use with string extractors like potx.
   t('Add Dataset');
   t('Facebook группа');
+  t('GitHub репозиторий');
   t('Google группа');
   t('Stories');
   t('Блог');

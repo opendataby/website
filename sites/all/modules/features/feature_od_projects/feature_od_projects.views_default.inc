@@ -197,7 +197,7 @@ function feature_od_projects_views_default_views() {
   $handler->display->display_options['footer']['area']['id'] = 'area';
   $handler->display->display_options['footer']['area']['table'] = 'views';
   $handler->display->display_options['footer']['area']['field'] = 'area';
-  $handler->display->display_options['footer']['area']['content'] = '<div class="front-all-projects-link"><a href="/projects">Все проекты</a></div>';
+  $handler->display->display_options['footer']['area']['content'] = '<div class="rounded-button"><a href="/projects">Все проекты</a></div>';
   $handler->display->display_options['footer']['area']['format'] = 'full_html';
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: Content: Изображение */

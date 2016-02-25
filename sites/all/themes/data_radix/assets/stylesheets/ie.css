@@ -4789,9 +4789,10 @@ ul.action-links {
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus,
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
   background-color: #2a2f4e;
+  color: white;
 }
 
-/* line 275, ../sass/partials/_menu.scss */
+/* line 276, ../sass/partials/_menu.scss */
 #block-menu-menu-footer-menu li {
   float: left;
 }

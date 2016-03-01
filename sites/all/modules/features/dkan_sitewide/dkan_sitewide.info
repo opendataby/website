@@ -55,6 +55,7 @@ features[variable][] = pathauto_node_data_dashboard_pattern
 features[variable][] = pathauto_node_page_pattern
 features[variable][] = pathauto_node_pattern
 features[variable][] = pathauto_node_project_pattern
+features[variable][] = pathauto_node_publication_pattern
 features[variable][] = pathauto_punctuation_hyphen
 features[variable][] = pathauto_taxonomy_term_format_pattern
 features[variable][] = pathauto_taxonomy_term_pattern

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Open Data Publication feature.
+ */
+
+include_once 'feature_od_publication.features.inc';

@@ -13618,20 +13618,55 @@ body.maintenance-page .form-actions .active.btn:first-child {
 .form-actions #edit-submit:active {
   background: #449d44;
   border-color: #449d44;
-  color: #2a2f4e;
-}
-
-/* line 216, ../sass/partials/_menu.scss */
-.form-actions #edit-preview-changes,
-.form-actions #edit-preview-changes:hover,
-.form-actions #edit-preview-changes:focus,
-.form-actions #edit-preview-changes:active {
-  background: #449d44;
-  border-color: #449d44;
   color: #fff;
 }
 
-/* line 225, ../sass/partials/_menu.scss */
+/* line 216, ../sass/partials/_menu.scss */
+.form-actions #edit-preview-changes {
+  background: #FFE285;
+  border-color: #FFE285;
+}
+
+/* line 221, ../sass/partials/_menu.scss */
+.form-actions #edit-preview-changes:hover,
+.form-actions #edit-preview-changes:focus,
+.form-actions #edit-preview-changes:active {
+  background: #ffd652;
+  border-color: #ffd652;
+  color: #fff;
+}
+
+/* line 229, ../sass/partials/_menu.scss */
+.form-actions #edit-preview {
+  background: #5bc0de;
+  border-color: #5bc0de;
+}
+
+/* line 234, ../sass/partials/_menu.scss */
+.form-actions #edit-preview:hover,
+.form-actions #edit-preview:focus,
+.form-actions #edit-preview:active {
+  background: #31b0d5;
+  border-color: #31b0d5;
+  color: #fff;
+}
+
+/* line 242, ../sass/partials/_menu.scss */
+.form-actions #edit-delete {
+  background: #C90409;
+  border-color: #C90409;
+}
+
+/* line 247, ../sass/partials/_menu.scss */
+.form-actions #edit-delete:hover,
+.form-actions #edit-delete:focus,
+.form-actions #edit-delete:active {
+  background: #970307;
+  border-color: #970307;
+  color: #fff;
+}
+
+/* line 255, ../sass/partials/_menu.scss */
 a.embed-link {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -13644,7 +13679,7 @@ a.embed-link {
   text-decoration: none;
 }
 
-/* line 235, ../sass/partials/_menu.scss */
+/* line 265, ../sass/partials/_menu.scss */
 a.embed-link:hover,
 a.embed-link:focus,
 a.embed-link:active {
@@ -13652,7 +13687,7 @@ a.embed-link:active {
   text-decoration: none;
 }
 
-/* line 242, ../sass/partials/_menu.scss */
+/* line 272, ../sass/partials/_menu.scss */
 a.embed-link:before {
   content: '\f121';
   color: #fff;
@@ -13663,37 +13698,37 @@ a.embed-link:before {
   left: 10px;
 }
 
-/* line 251, ../sass/partials/_menu.scss */
+/* line 281, ../sass/partials/_menu.scss */
 textarea.embed-code {
   width: 100%;
   margin-bottom: 1em;
 }
 
-/* line 256, ../sass/partials/_menu.scss */
+/* line 286, ../sass/partials/_menu.scss */
 ul.action-links {
   margin: 1em 15px;
 }
 
-/* line 260, ../sass/partials/_menu.scss */
+/* line 290, ../sass/partials/_menu.scss */
 .btn:active,
 .btn.active {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-/* line 265, ../sass/partials/_menu.scss */
+/* line 295, ../sass/partials/_menu.scss */
 .navigation-wrapper {
   background: #2a2f4e;
 }
 
-/* line 270, ../sass/partials/_menu.scss */
+/* line 300, ../sass/partials/_menu.scss */
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus,
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
   background-color: #2a2f4e;
   color: white;
 }
 
-/* line 276, ../sass/partials/_menu.scss */
+/* line 306, ../sass/partials/_menu.scss */
 #block-menu-menu-footer-menu li {
   float: left;
 }

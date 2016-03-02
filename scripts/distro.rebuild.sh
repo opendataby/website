@@ -28,3 +28,5 @@ rm robots.txt
 ln -s ../robots.txt
 echo "Removing default .gitignore file"
 rm .gitignore
+echo "Removing Drupal .txt files"
+rm CHANGELOG.txt COPYRIGHT.txt INSTALL.mysql.txt INSTALL.pgsql.txt INSTALL.sqlite.txt INSTALL.txt LICENSE.txt MAINTAINERS.txt PATCHES.txt README.txt UPGRADE.txt

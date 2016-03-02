@@ -1,7 +1,7 @@
 name = Open Data Dataset Groups
 description = Custom elements for groups.
 core = 7.x
-package = Open Data
+package = OpenData
 version = 7.x-1.x
 project = dkan_dataset_groups
 dependencies[] = ctools

@@ -38,5 +38,26 @@ function dkan_sitewide_filter_default_formats() {
     ),
   );
 
+  // Exported format: WYSIWYG.
+  $formats['wysiwyg'] = array(
+    'format' => 'wysiwyg',
+    'name' => 'WYSIWYG',
+    'cache' => 1,
+    'status' => 1,
+    'weight' => 0,
+    'filters' => array(
+      'filter_autop' => array(
+        'weight' => 0,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'filter_markdown' => array(
+        'weight' => 0,
+        'status' => 1,
+        'settings' => array(),
+      ),
+    ),
+  );
+
   return $formats;
 }

@@ -22,17 +22,28 @@ function dkan_sitewide_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'bueditor_roles';
   $strongarm->value = array(
-    3 => array(
-      'editor' => '5',
+    132006037 => array(
+      'weight' => '0',
+      'editor' => '0',
+      'alt' => '0',
+    ),
+    200153887 => array(
+      'weight' => '0',
+      'editor' => '0',
+      'alt' => '0',
+    ),
+    30037204 => array(
+      'weight' => '0',
+      'editor' => '0',
       'alt' => '0',
     ),
     2 => array(
-      'editor' => '5',
+      'editor' => '0',
       'alt' => '0',
       'weight' => 11,
     ),
     1 => array(
-      'editor' => '3',
+      'editor' => '0',
       'alt' => '0',
       'weight' => 12,
     ),
@@ -43,7 +54,7 @@ function dkan_sitewide_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'bueditor_user1';
-  $strongarm->value = '5';
+  $strongarm->value = '0';
   $export['bueditor_user1'] = $strongarm;
 
   $strongarm = new stdClass();

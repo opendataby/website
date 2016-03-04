@@ -109,6 +109,18 @@
   }
 }
 
-.view-display-id-block_recent_blogs h2 a {
-  color: $brand-redish;
+.view-display-id-block_recent_blogs {
+  h2 {
+    margin-top: 0!important;
+    a {
+      color: $brand-redish;
+    }
+  }
+  img {
+    float: left;
+    margin-right: 5px;
+  }
+  ul li.entry {
+    overflow: hidden;
+  }
 }

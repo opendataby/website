@@ -4987,6 +4987,17 @@ ul.action-links {
   overflow: hidden;
 }
 
+/* line 141, ../sass/partials/_page.scss */
+.view-id-dkan_groups article.node-teaser {
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+/* line 145, ../sass/partials/_page.scss */
+.view-id-dkan_groups article.node-teaser:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
 /* line 4, ../sass/partials/_view.scss */
 .front .view-popular-tags {
   margin-top: 20px;

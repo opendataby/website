@@ -15338,6 +15338,12 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
     margin: 20px 15px;
   }
 }
+@media screen and (max-width: 768px) {
+  /* line 25, ../sass/partials/_responsive.scss */
+  .front .panel-top {
+    background: #2a2f4e;
+  }
+}
 /* line 2, ../sass/partials/_admin.scss */
 .admin-list dt, .admin-list dd {
   display: inline-block;

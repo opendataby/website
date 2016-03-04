@@ -18,6 +18,12 @@
 	  	margin: 20px 15px;
 	  }
 	}
-	
+
+}
+
+@media screen and (max-width: 768px) {
+ .front .panel-top {
+	 background: $brand-primary;
+ }
 }
 

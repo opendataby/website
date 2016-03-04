@@ -12848,7 +12848,7 @@ section.col-sm-9 {
 /* line 12, ../sass/partials/_layout.scss */
 #featured,
 .panel-top {
-  background-position: 50% 4%;
+  background-position: 50% 100%;
   background-size: cover !important;
   overflow: hidden;
   position: relative;

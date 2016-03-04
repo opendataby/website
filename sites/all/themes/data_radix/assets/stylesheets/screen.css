@@ -13855,21 +13855,35 @@ ul.action-links {
 .view-display-id-blog_page ul {
   list-style-type: none;
 }
+/* line 109, ../sass/partials/_page.scss */
+.view-display-id-blog_page ul li {
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+/* line 112, ../sass/partials/_page.scss */
+.view-display-id-blog_page ul li h2 {
+  margin-top: 0 !important;
+}
+/* line 117, ../sass/partials/_page.scss */
+.view-display-id-blog_page img {
+  float: left;
+  margin-right: 5px;
+}
 
-/* line 113, ../sass/partials/_page.scss */
+/* line 124, ../sass/partials/_page.scss */
 .view-display-id-block_recent_blogs h2 {
   margin-top: 0 !important;
 }
-/* line 115, ../sass/partials/_page.scss */
+/* line 126, ../sass/partials/_page.scss */
 .view-display-id-block_recent_blogs h2 a {
   color: #f06666;
 }
-/* line 119, ../sass/partials/_page.scss */
+/* line 130, ../sass/partials/_page.scss */
 .view-display-id-block_recent_blogs img {
   float: left;
   margin-right: 5px;
 }
-/* line 123, ../sass/partials/_page.scss */
+/* line 134, ../sass/partials/_page.scss */
 .view-display-id-block_recent_blogs ul li.entry {
   overflow: hidden;
 }

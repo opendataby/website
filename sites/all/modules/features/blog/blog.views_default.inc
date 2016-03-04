@@ -89,10 +89,6 @@ function blog_views_default_views() {
   $handler->display->display_options['row_plugin'] = 'semanticviews_fields';
   $handler->display->display_options['row_options']['skip_blank'] = 0;
   $handler->display->display_options['row_options']['semantic_html'] = array(
-    'field_blog_image' => array(
-      'element_type' => '',
-      'class' => 'blog-front-image',
-    ),
     'title' => array(
       'element_type' => 'h2',
       'class' => 'title',
@@ -101,9 +97,24 @@ function blog_views_default_views() {
       'element_type' => 'div',
       'class' => '',
     ),
+    'field_blog_image' => array(
+      'element_type' => 'img',
+      'class' => 'blog-page-image',
+    ),
   );
   $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Изображение */
+  $handler->display->display_options['fields']['field_blog_image']['id'] = 'field_blog_image';
+  $handler->display->display_options['fields']['field_blog_image']['table'] = 'field_data_field_blog_image';
+  $handler->display->display_options['fields']['field_blog_image']['field'] = 'field_blog_image';
+  $handler->display->display_options['fields']['field_blog_image']['label'] = '';
+  $handler->display->display_options['fields']['field_blog_image']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_blog_image']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_blog_image']['settings'] = array(
+    'image_style' => 'thumbnail',
+    'image_link' => 'content',
+  );
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -164,7 +175,7 @@ function blog_views_default_views() {
   $handler->display->display_options['fields']['field_blog_image']['element_default_classes'] = FALSE;
   $handler->display->display_options['fields']['field_blog_image']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_blog_image']['settings'] = array(
-    'image_style' => 'thumbnail',
+    'image_style' => 'panopoly_image_thumbnail',
     'image_link' => 'content',
   );
   /* Field: Content: Post date */

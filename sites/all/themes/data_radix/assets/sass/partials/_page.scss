@@ -106,6 +106,17 @@
 .view-display-id-blog_page {
   ul {
     list-style-type: none;
+    li {
+      overflow: hidden;
+      margin-bottom: 10px;
+      h2 {
+        margin-top: 0!important;
+      }
+    }
+  }
+  img {
+    float: left;
+    margin-right: 5px;
   }
 }
 

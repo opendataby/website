@@ -4954,21 +4954,35 @@ ul.action-links {
 .view-display-id-blog_page ul {
   list-style-type: none;
 }
+/* line 109, ../sass/partials/_page.scss */
+.view-display-id-blog_page ul li {
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+/* line 112, ../sass/partials/_page.scss */
+.view-display-id-blog_page ul li h2 {
+  margin-top: 0 !important;
+}
+/* line 117, ../sass/partials/_page.scss */
+.view-display-id-blog_page img {
+  float: left;
+  margin-right: 5px;
+}
 
-/* line 113, ../sass/partials/_page.scss */
+/* line 124, ../sass/partials/_page.scss */
 .view-display-id-block_recent_blogs h2 {
   margin-top: 0 !important;
 }
-/* line 115, ../sass/partials/_page.scss */
+/* line 126, ../sass/partials/_page.scss */
 .view-display-id-block_recent_blogs h2 a {
   color: #f06666;
 }
-/* line 119, ../sass/partials/_page.scss */
+/* line 130, ../sass/partials/_page.scss */
 .view-display-id-block_recent_blogs img {
   float: left;
   margin-right: 5px;
 }
-/* line 123, ../sass/partials/_page.scss */
+/* line 134, ../sass/partials/_page.scss */
 .view-display-id-block_recent_blogs ul li.entry {
   overflow: hidden;
 }
@@ -6248,59 +6262,3 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   position: relative;
   width: 100%;
 }
-/* line 46, ../sass/global/_mixin.scss */
-.search-form input.form-text,
-#dkan-sitewide-dataset-search-form input.form-text,
-#dkan-sitewide-dataset-search-form--2 input.form-text {
-  padding-right: 30px;
-}
-/* line 49, ../sass/global/_mixin.scss */
-.search-form button[type="submit"],
-.search-form input[type="submit"],
-#dkan-sitewide-dataset-search-form button[type="submit"],
-#dkan-sitewide-dataset-search-form input[type="submit"],
-#dkan-sitewide-dataset-search-form--2 button[type="submit"],
-#dkan-sitewide-dataset-search-form--2 input[type="submit"] {
-  background: none !important;
-  border: none;
-  content: "\f002";
-  color: #555555;
-  display: inline-block;
-  font-size: 1.3em;
-  font-family: "FontAwesome";
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  right: 10px;
-  top: 3px;
-  width: 25px;
-}
-
-/* line 9, ../sass/partials/_search.scss */
-#dkan-sitewide-dataset-search-form input[type="submit"],
-#dkan-sitewide-dataset-search-form--2 input[type="submit"] {
-  top: 3px;
-}
-
-/* line 21, ../sass/partials/_search.scss */
-#block-dkan-sitewide-dkan-sitewide-search-bar {
-  clear: both;
-}
-@media all and (min-width: 768px) {
-  /* line 21, ../sass/partials/_search.scss */
-  #block-dkan-sitewide-dkan-sitewide-search-bar {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    width: 172px;
-  }
-  /* line 27, ../sass/partials/_search.scss */
-  #block-dkan-sitewide-dkan-sitewide-search-bar form {
-    width: 172px;
-  }
-  /* line 30, ../sass/partials/_search.scss */
-  #block-dkan-sitewide-dkan-sitewide-search-bar input.form-control {
-    width: 170px;
-    height: 36px;
-    margin: 0;
-  }

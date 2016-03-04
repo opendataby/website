@@ -4873,7 +4873,7 @@ ul.action-links {
 
 /* line 33, ../sass/partials/_page.scss */
 #footer {
-  margin: 20px 0 0 0;
+  margin: 0;
 }
 
 /* line 36, ../sass/partials/_page.scss */
@@ -6228,6 +6228,11 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   line-height: 2em;
 }
 
+/* line 112, ../sass/partials/_panel.scss */
+.panel-bottom {
+  display: none;
+}
+
 /* line 1, ../sass/partials/_search.scss */
 .search-form,
 #dkan-sitewide-dataset-search-form,
@@ -6299,11 +6304,3 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
     height: 36px;
     margin: 0;
   }
-}
-/* line 40, ../sass/global/_mixin.scss */
-#block-dkan-sitewide-dkan-sitewide-search-bar form {
-  display: block;
-  margin: 8px 0;
-  position: relative;
-  width: 100%;
-}

@@ -111,13 +111,49 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => '',
+    );
     $pane->extras = array();
     $pane->position = 1;
     $pane->locks = array();
     $pane->uuid = '1233cfbe-d4d6-41a0-926e-29feec02bb39';
     $display->content['new-1233cfbe-d4d6-41a0-926e-29feec02bb39'] = $pane;
     $display->panels['middle'][1] = 'new-1233cfbe-d4d6-41a0-926e-29feec02bb39';
+    $pane = new stdClass();
+    $pane->pid = 'new-e3c2825c-8b09-4947-8dc9-977fd779ac4c';
+    $pane->panel = 'middle-bottom';
+    $pane->type = 'custom';
+    $pane->subtype = 'custom';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'admin_title' => 'Case studies',
+      'title' => '',
+      'body' => '<h2>Как используются открытые данные</h2>
+<ul class="front-case-studies">
+	<li><a href="data.by/blog/777">В бизнесе</a></li>
+	<li><a href="/blog/776">Для города</a></li>
+	<li><a href="/blog/775">В журналистике</a></li>
+</ul>',
+      'format' => 'full_html',
+      'substitute' => TRUE,
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => 'front-pane-case-studies',
+    );
+    $pane->extras = array();
+    $pane->position = 0;
+    $pane->locks = array();
+    $pane->uuid = 'e3c2825c-8b09-4947-8dc9-977fd779ac4c';
+    $display->content['new-e3c2825c-8b09-4947-8dc9-977fd779ac4c'] = $pane;
+    $display->panels['middle-bottom'][0] = 'new-e3c2825c-8b09-4947-8dc9-977fd779ac4c';
     $pane = new stdClass();
     $pane->pid = 'new-bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3';
     $pane->panel = 'middle-bottom';
@@ -148,11 +184,11 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 0;
+    $pane->position = 1;
     $pane->locks = array();
     $pane->uuid = 'bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3';
     $display->content['new-bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3'] = $pane;
-    $display->panels['middle-bottom'][0] = 'new-bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3';
+    $display->panels['middle-bottom'][1] = 'new-bdb76ecd-c9d6-4aea-90ad-f1eb03028fe3';
     $pane = new stdClass();
     $pane->pid = 'new-e9a59ddf-15b0-4a29-8ef6-ef460ba539e0';
     $pane->panel = 'top-first';

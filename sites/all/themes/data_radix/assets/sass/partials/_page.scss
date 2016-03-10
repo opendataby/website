@@ -74,6 +74,7 @@
 }
 
 .pane-projects-front-slideshow,
+.front-pane-case-studies,
 .pane-blog {
   h2 {
     font-weight: normal;
@@ -145,5 +146,27 @@
     &:hover {
         box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     }
+  }
+}
+
+// Case studies on front
+.front-pane-case-studies {
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  text-align: center;
+  ul {
+    list-style: none;
+    text-align: center;
+    li {
+      margin-right: 30px;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+  }
+  &:after {
+    content: '';
+    display: block;
+    clear: both;
   }
 }

@@ -4706,27 +4706,33 @@ body.maintenance-page .form-actions .active.btn:first-child {
 }
 
 /* line 204, ../sass/partials/_menu.scss */
-.form-actions #edit-submit {
+.form-actions #edit-submit,
+.form-actions #edit-next,
+.form-actions #edit-additional,
+.form-actions #edit-another {
   background: #5cb85c;
   border-color: #5cb85c;
 }
 
-/* line 208, ../sass/partials/_menu.scss */
+/* line 212, ../sass/partials/_menu.scss */
 .form-actions #edit-submit:hover,
 .form-actions #edit-submit:focus,
-.form-actions #edit-submit:active {
+.form-actions #edit-submit:active,
+.form-actions #edit-next:hover,
+.form-actions #edit-next:focus,
+.form-actions #edit-next:active {
   background: #449d44;
   border-color: #449d44;
   color: #fff;
 }
 
-/* line 216, ../sass/partials/_menu.scss */
+/* line 223, ../sass/partials/_menu.scss */
 .form-actions #edit-preview-changes {
   background: #FFE285;
   border-color: #FFE285;
 }
 
-/* line 221, ../sass/partials/_menu.scss */
+/* line 228, ../sass/partials/_menu.scss */
 .form-actions #edit-preview-changes:hover,
 .form-actions #edit-preview-changes:focus,
 .form-actions #edit-preview-changes:active {
@@ -4735,13 +4741,13 @@ body.maintenance-page .form-actions .active.btn:first-child {
   color: #fff;
 }
 
-/* line 229, ../sass/partials/_menu.scss */
+/* line 236, ../sass/partials/_menu.scss */
 .form-actions #edit-preview {
   background: #5bc0de;
   border-color: #5bc0de;
 }
 
-/* line 234, ../sass/partials/_menu.scss */
+/* line 241, ../sass/partials/_menu.scss */
 .form-actions #edit-preview:hover,
 .form-actions #edit-preview:focus,
 .form-actions #edit-preview:active {
@@ -4750,13 +4756,13 @@ body.maintenance-page .form-actions .active.btn:first-child {
   color: #fff;
 }
 
-/* line 242, ../sass/partials/_menu.scss */
+/* line 249, ../sass/partials/_menu.scss */
 .form-actions #edit-delete {
   background: #C90409;
   border-color: #C90409;
 }
 
-/* line 247, ../sass/partials/_menu.scss */
+/* line 254, ../sass/partials/_menu.scss */
 .form-actions #edit-delete:hover,
 .form-actions #edit-delete:focus,
 .form-actions #edit-delete:active {
@@ -4765,7 +4771,7 @@ body.maintenance-page .form-actions .active.btn:first-child {
   color: #fff;
 }
 
-/* line 255, ../sass/partials/_menu.scss */
+/* line 262, ../sass/partials/_menu.scss */
 a.embed-link {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -4778,7 +4784,7 @@ a.embed-link {
   text-decoration: none;
 }
 
-/* line 265, ../sass/partials/_menu.scss */
+/* line 272, ../sass/partials/_menu.scss */
 a.embed-link:hover,
 a.embed-link:focus,
 a.embed-link:active {
@@ -4786,7 +4792,7 @@ a.embed-link:active {
   text-decoration: none;
 }
 
-/* line 272, ../sass/partials/_menu.scss */
+/* line 279, ../sass/partials/_menu.scss */
 a.embed-link:before {
   content: '\f121';
   color: #fff;
@@ -4797,37 +4803,37 @@ a.embed-link:before {
   left: 10px;
 }
 
-/* line 281, ../sass/partials/_menu.scss */
+/* line 288, ../sass/partials/_menu.scss */
 textarea.embed-code {
   width: 100%;
   margin-bottom: 1em;
 }
 
-/* line 286, ../sass/partials/_menu.scss */
+/* line 293, ../sass/partials/_menu.scss */
 ul.action-links {
   margin: 1em 15px;
 }
 
-/* line 290, ../sass/partials/_menu.scss */
+/* line 297, ../sass/partials/_menu.scss */
 .btn:active,
 .btn.active {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-/* line 295, ../sass/partials/_menu.scss */
+/* line 302, ../sass/partials/_menu.scss */
 .navigation-wrapper {
   background: #2a2f4e;
 }
 
-/* line 300, ../sass/partials/_menu.scss */
+/* line 307, ../sass/partials/_menu.scss */
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus,
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
   background-color: #2a2f4e;
   color: white;
 }
 
-/* line 306, ../sass/partials/_menu.scss */
+/* line 313, ../sass/partials/_menu.scss */
 #block-menu-menu-footer-menu li {
   float: left;
 }
@@ -6250,52 +6256,4 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   border: none;
   font-size: 1em;
   line-height: normal;
-}
-/* line 88, ../sass/partials/_panel.scss */
-.page-manager-wrapper .panel-region .panel-pane-collapsible {
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  border-radius: 0;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-/* line 31, ../sass/global/_mixin.scss */
-.page-manager-wrapper .panel-region .panel-pane-collapsible .pane-content {
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  border-radius: 0;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  margin: 0;
-  padding: 0;
-}
-/* line 90, ../sass/partials/_panel.scss */
-.page-manager-wrapper .panel-region .panel-pane-collapsible .pane-content {
-  padding: 10px 15px;
-}
-
-/* line 107, ../sass/partials/_panel.scss */
-.pane-content .field-name-body {
-  line-height: 2em;
-}
-
-/* line 112, ../sass/partials/_panel.scss */
-.panel-bottom {
-  display: none;
-}
-
-/* line 1, ../sass/partials/_search.scss */
-.search-form,
-#dkan-sitewide-dataset-search-form,
-#dkan-sitewide-dataset-search-form--2 {
-  position: relative;
-}
-/* line 40, ../sass/global/_mixin.scss */
-.search-form form,
-#dkan-sitewide-dataset-search-form form,
-#dkan-sitewide-dataset-search-form--2 form {
-  display: block;
-  margin: 8px 0;
-  position: relative;
-  width: 100%;
 }

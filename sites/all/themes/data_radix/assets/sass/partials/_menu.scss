@@ -201,13 +201,20 @@
   border-color:$brand-secondary;
 }
 
-.form-actions #edit-submit {
+.form-actions #edit-submit,
+.form-actions #edit-next,
+.form-actions #edit-additional,
+.form-actions #edit-another {
   background: $brand-success;
   border-color: $brand-success;
 }
+
 .form-actions #edit-submit:hover,
 .form-actions #edit-submit:focus,
-.form-actions #edit-submit:active {
+.form-actions #edit-submit:active,
+.form-actions #edit-next:hover,
+.form-actions #edit-next:focus,
+.form-actions #edit-next:active {
   background: darken($brand-success,10%);
   border-color: darken($brand-success,10%);
   color: #fff;

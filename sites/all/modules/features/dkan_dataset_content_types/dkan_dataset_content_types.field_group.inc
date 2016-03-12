@@ -35,9 +35,10 @@ function dkan_dataset_content_types_field_group_info() {
       9 => 'field_spatial_geographical_cover',
       10 => 'field_temporal_coverage',
       11 => 'og_group_ref',
-      12 => 'release_date',
-      13 => 'modified_date',
-      14 => 'identifier',
+      12 => 'field_special_projects',
+      13 => 'release_date',
+      14 => 'modified_date',
+      15 => 'identifier',
     ),
     'format_type' => 'table',
     'format_settings' => array(
@@ -194,7 +195,8 @@ function dkan_dataset_content_types_field_group_info() {
       0 => 'body',
       1 => 'field_license',
       2 => 'field_tags',
-      3 => 'title',
+      3 => 'field_special_projects',
+      4 => 'title',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(

@@ -51,7 +51,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 1,
+      'weight' => 2,
     ),
   );
 
@@ -135,7 +135,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         ),
       ),
       'type' => 'textfield_&_textfield',
-      'weight' => 21,
+      'weight' => 22,
     ),
   );
 
@@ -215,7 +215,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 19,
+      'weight' => 20,
     ),
   );
 
@@ -255,7 +255,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 18,
+      'weight' => 19,
     ),
   );
 
@@ -295,7 +295,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'rows' => 3,
       ),
       'type' => 'text_textarea',
-      'weight' => 17,
+      'weight' => 18,
     ),
   );
 
@@ -334,7 +334,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 13,
+      'weight' => 14,
     ),
   );
 
@@ -374,7 +374,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 16,
+      'weight' => 17,
     ),
   );
 
@@ -440,7 +440,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'sort_options' => 0,
       ),
       'type' => 'select_or_other',
-      'weight' => 3,
+      'weight' => 4,
     ),
   );
 
@@ -456,7 +456,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 19,
+        'weight' => 20,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -479,7 +479,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 20,
+      'weight' => 21,
     ),
   );
 
@@ -533,7 +533,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 23,
+      'weight' => 24,
     ),
   );
 
@@ -573,7 +573,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'entityreference_autocomplete',
-      'weight' => 22,
+      'weight' => 23,
     ),
   );
 
@@ -637,7 +637,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'toggle' => 1,
       ),
       'type' => 'leaflet_widget_widget',
-      'weight' => 11,
+      'weight' => 12,
     ),
   );
 
@@ -677,7 +677,51 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 12,
+      'weight' => 13,
+    ),
+  );
+
+  // Exported field_instance: 'node-dataset-field_special_projects'
+  $field_instances['node-dataset-field_special_projects'] = array(
+    'bundle' => 'dataset',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'taxonomy',
+        'settings' => array(),
+        'type' => 'taxonomy_term_reference_link',
+        'weight' => 19,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_special_projects',
+    'label' => ' Спецпроекты',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'autocomplete_deluxe',
+      'settings' => array(
+        'autocomplete_deluxe_path' => 'autocomplete_deluxe/taxonomy',
+        'delimiter' => '',
+        'limit' => 10,
+        'min_length' => 0,
+        'not_found_message' => 'The term \'@term\' will be added.',
+        'size' => 60,
+      ),
+      'type' => 'autocomplete_deluxe_taxonomy',
+      'weight' => 5,
     ),
   );
 
@@ -719,7 +763,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'size' => 60,
       ),
       'type' => 'autocomplete_deluxe_taxonomy',
-      'weight' => 2,
+      'weight' => 3,
     ),
   );
 
@@ -772,7 +816,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'year_range' => '-10:+10',
       ),
       'type' => 'date_popup',
-      'weight' => 15,
+      'weight' => 16,
     ),
   );
 
@@ -1127,6 +1171,7 @@ uk-ogl|UK Open Government Licence (OGL)',
 
   // Translatables
   // Included for use with string extractors like potx.
+  t(' Спецпроекты');
   t('Additional Info');
   t('An internal link or link to an outside resource that provides additional context to the dataset.');
   t('Author');

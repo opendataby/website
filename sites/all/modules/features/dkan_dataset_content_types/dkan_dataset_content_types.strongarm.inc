@@ -68,6 +68,9 @@ function dkan_dataset_content_types_strongarm() {
       'diff_standard' => array(
         'custom_settings' => FALSE,
       ),
+      'broadcast' => array(
+        'custom_settings' => FALSE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -88,6 +91,9 @@ function dkan_dataset_content_types_strongarm() {
         ),
         'identifier' => array(
           'weight' => '3',
+        ),
+        'metatags' => array(
+          'weight' => '40',
         ),
       ),
       'display' => array(

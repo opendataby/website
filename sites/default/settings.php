@@ -27,7 +27,6 @@ $conf['master_modules'] = array(
     'i18n',
     'metatag',
     'dropguard',
-    'node_export',
     'blog',
     'fe_block',
     'feature_od_projects',

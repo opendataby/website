@@ -170,7 +170,7 @@ function dkan_sitewide_strongarm() {
       'http_pid' => '1',
       'https_pid' => '1',
       'feed_pid' => 0,
-      'public_pid' => 0,
+      'public_pid' => '1',
     ),
     30037204 => array(
       'weight' => '0',

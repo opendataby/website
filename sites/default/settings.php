@@ -32,6 +32,7 @@ $conf['master_modules'] = array(
     'feature_od_projects',
     'googleanalytics',
     'feature_od_publication',
+    'backup_migrate',
   ),
   'local' => array(),
   'dev' => array(),

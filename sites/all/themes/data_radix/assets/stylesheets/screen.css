@@ -13588,91 +13588,7 @@ header#header {
   color: #ffffff;
 }
 
-/* line 192, ../sass/partials/_menu.scss */
-.btn-primary, body.maintenance-page .form-actions .btn:first-child {
-  background: #2a2f4e;
-  border-color: #2a2f4e;
-}
-
-/* line 196, ../sass/partials/_menu.scss */
-.btn-primary:hover, body.maintenance-page .form-actions .btn:hover:first-child,
-.btn-primary:focus,
-body.maintenance-page .form-actions .btn:focus:first-child,
-.btn-primary:active,
-body.maintenance-page .form-actions .btn:active:first-child,
-.btn-primary.active,
-body.maintenance-page .form-actions .active.btn:first-child {
-  background: #002245;
-  border-color: #002245;
-}
-
-/* line 204, ../sass/partials/_menu.scss */
-.form-actions #edit-submit,
-.form-actions #edit-next,
-.form-actions #edit-additional,
-.form-actions #edit-another {
-  background: #5cb85c;
-  border-color: #5cb85c;
-}
-
-/* line 212, ../sass/partials/_menu.scss */
-.form-actions #edit-submit:hover,
-.form-actions #edit-submit:focus,
-.form-actions #edit-submit:active,
-.form-actions #edit-next:hover,
-.form-actions #edit-next:focus,
-.form-actions #edit-next:active {
-  background: #449d44;
-  border-color: #449d44;
-  color: #fff;
-}
-
-/* line 223, ../sass/partials/_menu.scss */
-.form-actions #edit-preview-changes {
-  background: #FFE285;
-  border-color: #FFE285;
-}
-
-/* line 228, ../sass/partials/_menu.scss */
-.form-actions #edit-preview-changes:hover,
-.form-actions #edit-preview-changes:focus,
-.form-actions #edit-preview-changes:active {
-  background: #ffd652;
-  border-color: #ffd652;
-  color: #fff;
-}
-
-/* line 236, ../sass/partials/_menu.scss */
-.form-actions #edit-preview {
-  background: #5bc0de;
-  border-color: #5bc0de;
-}
-
-/* line 241, ../sass/partials/_menu.scss */
-.form-actions #edit-preview:hover,
-.form-actions #edit-preview:focus,
-.form-actions #edit-preview:active {
-  background: #31b0d5;
-  border-color: #31b0d5;
-  color: #fff;
-}
-
-/* line 249, ../sass/partials/_menu.scss */
-.form-actions #edit-delete {
-  background: #C90409;
-  border-color: #C90409;
-}
-
-/* line 254, ../sass/partials/_menu.scss */
-.form-actions #edit-delete:hover,
-.form-actions #edit-delete:focus,
-.form-actions #edit-delete:active {
-  background: #970307;
-  border-color: #970307;
-  color: #fff;
-}
-
-/* line 262, ../sass/partials/_menu.scss */
+/* line 193, ../sass/partials/_menu.scss */
 a.embed-link {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -13685,7 +13601,7 @@ a.embed-link {
   text-decoration: none;
 }
 
-/* line 272, ../sass/partials/_menu.scss */
+/* line 203, ../sass/partials/_menu.scss */
 a.embed-link:hover,
 a.embed-link:focus,
 a.embed-link:active {
@@ -13693,7 +13609,7 @@ a.embed-link:active {
   text-decoration: none;
 }
 
-/* line 279, ../sass/partials/_menu.scss */
+/* line 210, ../sass/partials/_menu.scss */
 a.embed-link:before {
   content: '\f121';
   color: #fff;
@@ -13704,37 +13620,37 @@ a.embed-link:before {
   left: 10px;
 }
 
-/* line 288, ../sass/partials/_menu.scss */
+/* line 219, ../sass/partials/_menu.scss */
 textarea.embed-code {
   width: 100%;
   margin-bottom: 1em;
 }
 
-/* line 293, ../sass/partials/_menu.scss */
+/* line 224, ../sass/partials/_menu.scss */
 ul.action-links {
   margin: 1em 15px;
 }
 
-/* line 297, ../sass/partials/_menu.scss */
+/* line 228, ../sass/partials/_menu.scss */
 .btn:active,
 .btn.active {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-/* line 302, ../sass/partials/_menu.scss */
+/* line 233, ../sass/partials/_menu.scss */
 .navigation-wrapper {
   background: #2a2f4e;
 }
 
-/* line 307, ../sass/partials/_menu.scss */
+/* line 238, ../sass/partials/_menu.scss */
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus,
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
   background-color: #2a2f4e;
   color: white;
 }
 
-/* line 313, ../sass/partials/_menu.scss */
+/* line 244, ../sass/partials/_menu.scss */
 #block-menu-menu-footer-menu li {
   float: left;
 }
@@ -14369,6 +14285,111 @@ div.horizontal-tabs {
 /* line 191, ../sass/partials/_form.scss */
 .rounded-button a:hover {
   text-decoration: none;
+}
+
+/* line 197, ../sass/partials/_form.scss */
+.btn-primary, body.maintenance-page .form-actions .btn:first-child {
+  background: #2a2f4e;
+  border-color: #2a2f4e;
+}
+
+/* line 201, ../sass/partials/_form.scss */
+.btn-primary:hover, body.maintenance-page .form-actions .btn:hover:first-child,
+.btn-primary:focus,
+body.maintenance-page .form-actions .btn:focus:first-child,
+.btn-primary:active,
+body.maintenance-page .form-actions .btn:active:first-child,
+.btn-primary.active,
+body.maintenance-page .form-actions .active.btn:first-child {
+  background: #002245;
+  border-color: #002245;
+}
+
+/* line 209, ../sass/partials/_form.scss */
+.form-actions #edit-submit,
+.form-actions #edit-next,
+.form-actions #edit-additional,
+.form-actions #edit-another {
+  background: #5cb85c;
+  border-color: #5cb85c;
+}
+
+/* line 217, ../sass/partials/_form.scss */
+.form-actions #edit-submit:hover,
+.form-actions #edit-submit:focus,
+.form-actions #edit-submit:active,
+.form-actions #edit-next:hover,
+.form-actions #edit-next:focus,
+.form-actions #edit-next:active {
+  background: #449d44;
+  border-color: #449d44;
+  color: #fff;
+}
+
+/* line 228, ../sass/partials/_form.scss */
+.form-actions #edit-preview-changes {
+  background: #FFE285;
+  border-color: #FFE285;
+}
+
+/* line 233, ../sass/partials/_form.scss */
+.form-actions #edit-preview-changes:hover,
+.form-actions #edit-preview-changes:focus,
+.form-actions #edit-preview-changes:active {
+  background: #ffd652;
+  border-color: #ffd652;
+  color: #fff;
+}
+
+/* line 241, ../sass/partials/_form.scss */
+.form-actions #edit-preview {
+  background: #5bc0de;
+  border-color: #5bc0de;
+}
+
+/* line 246, ../sass/partials/_form.scss */
+.form-actions #edit-preview:hover,
+.form-actions #edit-preview:focus,
+.form-actions #edit-preview:active {
+  background: #31b0d5;
+  border-color: #31b0d5;
+  color: #fff;
+}
+
+/* line 254, ../sass/partials/_form.scss */
+.form-actions #edit-delete {
+  background: #C90409;
+  border-color: #C90409;
+}
+
+/* line 259, ../sass/partials/_form.scss */
+.form-actions #edit-delete:hover,
+.form-actions #edit-delete:focus,
+.form-actions #edit-delete:active {
+  background: #970307;
+  border-color: #970307;
+  color: #fff;
+}
+
+/* line 267, ../sass/partials/_form.scss */
+.page-node-edit .field-type-image table input.form-submit {
+  background: #C90409;
+  border-color: #C90409;
+}
+
+/* line 272, ../sass/partials/_form.scss */
+.page-node-edit .field-type-image table input.form-submit:hover,
+.page-node-edit .field-type-image table input.form-submit:focus,
+.page-node-edit .field-type-image table input.form-submit:active {
+  background: #970307;
+  border-color: #970307;
+  color: #fff;
+}
+
+/* line 280, ../sass/partials/_form.scss */
+.page-node-edit .field-add-more-submit {
+  background: #002245;
+  border-color: #002245;
 }
 
 /* line 6, ../sass/partials/_node.scss */

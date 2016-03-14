@@ -15,6 +15,7 @@ function feature_od_projects_user_default_permissions() {
     'name' => 'create project content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -24,6 +25,7 @@ function feature_od_projects_user_default_permissions() {
     'name' => 'delete any project content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -33,6 +35,7 @@ function feature_od_projects_user_default_permissions() {
     'name' => 'delete own project content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -42,6 +45,7 @@ function feature_od_projects_user_default_permissions() {
     'name' => 'edit any project content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -51,6 +55,7 @@ function feature_od_projects_user_default_permissions() {
     'name' => 'edit own project content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );

@@ -1052,6 +1052,7 @@ function dkan_sitewide_roles_perms_user_default_permissions() {
     'name' => 'use text format html',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
       'storyteller' => 'storyteller',
     ),
     'module' => 'filter',

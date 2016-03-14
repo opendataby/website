@@ -15,6 +15,7 @@ function blog_user_default_permissions() {
     'name' => 'create blog_post content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -24,6 +25,7 @@ function blog_user_default_permissions() {
     'name' => 'delete any blog_post content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -33,6 +35,7 @@ function blog_user_default_permissions() {
     'name' => 'delete own blog_post content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -42,6 +45,7 @@ function blog_user_default_permissions() {
     'name' => 'edit any blog_post content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );
@@ -51,6 +55,7 @@ function blog_user_default_permissions() {
     'name' => 'edit own blog_post content',
     'roles' => array(
       'administrator' => 'administrator',
+      'editor' => 'editor',
     ),
     'module' => 'node',
   );

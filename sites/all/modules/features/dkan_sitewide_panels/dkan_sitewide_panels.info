@@ -1,6 +1,7 @@
 name = Open Data panels
 core = 7.x
 package = OpenData
+version = 7.x-1.0
 dependencies[] = ctools
 dependencies[] = entity
 dependencies[] = entityreference
@@ -20,6 +21,7 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
 features[page_manager_handlers][] = node_edit_panel_context
 features[page_manager_handlers][] = node_edit_panel_context_2
+features[page_manager_handlers][] = node_view__blog
 features[page_manager_handlers][] = node_view__resource
 features[page_manager_handlers][] = node_view_panel_context
 features[page_manager_handlers][] = node_view_panel_context_2

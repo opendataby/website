@@ -74,6 +74,31 @@ function dkan_sitewide_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'disqus_location';
+  $strongarm->value = 'block';
+  $export['disqus_location'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'disqus_nodetypes';
+  $strongarm->value = array(
+    'blog_post' => 'blog_post',
+    'dataset' => 'dataset',
+    'resource' => 0,
+    'group' => 0,
+    'data_dashboard' => 0,
+    'dkan_data_story' => 0,
+    'page' => 0,
+    'project' => 0,
+    'publication' => 0,
+    'blog_page' => 0,
+  );
+  $export['disqus_nodetypes'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'imce_profiles';
   $strongarm->value = array(
     1 => array(

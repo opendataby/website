@@ -211,6 +211,114 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $handler = new stdClass();
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
+  $handler->name = 'node_view__blog';
+  $handler->task = 'node_view';
+  $handler->subtask = '';
+  $handler->handler = 'panel_context';
+  $handler->weight = 5;
+  $handler->conf = array(
+    'title' => 'Blog',
+    'no_blocks' => 0,
+    'pipeline' => 'standard',
+    'body_classes_to_remove' => '',
+    'body_classes_to_add' => '',
+    'css_id' => '',
+    'css' => '',
+    'contexts' => array(),
+    'relationships' => array(),
+    'access' => array(
+      'plugins' => array(
+        0 => array(
+          'name' => 'node_type',
+          'settings' => array(
+            'type' => array(
+              'blog_post' => 'blog_post',
+            ),
+          ),
+          'context' => 'argument_entity_id:node_1',
+          'not' => FALSE,
+        ),
+      ),
+      'logic' => 'and',
+    ),
+    'name' => 'blog',
+  );
+  $display = new panels_display();
+  $display->layout = 'radix_boxton';
+  $display->layout_settings = array();
+  $display->panel_settings = array(
+    'style_settings' => array(
+      'default' => NULL,
+      'sidebar' => NULL,
+      'contentmain' => NULL,
+    ),
+  );
+  $display->cache = array();
+  $display->title = '';
+  $display->uuid = '7a09b6f7-196b-421c-a080-418d6588fed2';
+  $display->content = array();
+  $display->panels = array();
+    $pane = new stdClass();
+    $pane->pid = 'new-93b93af5-e162-416f-813d-06e7be118cb7';
+    $pane->panel = 'contentmain';
+    $pane->type = 'node_content';
+    $pane->subtype = 'node_content';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'links' => 1,
+      'no_extras' => 1,
+      'override_title' => 0,
+      'override_title_text' => '',
+      'identifier' => '',
+      'link' => 0,
+      'leave_node_title' => 0,
+      'build_mode' => 'full',
+      'context' => 'argument_entity_id:node_1',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 0;
+    $pane->locks = array();
+    $pane->uuid = '93b93af5-e162-416f-813d-06e7be118cb7';
+    $display->content['new-93b93af5-e162-416f-813d-06e7be118cb7'] = $pane;
+    $display->panels['contentmain'][0] = 'new-93b93af5-e162-416f-813d-06e7be118cb7';
+    $pane = new stdClass();
+    $pane->pid = 'new-1803774d-d500-4808-926f-64939ba280ea';
+    $pane->panel = 'contentmain';
+    $pane->type = 'block';
+    $pane->subtype = 'disqus-disqus_comments';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 1;
+    $pane->locks = array();
+    $pane->uuid = '1803774d-d500-4808-926f-64939ba280ea';
+    $display->content['new-1803774d-d500-4808-926f-64939ba280ea'] = $pane;
+    $display->panels['contentmain'][1] = 'new-1803774d-d500-4808-926f-64939ba280ea';
+  $display->hide_title = PANELS_TITLE_PANE;
+  $display->title_pane = '0';
+  $handler->conf['display'] = $display;
+  $export['node_view__blog'] = $handler;
+
+  $handler = new stdClass();
+  $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
+  $handler->api_version = 1;
   $handler->name = 'node_view__resource';
   $handler->task = 'node_view';
   $handler->subtask = '';
@@ -420,6 +528,29 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     $pane->uuid = '5771913e-f897-497d-9d56-f76f6b207b18';
     $display->content['new-5771913e-f897-497d-9d56-f76f6b207b18'] = $pane;
     $display->panels['contentmain'][0] = 'new-5771913e-f897-497d-9d56-f76f6b207b18';
+    $pane = new stdClass();
+    $pane->pid = 'new-2958d1c3-ae58-4428-a009-79b008afb36b';
+    $pane->panel = 'contentmain';
+    $pane->type = 'block';
+    $pane->subtype = 'disqus-disqus_comments';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 1;
+    $pane->locks = array();
+    $pane->uuid = '2958d1c3-ae58-4428-a009-79b008afb36b';
+    $display->content['new-2958d1c3-ae58-4428-a009-79b008afb36b'] = $pane;
+    $display->panels['contentmain'][1] = 'new-2958d1c3-ae58-4428-a009-79b008afb36b';
     $pane = new stdClass();
     $pane->pid = 'new-25ca95bb-18cd-4175-8cbd-5d44b3b08e20';
     $pane->panel = 'sidebar';

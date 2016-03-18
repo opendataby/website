@@ -94,6 +94,14 @@
   }
 }
 
+.views_slideshow_cycle_main {
+  width: 100%;
+  .views-slideshow-cycle-main-frame {width: 100% !important; height: auto;}
+  .views-slideshow-cycle-main-frame-row {width: 100% !important; height: auto;}
+  .field-content { max-width: 100%; width: 100%;}
+  .field-content img { max-width: 100%; width: 100%; height: auto; margin: 0; padding:0;}
+}
+
 .front-block-site-description {
   font-size: 19px;
 }

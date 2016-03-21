@@ -15427,10 +15427,23 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   .views_slideshow_cycle_teaser_section .views-slideshow-cycle-main-frame-row-item {
     clear: both;
     width: 100%;
+    margin-bottom: 2em;
+  }
+
+  /* line 26, ../sass/partials/_responsive.scss */
+  .pane-projects-front-slideshow h2 {
+    text-align: center;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  /* line 31, ../sass/partials/_responsive.scss */
+  .pane-projects-front-slideshow h4.title {
+    margin-top: 0.4em;
   }
 }
 @media screen and (max-width: 768px) {
-  /* line 29, ../sass/partials/_responsive.scss */
+  /* line 38, ../sass/partials/_responsive.scss */
   .front .panel-top {
     background: #2a2f4e;
   }

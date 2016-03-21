@@ -6521,9 +6521,15 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   .panel-full-width .panel-bottom .panel-col-third .inside {
     margin: 20px 15px;
   }
+
+  /* line 21, ../sass/partials/_responsive.scss */
+  .views_slideshow_cycle_teaser_section .views-slideshow-cycle-main-frame-row-item {
+    clear: both;
+    width: 100%;
+  }
 }
 @media screen and (max-width: 768px) {
-  /* line 25, ../sass/partials/_responsive.scss */
+  /* line 29, ../sass/partials/_responsive.scss */
   .front .panel-top {
     background: #2a2f4e;
   }

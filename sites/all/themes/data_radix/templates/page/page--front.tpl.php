@@ -48,7 +48,7 @@
               <?php print render($main_menu); ?>
             </ul>
           <?php endif; ?>
-          
+
           <!-- user menu -->
           <?php
             $block = block_load('dkan_sitewide', 'dkan_sitewide_user_menu');
@@ -75,7 +75,7 @@
 
     <div class="main-row">
 
-      <section> 
+      <section>
         <a id="main-content"></a>
         <?php print render($title_prefix); ?>
         <?php if (!empty($title) && (arg(0) == 'admin' || arg(1) == 'add' || arg(1) == 'edit')): ?>
@@ -104,3 +104,4 @@
     <small class="pull-right"><?php print render($page['footer']); ?></small>
   </div>
 </footer>
+<img class="tibo" src="/sites/all/themes/data_radix/assets/images/tibo.jpg">

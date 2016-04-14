@@ -62,6 +62,13 @@ a {
     color:$brand-secondary;
   }
 }
+
+.content .field-name-body a {
+  color: $brand-redish;;
+  &:hover {
+    color:$brand-redish;
+  }
+}
 p,
 p:last-child {
   margin: 0 0 1.25em 0;

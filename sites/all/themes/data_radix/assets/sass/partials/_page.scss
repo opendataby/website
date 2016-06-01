@@ -111,7 +111,8 @@
 .node-type-project.not-logged-in .tabs--primary,
 .node-type-page.not-logged-in .tabs--primary,
 .node-type-dataset.not-logged-in .tabs--primary,
-.node-type-blog-post.not-logged-in .submitted {
+.node-type-blog-post.not-logged-in .submitted,
+.node-type-group.not-logged-in .tabs--primary {
   display: none;
 }
 

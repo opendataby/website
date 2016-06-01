@@ -104,4 +104,3 @@
     <small class="pull-right"><?php print render($page['footer']); ?></small>
   </div>
 </footer>
-<img class="tibo" src="/sites/all/themes/data_radix/assets/images/tibo.jpg">

@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ * Test CPN's block integration.
+ */
+
+class CpnBlockTest extends CpnTestHelper {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'CPN node tests',
+      'description' => 'Test the CPN module.',
+      'group' => 'CPN',
+    );
+  }
+
+}

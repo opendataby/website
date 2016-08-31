@@ -1,0 +1,439 @@
+<?php
+/**
+ * @file
+ * Installation, schema and update hook implementations.
+ */
+
+/**
+ * Implement hook_requirements().
+ *
+ * Check if CodeMirror is installed, if it isn't inform the user.
+ */
+function cpn_requirements($phase) {
+  $requirements = array();
+
+  // Look for CodeMirror.
+  if (module_exists('libraries')) {
+    $path = libraries_get_path('codemirror');
+  }
+  else {
+    $path = 'sites/all/libraries/codemirror';
+  }
+  $dir_exists = file_exists($path);
+  $js_exists = file_exists($path . '/lib/codemirror.js');
+
+  // Install time.
+  if ($phase == 'install') {
+    // Ensure translations don't break at install time
+    $t = get_t();
+
+    // The directory doesn't exist.
+    if (!$dir_exists) {
+      $requirements[] = array(
+        'title' => 'Code per Node',
+        'value' => $t('<a href="!url" title="CodeMirror">CodeMirror</a> is not available.', array('!url' => 'http://codemirror.net/')),
+        'description' => $t('It is recommended to install <a href="!url" title="CodeMirror">CodeMirror</a> (v3.20 or newer), it will add syntax highlighting and many other great benefits to the CSS and JS fields.', array('!url' => 'http://codemirror.net/')),
+        'severity' => REQUIREMENT_INFO,
+      );
+    }
+
+    // The directory exists but the JS file doesn't exist.
+    elseif (!$js_exists) {
+      $requirements[] = array(
+        'title' => 'Code per Node',
+        'value' => $t('<a href="!url" title="CodeMirror">CodeMirror</a> is not installed correctly.', array('!url' => 'http://codemirror.net/')),
+        'description' => $t('The "!dir" directory exists but could not find "!path", please verify CodeMirror was installed correctly.', array('!dir' => $path, '!path' => $path . '/lib/codemirror.js')),
+        'severity' => REQUIREMENT_INFO,
+      );
+    }
+  }
+
+  // The admin/reports/status page was loaded.
+  elseif ($phase == 'runtime') {
+    // CodeMirror is not available.
+    if (!$dir_exists) {
+      $requirements[] = array(
+        'title' => 'Code per Node',
+        'value' => t('<a href="!url" title="CodeMirror">CodeMirror</a> is not available.', array('!url' => 'http://codemirror.net/')),
+        'description' => t('Installing <a href="!url" title="CodeMirror">CodeMirror</a> (v3.20 or newer) will add syntax highlighting and many other great benefits to the CSS and JS fields.', array('!url' => 'http://codemirror.net/')),
+        'severity' => REQUIREMENT_INFO,
+      );
+    }
+
+    // CodeMirror is available.
+    else {
+      $identified = TRUE;
+      $package_file = $path . '/package.json';
+
+      // Verify that the package.json file is available.
+      if (!file_exists($package_file) || !is_readable($package_file)) {
+        $identified = FALSE;
+      }
+      else {
+        // Load the package file.
+        $package = file_get_contents($package_file);
+
+        // Could not load the package file.
+        if (empty($package)) {
+          $identified = FALSE;
+        }
+        else {
+          $package = json_decode($package, TRUE);
+
+          // Cannot parse the package file or there is no version string
+          // present.
+          if (empty($package) || empty($package['version'])) {
+            $identified = FALSE;
+          }
+
+          // The package file was loaded.
+          else {
+            // Identify what version is installed.
+            $version_parts = explode('.', $package['version']);
+
+            // The version string should contain at least two parts, e.g.
+            // "3,20.0", if it doesn't then something is wrong.
+            if (empty($version_parts) || count($version_parts) < 2) {
+              $identified = FALSE;
+            }
+
+            // Verify the version of CodeMirror installed is new enough.
+            elseif (($version_parts[0] == 3 && $version_parts[1] >= 20) || $version_parts[0] >= 4) {
+              $requirements[] = array(
+                'title' => 'Code per Node',
+                'value' => t('CodeMirror v!ver is installed.', array('!ver' => $package['version'])),
+                'description' => t('CodeMirror is installed and it is a compatible version. Excellent!'),
+                'severity' => REQUIREMENT_OK,
+              );
+            }
+
+            // The version of CodeMirror installed is probably too old.
+            else {
+              $requirements[] = array(
+                'title' => 'Code per Node',
+                'value' => t('Please update CodeMirror to v3.20 or newer, v!ver is installed.', array('!ver' => $package['version'])),
+                'description' => t('Code per Node has been built against <a href="!url" title="CodeMirror">CodeMirror v3.20</a>, anything older may be incompatible.', array('!url' => 'http://codemirror.net/')),
+                'severity' => REQUIREMENT_WARNING,
+              );
+            }
+          }
+        }
+      }
+
+      // The version of CodeMirror installed could not be identified.
+      if (!$identified) {
+        $requirements[] = array(
+          'title' => 'Code per Node',
+          'value' => t('Could not identify the version of CodeMirror available, replace it with v3.20 or newer.'),
+          'description' => t('Code per Node has been built against <a href="!url" title="CodeMirror">CodeMirror v3.20</a>, anything older is most likely incompatible.'),
+          'severity' => REQUIREMENT_WARNING,
+        );
+      }
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_schema().
+ */
+function cpn_schema() {
+  $schema['cpn'] = array(
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'css' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'big',
+      ),
+      'js' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'big',
+      ),
+      'noscript' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'big',
+      ),
+    ),
+    'primary key' => array('nid'),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_schema_alter().
+ */
+function cpn_schema_alter(&$schema) {
+  // If block table exists, alter its schema. Use this instead of module_exists
+  // because the Block module might be disabled.
+  if (db_table_exists('block')) {
+    $schema['block']['fields']['css'] = array(
+      'type' => 'text',
+      'not null' => FALSE,
+      'size' => 'big',
+    );
+    $schema['block']['fields']['js'] = array(
+      'type' => 'text',
+      'not null' => FALSE,
+      'size' => 'big',
+    );
+    $schema['block']['fields']['noscript'] = array(
+      'type' => 'text',
+      'not null' => FALSE,
+      'size' => 'big',
+    );
+  }
+}
+
+/**
+ * Implements hook_install().
+ */
+function cpn_install() {
+  drupal_set_message(t('', array('@url' => '')));
+  // If block table exists, add CPN fields.
+  if (db_table_exists('block')) {
+    cpn_alter_block();
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function cpn_uninstall() {
+  // If block table exists, drop CPN fields.
+  if (db_table_exists('block')) {
+    cpn_unalter_block();
+  }
+
+  // Delete CSS & JS files.
+  file_unmanaged_delete_recursive(variable_get('cpn_path', 'public://cpn'));
+
+  // Delete variables.
+  $node_types = array_keys(node_type_get_types());
+  foreach (array('css', 'js') as $type) {
+    variable_del('cpn_aggregation_' . $type);
+    variable_del('cpn_external_' . $type);
+    variable_del('cpn_global_' . $type);
+    variable_del('cpn_global_' . $type . '_admin');
+    variable_del('cpn_global_' . $type . '_agree');
+    variable_del('cpn_weight_' . $type);
+    variable_del('cpn_wrapper_block_' . $type);
+    variable_del('cpn_wrapper_node_' . $type);
+    foreach ($node_types as $node_type) {
+      variable_del('cpn_' . $type . '_' . $node_type);
+      variable_del('cpn_' . $type . '_enabled_' . $node_type);
+      variable_del('cpn_view_modes_node_' . $node_type);
+    }
+  }
+  variable_del('cpn_codemirror_version');
+  variable_del('cpn_path');
+  variable_del('cpn_syntax_highlighting');
+}
+
+/**
+ * Implements hook_modules_installed().
+ */
+function cpn_modules_installed($modules) {
+  // After installing block, add its CPN fields.
+  if (in_array('block', $modules)) {
+    cpn_alter_block();
+  }
+}
+
+/**
+ * Adds CPN fields to block table, as defined in cpn_schema_alter().
+ */
+function cpn_alter_block() {
+  $schema = array();
+  cpn_schema_alter($schema);
+  foreach ($schema['block']['fields'] as $name => $spec) {
+    if (!db_field_exists('block', $name)) {
+      db_add_field('block', $name, $spec);
+    }
+  }
+}
+
+/**
+ * Drops CPN fields from block table, as defined in cpn_schema_alter().
+ */
+function cpn_unalter_block() {
+  $schema = array();
+  cpn_schema_alter($schema);
+  foreach ($schema['block']['fields'] as $name => $spec) {
+    if (db_field_exists('block', $name)) {
+      db_drop_field('block', $name);
+    }
+  }
+}
+
+/**
+ * Implementations of hook_update_N().
+ */
+
+/**
+ * Upgrade CPN settings from D6 to D7.
+ */
+function cpn_update_7000() {
+  // Fix the path variable.
+  if ($path = variable_get('cpn_path', FALSE)) {
+    variable_set('cpn_path', file_default_scheme() . $path);
+  }
+
+  // Update variables to new format.
+  foreach (array_keys(node_type_get_types()) as $node_type) {
+    foreach (array('css', 'js') as $type) {
+      if (variable_get('cpn_' . $type . '_' . $node_type, FALSE)) {
+        variable_set('cpn_' . $type . '_enabled_' . $node_type, TRUE);
+        variable_del('cpn_' . $type . '_' . $node_type);
+      }
+    }
+  }
+}
+
+/**
+ * Migrate any sites that may have used the patch from
+ * http://drupal.org/node/1423408 to control CSS/JS aggregation.
+ */
+function cpn_update_7100() {
+  $empty = 'flying monkeys';
+
+  $preprocess = variable_get('cpn_preprocess', $empty);
+  if ($preprocess != $empty) {
+    variable_set('cpn_aggregation_css', $preprocess);
+    variable_set('cpn_aggregation_js', $preprocess);
+    variable_del('cpn_preprocess');
+    drupal_set_message(t("The CPN setting from issue #1423408 has been converted to the new format"));
+  }
+}
+
+/**
+ * Make the CSS and JS fields long text fields.
+ */
+function cpn_update_7101() {
+  $table = 'cpn';
+  $field = 'css';
+  $spec = array(
+    'type' => 'text',
+    'not null' => FALSE,
+    'size' => 'big',
+  );
+  db_change_field($table, $field, $field, $spec);
+  $field = 'js';
+  $spec = array(
+    'type' => 'text',
+    'not null' => FALSE,
+    'size' => 'big',
+  );
+  db_change_field($table, $field, $field, $spec);
+  drupal_set_message(t("Expanded the CPN fields to have more space for custom code. That said, you really shouldn't insert that much code."));
+}
+
+/**
+ * Split the CSS & JS wrappers.
+ */
+function cpn_update_7102() {
+  foreach (array('css', 'js') as $type) {
+    $wrapper = variable_get('cpn_wrapper_' . $type, '');
+    if (!empty($wrapper)) {
+      variable_set('cpn_wrapper_block_' . $type, $wrapper);
+      variable_set('cpn_wrapper_node_' . $type, $wrapper);
+    }
+    variable_del('cpn_wrapper_' . $type);
+  }
+  drupal_set_message(t('The code wrappers have been split so that they may be customized separately for blocks and nodes.'));
+}
+
+/**
+ * Rename some conent-type -specific variables.
+ */
+function cpn_update_7103() {
+  drupal_set_message(t("<i>Code per Node</i> now allows selection of the specific view modes that will cause any custom CSS or JS to be loaded. The new default is to only load the files on the 'Full content' and 'Teaser' view modes, this may be customized on each content type's edit page.", array('!url' => 'admin/structure/types')));
+}
+
+/**
+ * Add the new CPN admin permission.
+ */
+function cpn_update_7104() {
+  // Clear the caches prior to adding the new role.
+  drupal_static_reset('user_access');
+  drupal_static_reset('user_role_permissions');
+
+  // The new permission to add.
+  $new_permission = 'administer code per node';
+
+  $roles = array();
+  foreach (user_roles(TRUE, 'administer site configuration') as $rid => $role) {
+    $roles[] = $role;
+    db_merge('role_permission')
+      ->key(array(
+        'rid' => $rid,
+        'permission' => $new_permission,
+      ))
+      ->fields(array(
+        'module' => 'cpn',
+      ))
+      ->execute();
+  }
+
+  if (!empty($roles)) {
+    drupal_set_message(format_plural(count($roles),
+      'Added the new user permission to the @roles role.',
+      'Added the new user permission to the @roles role(s).',
+      array('@roles' => implode(', ', $roles))
+    ));
+
+    // Update the permission caches again.
+    drupal_static_reset('user_access');
+    drupal_static_reset('user_role_permissions');
+  }
+}
+
+/**
+ * Add the 'noscript' field to the {cpn} table.
+ */
+function cpn_update_7105() {
+  $table = 'cpn';
+  $field = 'noscript';
+  if (!db_field_exists($table, $field)) {
+    $spec = array(
+      'type' => 'text',
+      'not null' => FALSE,
+      'size' => 'big',
+    );
+    db_add_field($table, $field, $spec);
+
+    return t('Added the "noscript" field to the {cpn} table.');
+  }
+  else {
+    return t('The "noscript" field already exists in the {cpn} table.');
+  }
+}
+
+/**
+ * Add the 'noscript' field to the {block} table.
+ */
+function cpn_update_7106() {
+  $table = 'block';
+  $field = 'noscript';
+  if (!db_field_exists($table, $field)) {
+    $spec = array(
+      'type' => 'text',
+      'not null' => FALSE,
+      'size' => 'big',
+    );
+    db_add_field($table, $field, $spec);
+
+    return t('Added the "noscript" field to the {block} table.');
+  }
+  else {
+    return t('The "noscript" field already exists in the {block} table.');
+  }
+}

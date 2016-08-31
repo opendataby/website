@@ -1,0 +1,25 @@
+<?php
+/**
+ * @file
+ * Shared functionality for the CPN tests.
+ */
+
+class CpnTestHelper extends DrupalWebTestCase {
+
+  /**
+   * Admin user.
+   *
+   * @var \StdClass
+   */
+  protected $adminUser;
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'cpn';
+
+    parent::setUp($modules);
+  }
+
+}

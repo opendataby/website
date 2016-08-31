@@ -1,0 +1,978 @@
+<?php
+/**
+ * @file
+ * Primary hook implementations.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function cpn_permission() {
+  $permissions['administer code per node']['title'] = t('Administer <em>Code per Node</em>');
+
+  $permissions['edit css per node']['title'] = t('Edit CSS per node');
+  $permissions['edit javascript per node']['title'] = t('Edit JavaScript per node');
+
+  if (module_exists('block')) {
+    $permissions['edit css per block']['title'] = t('Edit CSS per block');
+    $permissions['edit javascript per block']['title'] = t('Edit JavaScript per block');
+  }
+
+  return $permissions;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function cpn_menu() {
+  $items['admin/config/content/cpn'] = array(
+    'title' => 'Code per Node',
+    'description' => 'Configure Code per Node settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cpn_settings'),
+    'access arguments' => array('administer code per node'),
+    'file' => 'cpn.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_page_build().
+ */
+function cpn_page_build(&$page) {
+  // Optional weights.
+  $weight = array(
+    'css' => variable_get('cpn_weight_css', CSS_THEME),
+    'js' => variable_get('cpn_weight_js', JS_THEME),
+  );
+
+  foreach (array('css', 'js') as $type) {
+    // Only proceed if the 'agree' option was checked and if some code was
+    // actually saved.
+    $agree = variable_get('cpn_global_' . $type . '_agree', FALSE);
+    $code = variable_get('cpn_global_' . $type, '');
+
+    if ($agree && !empty($code)) {
+      // Only proceed if either this is not an admin page or if the 'load on
+      // admin pages too' option was checked.
+      $page_is_admin = path_is_admin(current_path());
+      $force_on_admin = (bool) variable_get('cpn_global_' . $type . '_admin', FALSE);
+      if (!$page_is_admin || $force_on_admin) {
+        $file = variable_get('cpn_path', 'public://cpn') . '/global.' . $type;
+        $page['content']['#attached'][$type]['cpn_global'] = array(
+          'type' => 'file',
+          'group' => $type == 'css' ? CSS_THEME : JS_THEME,
+          'weight' => $weight[$type] - 2,
+          'data' => $file,
+          'preprocess' => (bool) variable_get('cpn_aggregation_' . $type, FALSE),
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function cpn_form_node_type_form_alter(&$form, $form_state) {
+  if (isset($form['type'])) {
+    // Load the full entity info for this content type.
+    $entity_info = entity_get_info('node');
+    $types = array();
+    foreach ($entity_info['view modes'] as $view_mode => $mode_info) {
+      $types[$view_mode] = $mode_info['label'];
+    }
+
+    $form['cpn'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Code per Node settings'),
+      '#group' => 'additional_settings',
+    );
+    $form['cpn']['cpn_view_modes_node'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('View modes'),
+      '#options' => $types,
+      '#required' => TRUE,
+      '#default_value' => variable_get('cpn_view_modes_node_' . $form['#node_type']->type, array('full', 'teaser')),
+      '#description' => t('The custom CSS and JS will only be loaded on these view modes. This can usually be left at the default.'),
+    );
+    $form['cpn']['cpn_css'] = array(
+      '#type' => 'textarea',
+      '#title' => t('CSS'),
+      '#default_value' => variable_get('cpn_css_' . $form['#node_type']->type, ''),
+      '#description' => t('Custom CSS rules for this content type. Do not include @style tags.', array('@style' => '<style>')),
+    );
+    $form['cpn']['cpn_js'] = array(
+      '#type' => 'textarea',
+      '#title' => t('JavaScript'),
+      '#default_value' => variable_get('cpn_js_' . $form['#node_type']->type, ''),
+      '#description' => t('Custom JavaScript for this content type. Do not include @script tags.', array('@script' => '<script>')),
+    );
+    $form['cpn']['cpn_css_enabled'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable custom CSS per node.'),
+      '#return_value' => 1,
+      '#default_value' => variable_get('cpn_css_enabled_' . $form['#node_type']->type, FALSE),
+      '#description' => t('Users with the <em>edit node css</em> permission will be able to edit custom CSS rules per node.'),
+    );
+    $form['cpn']['cpn_js_enabled'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable custom JavaScript per node.'),
+      '#return_value' => 1,
+      '#default_value' => variable_get('cpn_js_enabled_' . $form['#node_type']->type, FALSE),
+      '#description' => t('Users with the <em>edit node javascript</em> permission will be able to edit custom JavaScript per node.'),
+    );
+    // Show the list of available tokens.
+    if (module_exists('token')) {
+      $form['cpn']['tokens'] = array(
+        '#prefix' => '<p>' . t('Custom tokens may be added to the code to output certain information. Note: these values will be assigned <em>now</em> so it really is of limited use.') . '</p>',
+        '#theme' => 'token_tree',
+        '#token_types' => array(),
+        '#weight' => 999,
+        '#dialog' => TRUE,
+      );
+    }
+    $form['#validate'][] = 'cpn_node_type_validate';
+    $form['#submit'][] = 'cpn_node_type_submit';
+    cpn_attach_syntax_highlighting($form['cpn']);
+  }
+}
+
+/**
+ * Node type validation callback.
+ * 
+ * Ensures no "style" or "script" tags are included.
+ */
+function cpn_node_type_validate($form, &$form_state) {
+  if (cpn_validate($form_state['values']['cpn_css'], 'css')) {
+    form_set_error('cpn_css', t('Do not include @style tags in the CSS.', array('@style' => '<style>')));
+  }
+  if (cpn_validate($form_state['values']['cpn_js'], 'js')) {
+    form_set_error('cpn_js', t('Do not include @script tags in the JavaScript.', array('@script' => '<script>')));
+  }
+}
+
+/**
+ * Node type submit callback.
+ */
+function cpn_node_type_submit($form, &$form_state) {
+  // Delete existing files, then save them.
+  foreach (array('css', 'js') as $type) {
+    // Remove the existing file.
+    cpn_delete_file($form_state['values']['type'] . '.' . $type);
+
+    // Add the global wrapper code.
+    $output = cpn_wrap_output($form_state['values']['cpn_' . $type], 'node', $type);
+    // Replace the token strings using any available global tokens.
+    $output = token_replace($output);
+    // Output the file.
+    if (!empty($output)) {
+      cpn_save_file($output, $form_state['values']['type'] . '.' . $type);
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function cpn_form_node_form_alter(&$form, $form_state) {
+  $title = array();
+  $cpn = !empty($form['#node']->cpn) ? $form['#node']->cpn : array('css' => '', 'js' => '', 'noscript' => '');
+
+  // CSS.
+  if (variable_get('cpn_css_enabled_' . $form['#node']->type, FALSE) && (user_access('administer code per node') || user_access('edit css per node'))) {
+    $form['cpn']['css'] = array(
+      '#type' => 'textarea',
+      '#title' => t('CSS'),
+      '#default_value' => $cpn['css'],
+      '#description' => t('Custom CSS rules for this node. Do not include @style tags.', array('@style' => '<style>')),
+    );
+    $title[] = 'CSS';
+
+    // Indicate if per-content-type code will be loaded.
+    $file = variable_get('cpn_path', 'public://cpn') . '/' . $form['#node']->type . '.css';
+    $files_dir = variable_get('file_public_path', conf_path() . '/files');
+    $file = $files_dir . '/' . file_uri_target($file);
+    if (file_exists($file)) {
+      $form['cpn']['css']['#description'] .= '<br />'
+        . t('The following CSS file will also be loaded for all nodes of this content type: !file<br />', array('!file' => l($file, $file)));
+    }
+  }
+
+  // JS.
+  if (variable_get('cpn_js_enabled_' . $form['#node']->type, FALSE) && (user_access('administer code per node') || user_access('edit javascript per node'))) {
+    $form['cpn']['js'] = array(
+      '#type' => 'textarea',
+      '#title' => t('JavaScript'),
+      '#default_value' => $cpn['js'],
+      '#description' => t('Custom JavaScript for this node. Do not include @script tags.', array('@script' => '<script>')),
+    );
+    $form['cpn']['noscript'] = array(
+      '#type' => 'textarea',
+      '#title' => t('NOSCRIPT'),
+      '#default_value' => $cpn['noscript'],
+      '#description' => t("Custom HTML to show if JavaScript is not enabled in the visitor's browser. Do not include @noscript tags.", array('@noscript' => '<noscript>')),
+    );
+    $title[] = 'JavaScript';
+
+    // Indicate if per-content-type code will be loaded.
+    $file = variable_get('cpn_path', 'public://cpn') . '/' . $form['#node']->type . '.js';
+    $files_dir = variable_get('file_public_path', conf_path() . '/files');
+    $file = $files_dir . '/' . file_uri_target($file);
+    if (file_exists($file)) {
+      $form['cpn']['js']['#description'] .= '<br />'
+        . t('The following JavaScript file will also be loaded for all nodes of this content type: !file<br />', array('!file' => l($file, $file)));
+    }
+  }
+
+  // Fieldset.
+  if (isset($form['cpn'])) {
+    $form['cpn']['#type'] = 'fieldset';
+    $form['cpn']['#title'] = t(join(' & ', $title));
+    $form['cpn']['#tree'] = TRUE;
+    $form['cpn']['#group'] = 'additional_settings';
+    cpn_attach_syntax_highlighting($form['cpn'], isset($form['cpn']['css']), isset($form['cpn']['js']));
+
+    // Show the list of available tokens.
+    if (module_exists('token')) {
+      $form['cpn']['tokens'] = array(
+        '#prefix' => '<p>' . t('Custom tokens may be added to the code to output certain information.') . '</p>',
+        '#theme' => 'token_tree',
+        '#token_types' => array('node'),
+        '#weight' => 999,
+        '#dialog' => TRUE,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_node_validate().
+ * 
+ * Ensures no "style" or "script" tags are included.
+ */
+function cpn_node_validate($node, $form) {
+  if (isset($node->cpn['css']) && cpn_validate($node->cpn['css'], 'css')) {
+    form_set_error('cpn][css', t('Do not include @style tags in the CSS.', array('@style' => '<style>')));
+  }
+  if (isset($node->cpn['js']) && cpn_validate($node->cpn['js'], 'js')) {
+    form_set_error('cpn][js', t('Do not include @script tags in the JavaScript.', array('@script' => '<script>')));
+  }
+  if (isset($node->cpn['noscript']) && cpn_validate($node->cpn['noscript'], 'noscript')) {
+    form_set_error('cpn][noscript', t('Do not include @script tags in the NOSCRIPT value.', array('@script' => '<noscript>')));
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ * 
+ * Deletes from DB and file system, and then insert.
+ */
+function cpn_node_update($node) {
+  if (isset($node->cpn)) {
+    cpn_delete_file($node->nid . '.css');
+    cpn_delete_file($node->nid . '.js');
+  }
+  cpn_node_insert($node);
+}
+
+/**
+ * Implements hook_node_insert().
+ * 
+ * Saves in DB and file system.
+ */
+function cpn_node_insert($node) {
+  $cpn = array();
+  if (isset($node->cpn)) {
+    $cpn['nid'] = $node->nid;
+    $cpn['css'] = isset($node->cpn['css']) ? $node->cpn['css'] : '';
+    $cpn['js'] = isset($node->cpn['js']) ? $node->cpn['js'] : '';
+    $cpn['noscript'] = isset($node->cpn['noscript']) ? $node->cpn['noscript'] : '';
+  }
+
+  // If the node is being updated, account for when the user does not have
+  // permission to edit them and the previous records might be deleted.
+  if (isset($node->original, $node->original->cpn)) {
+    if (variable_get('cpn_css_enabled_' . $node->type, FALSE)) {
+      if (!user_access('administer code per node') && !user_access('edit css per node')) {
+        if (!empty($node->original->cpn['css'])) {
+          $cpn['css'] = $node->original->cpn['css'];
+        }
+      }
+    }
+    if (variable_get('cpn_js_enabled_' . $node->type, FALSE)) {
+      if (!user_access('administer code per node') && !user_access('edit javascript per node')) {
+        if (!empty($node->original->cpn['js'])) {
+          $cpn['js'] = $node->original->cpn['js'];
+        }
+        if (!empty($node->original->cpn['noscript'])) {
+          $cpn['noscript'] = $node->original->cpn['noscript'];
+        }
+      }
+    }
+  }
+
+  if (!empty($cpn)) {
+    if (drupal_strlen(trim($cpn['css'] . $cpn['js'] . $cpn['noscript']))) {
+      db_merge('cpn')
+        ->fields($cpn)
+        ->key(array('nid' => $node->nid))
+        ->execute();
+      foreach (array('css', 'js') as $type) {
+        // Add the global wrapper code.
+        $output = cpn_wrap_output($cpn[$type], 'node', $type);
+        // Replace the token strings using any available global & node tokens.
+        $output = token_replace($output, array('node' => $node));
+        // Output the file.
+        if (!empty($output)) {
+          cpn_save_file($output, $node->nid  . '.' . $type);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ * 
+ * Deletes from DB and file system.
+ */
+function cpn_node_delete($node) {
+  db_delete('cpn')
+    ->condition('nid', $node->nid)
+    ->execute();
+  cpn_delete_file($node->nid . '.css');
+  cpn_delete_file($node->nid . '.js');
+}
+
+/**
+ * Implements hook_node_load().
+ * 
+ * Adds "cpn" variable to the node object.
+ */
+function cpn_node_load($nodes, $types) {
+  $supported = FALSE;
+  foreach ($types as $type) {
+    if (variable_get('cpn_css_enabled_' . $type, FALSE) || variable_get('cpn_js_enabled_' . $type, FALSE)) {
+      $supported = TRUE;
+      break;
+    }
+  }
+
+  if ($supported) {
+    try {
+      $result = db_query('SELECT nid, css, js, noscript FROM {cpn} WHERE nid IN (:nids)', array(':nids' => array_keys($nodes)));
+      foreach ($result as $record) {
+        $nodes[$record->nid]->cpn = array(
+          'css' => $record->css,
+          'js' => $record->js,
+          'noscript' => $record->noscript,
+        );
+      }
+    }
+    catch (Exception $e) {
+      watchdog('cpn', 'Error loading node records for CPN, were the database updates ran?');
+    }
+  }
+}
+
+/**
+ * Implements hook_ctools_render_alter().
+ */
+function cpn_ctools_render_alter(&$info, &$page, &$context) {
+  // Only work with node views.
+  if ($context['task']['name'] == 'node_view') {
+    // Get the node data.
+    if (isset($context['contexts']['argument_entity_id:node_1']->data)) {
+      $node = $context['contexts']['argument_entity_id:node_1']->data;
+      // Verify this view mode was enabled.
+      $modes = variable_get('cpn_view_modes_node_' . $node->type, array('full', 'teaser'));
+      if (!in_array('full', $modes)) {
+        return;
+      }
+
+      // Optional weights.
+      $weight = array(
+        'css' => variable_get('cpn_weight_css', CSS_THEME),
+        'js' => variable_get('cpn_weight_js', JS_THEME),
+      );
+
+      // Attach the content type CSS/JS, lighter than the per-page files.
+      foreach (array('css', 'js') as $type) {
+        $file = variable_get('cpn_path', 'public://cpn') . '/' . $node->type . '.' . $type;
+        if (is_file($file)) {
+          $options = array(
+            'type' => 'file',
+            'group' => $type == 'css' ? CSS_THEME : JS_THEME,
+            'weight' => $weight[$type] - 1,
+            'preprocess' => (bool) variable_get('cpn_aggregation_' . $type, FALSE),
+          );
+          $function = 'drupal_add_' . $type;
+          $function($file);
+        }
+      }
+
+      // Check for CPN.
+      if (isset($node->cpn)) {
+        foreach (array('css', 'js', 'noscript') as $type) {
+          // Check for CSS
+          if (isset($node->cpn[$type]) && !empty($node->cpn[$type])) {
+            // noscript gets special handling.
+            if ($type == 'noscript') {
+              $lang = $node->language;
+              $info['content'] .= cpn_output_noscript($node->cpn['noscript']);
+            }
+
+            // CSS and JS.
+            else {
+              $file = variable_get('cpn_path', 'public://cpn') . '/' . $node->nid . '.' . $type;
+              // Make the weight heavier than the per-content type value so it
+              // loads last.
+              $options = array(
+                'type' => 'file',
+                'group' => ($type == 'css' ? CSS_THEME : JS_THEME),
+                'weight' => $weight[$type],
+                'preprocess' => (bool) variable_get('cpn_aggregation_' . $type, FALSE),
+              );
+              $function = 'drupal_add_' . $type;
+              $function($file, $options);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Output the NOSCRIPT string with the required HTML tag.
+ */
+function cpn_output_noscript($output) {
+  return '<noscript>'
+    . filter_xss($output, array('a', 'em', 'strong', 'cite', 'blockquote', 'code', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'p', 'div', 'br', 'img'))
+    . '</noscript>';
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function cpn_node_view($node, $view_mode, $langcode) {
+  // This variable ensures that CSS and JS don't get added twice, which is a
+  // problem especially for JS.
+  static $previewed = FALSE;
+
+  // Verify this view mode was enabled.
+  $modes = variable_get('cpn_view_modes_node_' . $node->type, array('full', 'teaser'));
+  if (!in_array($view_mode, $modes)) {
+    return;
+  }
+
+  // Optional weights.
+  $weight = array(
+    'css' => variable_get('cpn_weight_css', CSS_THEME),
+    'js' => variable_get('cpn_weight_js', JS_THEME),
+  );
+
+  // Attach the content type CSS/JS, lighter than the per-page files.
+  foreach (array('css', 'js') as $type) {
+    $file = variable_get('cpn_path', 'public://cpn') . '/' . $node->type . '.' . $type;
+    if (is_file($file)) {
+      $node->content['#attached'][$type]['cpn_type_' . $node->type] = array(
+        'type' => 'file',
+        'group' => $type == 'css' ? CSS_THEME : JS_THEME,
+        'weight' => $weight[$type] - 1,
+        'data' => $file,
+      );
+    }
+  }
+
+  // Previewing: add CSS and/or JS to the page, inline.
+  if (!empty($node->in_preview)) {
+    if (!$previewed) {
+      foreach (array('css', 'js') as $type) {
+        if (isset($node->cpn[$type]) && drupal_strlen(trim($node->cpn[$type]))) {
+          // Wrap the output with the global wrapper.
+          $output = cpn_wrap_output($node->cpn[$type], 'node', $type);
+
+          // Replace the token strings using any available global & node
+          // tokens.
+          $output = token_replace($output, array('node' => $node));
+
+          // Output the code.
+          if (!empty($output)) {
+            $node->content['#attached'][$type]['cpn_node_' . $node->nid] = array(
+              'type' => 'inline',
+              'group' => $type == 'css' ? CSS_THEME : JS_THEME,
+              'weight' => $weight[$type],
+              'data' => $output,
+            );
+          }
+        }
+      }
+    }
+    $previewed = TRUE;
+  }
+
+  // Viewing: add files to the page if this view mode is enabled and only if
+  // the file(s) exist.
+  else {
+    foreach (array('css', 'js') as $type) {
+      $file = variable_get('cpn_path', 'public://cpn') . '/' . $node->nid . '.' . $type;
+      if (is_file($file)) {
+        $node->content['#attached'][$type]['cpn_node_' . $node->nid] = array(
+          'type' => 'file',
+          'group' => $type == 'css' ? CSS_THEME : JS_THEME,
+          'weight' => $weight[$type],
+          'data' => $file,
+          'preprocess' => variable_get('cpn_aggregation_' . $type, FALSE),
+        );
+        // Optionally load as an external file.
+        if ((bool) variable_get('cpn_external_' . $type, FALSE)) {
+          $node->content['#attached'][$type]['cpn_node_' . $node->nid]['type'] = 'external';
+          $node->content['#attached'][$type]['cpn_node_' . $node->nid]['data'] = file_create_url($file) . '?' . $node->changed;
+        }
+      }
+    }
+  }
+
+  // 'noscript' code needs to be handled specially.
+  if (!empty($node->cpn['noscript'])) {
+    $node->content['body'][0]['#prefix'] = cpn_output_noscript($node->cpn['noscript']);
+  }
+}
+
+/**
+ * Implements of hook_form_alter().
+ */
+function cpn_form_alter(&$form, $form_state, $form_id) {
+  // Block form (editing any block, or creating a Block module block).
+  if ($form_id == 'block_admin_configure' or ($form_id == 'block_add_block_form' and $form['module']['#value'] == 'block')) {
+    $title = array();
+
+    // Load block data.
+    $cpn = array(
+      'css' => '',
+      'js' => '',
+      'noscript' => '',
+    );
+    if (!empty($form['delta']['#value'])) {
+      try {
+        $cpn = db_query("SELECT css, js, noscript FROM {block} WHERE module = :module AND delta = :delta", array(
+          ':module' => $form['module']['#value'],
+          ':delta' => $form['delta']['#value'],
+        ))->fetchAssoc();
+      }
+      catch (Exception $e) {
+        watchdog('cpn', 'Error loading block records for CPN, were the database updates ran?');
+      }
+    }
+
+    // CSS.
+    if (user_access('administer code per node') || user_access('edit css per block')) {
+      $form['cpn']['css'] = array(
+        '#type' => 'textarea',
+        '#title' => t('CSS'),
+        '#default_value' => $cpn['css'],
+        '#description' => t('Custom CSS rules for this block. Do not include @style tags.', array('@style' => '<style>')),
+      );
+      $title[] = 'CSS';
+    }
+
+    // JS & NOSCRIPT.
+    if (user_access('administer code per node') || user_access('edit javascript per block')) {
+      $form['cpn']['js'] = array(
+        '#type' => 'textarea',
+        '#title' => t('JavaScript'),
+        '#default_value' => $cpn['js'],
+        '#description' => t('Custom JavaScript for this block. Do not include @script tags.', array('@script' => '<script>')),
+      );
+      $form['cpn']['noscript'] = array(
+        '#type' => 'textarea',
+        '#title' => t('NOSCRIPT'),
+        '#default_value' => $cpn['noscript'],
+        '#description' => t("Custom HTML to show if JavaScript is not enabled in the visitor's browser. Do not include @script tags.", array('@script' => '<noscript>')),
+      );
+      $title[] = 'JavaScript';
+    }
+
+    // Fieldset.
+    if (isset($form['cpn'])) {
+      $form['cpn']['#type'] = 'fieldset';
+      $form['cpn']['#title'] = t(join(' & ', $title));
+      $form['cpn']['#tree'] = TRUE;
+      $form['cpn']['#group'] = 'visibility';
+      $form['submit']['#weight'] = 5;
+      $form['#validate'][] = 'cpn_block_validate';
+      $form['#submit'][] = 'cpn_block_submit';
+      cpn_attach_syntax_highlighting($form['cpn'], isset($form['cpn']['css']), isset($form['cpn']['js']));
+    }
+  }
+}
+
+/**
+ * Block validation callback.
+ * 
+ * Ensures no "style" or "script" tags are included.
+ */
+function cpn_block_validate($form, &$form_state) {
+  if (isset($form_state['values']['cpn']['css']) && cpn_validate($form_state['values']['cpn']['css'], 'css')) {
+    form_set_error('cpn][css', t('Do not include @style tags in the CSS.', array('@style' => '<style>')));
+  }
+  if (isset($form_state['values']['cpn']['js']) && cpn_validate($form_state['values']['cpn']['js'], 'js')) {
+    form_set_error('cpn][js', t('Do not include @script tags in the JavaScript.', array('@script' => '<script>')));
+  }
+  if (isset($form_state['values']['cpn']['noscript']) && cpn_validate($form_state['values']['cpn']['noscript'], 'noscript')) {
+    form_set_error('cpn][noscript', t('Do not include @script tags in the NOSCRIPT field.', array('@script' => '<noscript>')));
+  }
+}
+
+/**
+ * Block submit callback.
+ */
+function cpn_block_submit($form, &$form_state) {
+  if (isset($form_state['values']['cpn'])) {
+    $module = $form_state['values']['module'];
+    $delta = $form_state['values']['delta'];
+
+    // "Block" block was just created; get delta from "block_custom" table.
+    if (empty($delta) and $module == 'block') {
+      $delta = db_query("SELECT bid FROM {block_custom} ORDER BY bid DESC LIMIT 1")->fetchField();
+    }
+
+    // Update the existing records & files. However, only update anything if the
+    // current user has access to edit the records, to avoid accidentally
+    // deleting something because a user didn't have access.
+    $fields = array();
+    if (user_access('administer code per node') || user_access('edit css per block')) {
+      $fields['css'] = $form_state['values']['cpn']['css'];
+    }
+    if (user_access('administer code per node') || user_access('edit javascript per block')) {
+      $fields['js'] = $form_state['values']['cpn']['js'];
+      $fields['noscript'] = $form_state['values']['cpn']['noscript'];
+    }
+
+    // If an updated record was found then do so.
+    if (!empty($fields)) {
+      db_update('block')
+        ->fields($fields)
+        ->condition('module', $module)
+        ->condition('delta', $delta)
+        ->execute();
+
+      // Save the output.
+      foreach (array('css', 'js') as $type) {
+        // Only update records that the visitor had access to edit.
+        if (isset($fields[$type])) {
+          // Wrap the strings, if needed.
+          $form_state['values']['cpn'][$type] = cpn_wrap_output($form_state['values']['cpn'][$type], 'block', $type);
+
+          // Delete existing file.
+          cpn_delete_file($module . '-' . $delta . '.' . $type);
+
+          // Save the output to a file.
+          // Add the global wrapper code.
+          $output = cpn_wrap_output($form_state['values']['cpn'][$type], 'block', $type);
+          // Replace the token strings using any available global tokens.
+          $output = token_replace($output);
+          // Output the file.
+          if (!empty($output)) {
+            cpn_save_file($output, $module . '-' . $delta  . '.' . $type);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements of template_preprocess_block().
+ * 
+ * Adds files to the page (but only if they exist).
+ */
+function cpn_preprocess_block(&$vars) {
+  $css = variable_get('cpn_path', 'public://cpn') . '/' . $vars['block']->module . '-' . $vars['block']->delta . '.css';
+  $js = variable_get('cpn_path', 'public://cpn') . '/' . $vars['block']->module . '-' . $vars['block']->delta . '.js';
+  if (is_file($css)) {
+    $options = array(
+      'type' => 'file',
+      'group' => CSS_THEME,
+      'weight' => variable_get('cpn_weight_css', CSS_THEME) + 1,
+      'preprocess' => variable_get('cpn_aggregation_css', TRUE),
+    );
+    drupal_add_css($css, $options);
+  }
+  if (is_file($js)) {
+    $options = array(
+      'type' => 'file',
+      'group' => JS_THEME,
+      'weight' => variable_get('cpn_weight_js', JS_THEME) + 1,
+      'preprocess' => variable_get('cpn_aggregation_js', TRUE),
+    );
+    drupal_add_js($js, $options);
+  }
+
+  // The noscript option has to be handled differently.
+  try {
+    $noscript = db_query("SELECT noscript FROM {block} WHERE module = :module AND delta = :delta", array(
+      ':module' => $vars['block']->module,
+      ':delta' => $vars['block']->delta,
+    ))->fetchField();
+    if (!empty($noscript)) {
+      if (is_array($vars['content'])) {
+        $vars['content']['cpn']['#markup'] = cpn_output_noscript($noscript);
+      }
+      else {
+        $vars['content'] .= cpn_output_noscript($noscript);
+      }
+    }
+  }
+  catch (Exception $e) {
+    watchdog('cpn', 'Error loading block records for CPN, were the database updates ran?');
+  }
+}
+
+/**
+ * Validates CSS or JavaScript.
+ */
+function cpn_validate($data, $type) {
+  $patterns = array(
+    'css' => '~<\s*\/?\s*style\s*.*?>~i',
+    'js' => '~<\s*\/?\s*script\s*.*?>~i',
+    'noscript' => '~<\s*\/?\s*noscript\s*.*?>~i',
+  );
+  return preg_match($patterns[$type], $data);
+}
+
+/**
+ * Saves CSS & JavaScript in the file system (but only if not empty).
+ */
+function cpn_save_file($data, $filename) {
+  if (!drupal_strlen(trim($data))) {
+    return FALSE;
+  }
+  $path = variable_get('cpn_path', 'public://cpn');
+  $full_path = $path . '/' . $filename;
+  file_prepare_directory($path, FILE_CREATE_DIRECTORY);
+  $file_saved = file_unmanaged_save_data($data, $full_path, FILE_EXISTS_REPLACE);
+
+  // Integration with some other modules.
+  if ($file_saved) {
+    // AdvAgg - reload all the things.
+    if (module_exists('advagg')) {
+      module_load_include('inc', 'advagg', 'advagg.cache');
+      advagg_push_new_changes();
+    }
+
+    // Varnish - flush this one file.
+    if (module_exists('varnish')) {
+      varnish_expire_cache(array($full_path));
+    }
+  }
+
+  return $file_saved;
+}
+
+/**
+ * Deletes CSS & JavaScript from the file system (but only if it exists).
+ */
+function cpn_delete_file($filename) {
+  $path = variable_get('cpn_path', 'public://cpn') . '/' . $filename;
+  if (file_exists($path)) {
+    return file_unmanaged_delete($path);
+  }
+  return FALSE;
+}
+
+/**
+ * Returns path to CodeMirror, or FALSE if not found.
+ */
+function cpn_codemirror() {
+  static $path;
+
+  // Only process this once per page load.
+  if (is_null($path)) {
+    if (module_exists('libraries')) {
+      $path = libraries_get_path('codemirror');
+    }
+    else {
+      $path = 'sites/all/libraries/codemirror';
+    }
+    $path = file_exists($path) && is_dir($path) ? $path : FALSE;
+  }
+
+  return $path;
+}
+
+/**
+ * Identify the version of CodeMirror that is currently available.
+ *
+ * @return string
+ *   If CodeMirror is not installed, returns FALSE. If version cannot be
+ *   identified, returns TRUE, otherwise returns a string representation of the
+ *   version of CodeMirror currently installed, e.g. '3.20.1'.
+ */
+function cpn_codemirror_version() {
+  static $version;
+
+  // Only process this once per page load.
+  if (is_null($version)) {
+    $path = cpn_codemirror();
+    $version = FALSE;
+
+    // Ensure the actual codemirror JS file exists.
+    $js_exists = file_exists($path . '/lib/codemirror.js');
+    if ($js_exists) {
+      $identified = TRUE;
+      $package_file = $path . '/package.json';
+
+      // Verify that the package.json file is available.
+      if (!file_exists($package_file) || !is_readable($package_file)) {
+        $identified = FALSE;
+      }
+      else {
+        // Load the package file.
+        $package = file_get_contents($package_file);
+
+        // Could not load the package file.
+        if (empty($package)) {
+          $identified = FALSE;
+        }
+        else {
+          $package = json_decode($package, TRUE);
+
+          // Cannot parse the package file or there is no version string
+          // present.
+          if (empty($package) || empty($package['version'])) {
+            $identified = FALSE;
+          }
+
+          // The package file was loaded.
+          else {
+            // Identify what version is installed.
+            $version_parts = explode('.', $package['version']);
+
+            // The version string should contain at least two parts, e.g.
+            // "3,20.0", if it doesn't then something is wrong.
+            if (empty($version_parts) || count($version_parts) < 2) {
+              $identified = FALSE;
+            }
+
+            // Verify the version of CodeMirror installed is new enough.
+            elseif (($version_parts[0] == 3 && $version_parts[1] >= 20) || $version_parts[0] >= 4) {
+              // Record that CodeMirror is installed.
+              $version = $package['version'];
+
+              // Check the version that was installed the last time this page
+              // was loaded.
+              $old_ver = variable_get('cpn_codemirror_version', NULL);
+              if ($old_ver != $version) {
+                variable_set('cpn_codemirror_version', $version);
+
+                // Notify the user that CodeMirror was updated.
+                if (!empty($old_ver)) {
+                  drupal_set_message(t('Updated the site configuration to note that CodeMirror v!ver is installed.', array('!ver' => $package['version'])));
+                }
+              }
+            }
+
+            // The version of CodeMirror installed is probably too old.
+            else {
+              $version = $package['version'];
+              variable_set('cpn_codemirror_version', $version);
+            }
+          }
+        }
+      }
+
+      // The version of CodeMirror installed could not be identified.
+      if (!$identified) {
+        // This version of CodeMirror may not be compatible, but we'll try to
+        // load it anyway.
+        $version = TRUE;
+        variable_set('cpn_codemirror_version', TRUE);
+      }
+    }
+  }
+
+  return $version;
+}
+
+/**
+ * Attaches syntax highlighting to a form element.
+ */
+function cpn_attach_syntax_highlighting(&$form, $css = TRUE, $js = TRUE) {
+  if (variable_get('cpn_syntax_highlighting', 0) == 'codemirror') {
+    $path = cpn_codemirror();
+    if (!empty($path)) {
+      $form['#attached']['js'][] = $path . '/lib/codemirror.js';
+      $form['#attached']['css'][] = $path . '/lib/codemirror.css';
+      if ($css) {
+        $form['#attached']['js'][] = $path . '/mode/css/css.js';
+      }
+      if ($js) {
+        $form['#attached']['js'][] = $path . '/mode/javascript/javascript.js';
+      }
+      $form['#attached']['css'][] = $path . '/theme/default.css';
+      $form['#attached']['css'][] = drupal_get_path('module', 'cpn') . '/cpn.css';
+
+      // Admin pages.
+      if (current_path() == 'admin/config/content/cpn') {
+        $form['#attached']['js'][] = drupal_get_path('module', 'cpn') . '/cpn.admin.js';
+      }
+      else {
+        $form['#attached']['js'][] = drupal_get_path('module', 'cpn') . '/cpn.js';
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function cpn_field_extra_fields() {
+  $extra = array();
+  foreach (array_keys(node_type_get_names()) as $type) {
+    if (variable_get('cpn_css_enabled_' . $type, FALSE) || variable_get('cpn_js_enabled_' . $type, FALSE)) {
+      $extra['node'][$type]['form']['cpn'] = array(
+        'label' => t('Code Per Node'),
+        'description' => t('Custom CSS and/or JS fields.'),
+        'weight' => 5,
+      );
+    }
+  }
+  return $extra;
+}
+
+/**
+ * Wrap output for a given type using the wrapper variables.
+ *
+ * @param $code
+ *   The code string to be wrapped.
+ * @param $entity_type
+ *   The type of object to be wrapped. For now this only supports 'node' and
+ *   'block'.
+ * @param $type
+ *   The type of code, i.e. "js" or "css".
+ *
+ * @return string
+ *   The wrapped string.
+ */
+function cpn_wrap_output($code, $entity_type, $type) {
+  // If the code string is empty, return an empty string.
+  if (empty($code)) {
+    return '';
+  }
+
+  // Load the wrapper.
+  $wrapper = variable_get('cpn_wrapper_' . $entity_type . '_' . $type, '[code]');
+
+  // If the wrapper is empty, just return the raw code.
+  if (empty($wrapper)) {
+    return $code;
+  }
+
+  // Make the string replacement.
+  $output = str_replace('[code]', $code, $wrapper);
+
+  return $output;
+}

@@ -14,6 +14,7 @@ docroot/.htaccess
 # Ignore paths that contain user-generated content.
 docroot/sites/*/files
 docroot/sites/*/private
+sites/*/files
 
 # local settings and modules
 docroot/sites/all/modules/dev

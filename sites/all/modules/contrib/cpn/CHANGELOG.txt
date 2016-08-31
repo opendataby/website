@@ -1,0 +1,122 @@
+CPN 7.x-1.7, 2016-03-09
+-----------------------
+#2605854 by DamienMcKenna: Begone, vile dpm()!
+#2603506 by DamienMcKenna: Try to avoid taking down the site if the database
+  updates haven't ran yet.
+#2668372 by DamienMcKenna: Added some tests.
+
+
+CPN 7.x-1.6, 2015-10-25
+-----------------------
+#2292521 by DamienMcKenna: Support newer versions of CodeMirror.
+#2418809 by cyborg_572, DamienMcKenna: Wrong issue queue URL in README.txt file.
+#2304521 by DamienMcKenna: Verify the library exists before loading it.
+#2410691 by DamienMcKenna: Notify Varnish when files are saved.
+#2361575 by kepford, DamienMcKenna: Optionally load the CSS/JS as 'external' to
+  work around caching issues with some hosting platforms.
+#2443219 by kepford, DamienMcKenna: Optional NOSCRIPT fields for nodes/blocks.
+#2412369 by DamienMcKenna: Don't delete records if the user does not have
+  permission to edit the node or block fields.
+By DamienMcKenna: Added a note to README.txt about the panels_css_js module.
+
+
+CPN 7.x-1.5, 2015-06-07
+-----------------------
+#2203659 by DamienMcKenna, Raines37: Removed variable interaction in
+  cpn_requirements().
+#2138539 by DamienMcKenna: Support for AdvAgg.
+#2475637 by xiukun.zhou: README file had a typo.
+
+
+CPN 7.x-1.5-rc1, 2014-02-22
+---------------------------
+By DamienMcKenna: Added a README.txt line about Token support.
+By DamienMcKenna: Minor code syntax improvements, added more comments.
+#1950522 by DamienMcKenna: Fixed the global CSS/JS file saving.
+By DamienMcKenna: Sort the variable deletions in hook_uninstall().
+#1967314 by DamienMcKenna: Standardized the D6/D7 settings forms.
+#1964504 by DamienMcKenna: Separate CSS/JS wrappers for blocks vs nodes.
+#1530396 by DamienMcKenna: Added a README.txt file.
+By DamienMcKenna: Removed an unnecessary menu item that was accidentally added
+  earlier.
+#1955952 by DamienMcKenna: drupal_add_css/js calls were missing the options.
+#1962350 by DamienMcKenna: Fixed the spelling of "JavaScript."
+#1658932 by DamienMcKenna: Optionally process the output with tokens, if the
+  Token module is installed the popup token browser will be available.
+#1958236 by DamienMcKenna: Made all messages translatable.
+#1958212 by DamienMcKenna: Update the cpn_path variable during D6 upgrade.
+#1957926 by DamienMcKenna: Fixed the messages & logic for when the CPN path is
+  changed on the settings page.
+#1955952 by DamienMcKenna: Changed Panels integration to use drupal_add_css/js.
+#1953870 by DamienMcKenna: Increase the CSS and JS fields to longtext.
+#1423478 by lee20, davidtrainer, DamienMcKenna: Support scenarios where multiple
+  nodes are loaded on the same page.
+#1950522 by DamienMcKenna: Optional global CSS/JS.
+#1948034 by DamienMcKenna: Global CSS/JS wrappers.
+#1793100 by paulsheldrake, DamienMcKenna: Panels integration.
+#1850902 by retrodans, DamienMcKenna: Options to control JS/CSS aggregation.
+#1901626 by DamienMcKenna, steverweber: Properly check for CodeMirror, add
+  Libraries API support.
+#1948196 by DamienMcKenna: Remove the TODO.txt file, created new issues.
+#1948198 by DamienMcKenna: Add a CHANGELOG.txt file.
+By DamienMcKenna: Converted cpn.module to UNIX file format.
+#1323772 by joelstein: Made block support optional.
+#1214062 by joelstein: Removed some troubleshooting code.
+#1214062 by joelstein: Added Libraries API support.
+#1308390 by Simon Georges: Fixed typo.
+#1912834 by urwen, DamienMcKenna: Options to control the CSS/JS weight.
+#1912834 by DamienMcKenna: Follow-up to fix an incorrect variable name.
+#2148909 by smk-ka: Don't show Token details if content type not enabled.
+#2149585 by smk-ka: Performance improvement when loading nodes.
+#1956590 by DamienMcKenna: Various improvements related to CodeMirror support.
+  The minimum supported version has been bumped to 3.20.
+#1301856 by DamienMcKenna: Allow control of which view modes the CSS/JS are
+  loaded for.
+#1956604 by DamienMcKenna: Indicate on node edit forms whether there is an
+  extra CSS or JS file for that content type that will also be loaded.
+#2157179 by DamienMcKenna: Allow CodeMirror to load on the admin config page.
+#2157793 by DamienMcKenna: Only show global tokens on node type settings form.
+#2157809 by DamienMcKenna: Error when using Panels to display nodes.
+#2157823 by DamienMcKenna: Fixed typo in CSS wrapper form field.
+#2158623 by DamienMcKenna: Added a master permission.
+#2193319 by DamienMcKenna: Fixed CodeMirror identification / updated settings
+  page.
+#2157821 by DamienMcKenna: Loading token browser causes "enable syntax
+  highlighting" link to duplicate.
+
+
+CPN 7.x-1.4, 2011-08-24
+-----------------------
+#1211122 by joelstein: Made Code per Node a psuedo-field on associated content
+  types.
+#1213444 by joelstein: Fixed CodeMirror integration.
+#1246884 by joelstein: Added customizable storage location; removed duplicate
+  warning message; deleted all variables upon uninstall.
+#1200788: Fixed undefined index; small documentation fix.
+Fixed strange PHP string comparison bug which caused CodeMirror assets to be
+  referenced even if configured not to.
+
+
+CPN 7.x-1.3, 2011-05-20
+-----------------------
+Move deletion of files to its own function, to avoid watchdog entries when
+  trying to delete a file that doesn't exist.
+#1111426: more changes needed for CodeMirror 2 to work.
+#1098982: code per content type added.
+Fixed mispelling of CodeMirror.
+
+
+CPN 7.x-1.2, 2011-04-02
+-----------------------
+#1111426 by geerlingguy: Support CodeMirror 2.
+#1071656 by meba, Rob Loach: Move CSS and JS to theme group.
+
+
+CPN 7.x-1.1, 2011-03-03
+-----------------------
+1071656 by meba, Rob Loach: Move CSS and JS to theme group.
+
+
+CPN 7.x-1.0, 2011-02-22
+-----------------------
+#1066998 by joelstein, Rob Loach: Ported to Drupal 7.

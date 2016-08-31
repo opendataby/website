@@ -1,0 +1,16 @@
+name = Code per Node
+description = Manage custom CSS & JavaScript per node and per block.
+core = 7.x
+configure = admin/config/content/cpn
+
+; Tests
+files[] = tests/cpn.helper.test
+files[] = tests/cpn.node.test
+; files[] = tests/cpn.block.test
+
+; Information added by Drupal.org packaging script on 2016-03-09
+version = "7.x-1.7"
+core = "7.x"
+project = "cpn"
+datestamp = "1457551759"
+

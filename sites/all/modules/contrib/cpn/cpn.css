@@ -1,0 +1,18 @@
+/**
+ * @file
+ * Custom CSS for customizing the CodeMirror interface.
+ */
+
+#edit-cpn-css,
+#edit-cpn-js {
+  height: 200px;
+}
+
+.CodeMirror {
+  border: 1px solid #CCC;
+  border-top-color: #999;
+  height: 200px;
+}
+.CodeMirror-scroll {
+  height: 200px;
+}

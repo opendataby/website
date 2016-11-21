@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project name="open data" default="build">
+    <import file="build.common.xml"/>
     <target name="update" description="Run the drush commands to update the database">
         <exec dir="${drupal.root}" command="drush runbsu" logoutput="true" level="info"/>
         <exec dir="${drupal.root}" command="drush rr" logoutput="true" level="info"/>
@@ -15,6 +17,24 @@
 
     <target name="composer" description="Run composer update">
         <exec dir="${phing.dir}" command="composer update" logoutput="true" level="info"/>
+    </target>
+
+    <target name="drupal:config:import-translations" depends="setup-phing-drush" description="Run the drush commands to import the projects .po file">
+        <drush command="language-import">
+            <param>ru</param>
+            <param>sites/default/translation/opendata.po</param>
+            <option name="replace"/>
+        </drush>
+    </target>
+
+    <target name="drupal:config:export-translations"
+            depends="setup-phing-drush"
+            description="Run the drush commands to get the latest contrib translations and export them with your custom translations to the projects .po file">
+        <drush command="locale-update" />
+        <drush command="language-export">
+            <param>ru</param>
+            <param>sites/default/translation/opendata.po</param>
+        </drush>
     </target>
 
     <property name="drupal.root" value="${phing.dir}/docroot" />

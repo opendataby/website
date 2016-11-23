@@ -30,10 +30,9 @@
     <target name="drupal:config:export-translations"
             depends="setup-phing-drush"
             description="Run the drush commands to get the latest contrib translations and export them with your custom translations to the projects .po file">
-        <drush command="locale-update" />
         <drush command="language-export">
             <param>ru</param>
-            <param>sites/default/translation/opendata.po</param>
+            <param>sites/default/translations/opendata.po</param>
         </drush>
     </target>
 

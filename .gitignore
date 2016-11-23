@@ -8,13 +8,10 @@
 .DS_Store
 
 # Ignore configuration files that may contain sensitive information.
-sites/*/settings.local.php
-docroot/.htaccess
+docroot/sites/default/settings.local.php
 
 # Ignore paths that contain user-generated content.
-docroot/sites/*/files
-docroot/sites/*/private
-sites/*/files
+docroot/sites/default/files
 
 # local settings and modules
 docroot/sites/all/modules/dev

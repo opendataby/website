@@ -22,7 +22,7 @@
     <target name="drupal:config:import-translations" depends="setup-phing-drush" description="Run the drush commands to import the projects .po file">
         <drush command="language-import">
             <param>ru</param>
-            <param>sites/default/translation/opendata.po</param>
+            <param>sites/default/translations</param>
             <option name="replace"/>
         </drush>
     </target>
@@ -31,8 +31,9 @@
             depends="setup-phing-drush"
             description="Run the drush commands to get the latest contrib translations and export them with your custom translations to the projects .po file">
         <drush command="language-export">
+            <option name="replace"></option>
             <param>ru</param>
-            <param>sites/default/translations/opendata.po</param>
+            <param>sites/default/translations</param>
         </drush>
     </target>
 

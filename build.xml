@@ -11,12 +11,25 @@
         <exec dir="${drupal.root}" command="drush cc all" logoutput="true" level="info"/>
     </target>
 
+    <!-- ### Enable/Disable modules by Master module  -->
+    <target name="modules-rebuild"
+            depends="setup-phing-drush"
+            description="Enable/Disable modules by Master module">
+        <drush command="master-execute" assume="yes" />
+    </target>
+
     <target name="master" description="Run the master module to enable/disable modules">
         <exec dir="${drupal.root}" command="drush master-execute --scope=${master.scope} -y" logoutput="true" level="info"/>
     </target>
 
     <target name="composer" description="Run composer update">
         <exec dir="${phing.dir}" command="composer update" logoutput="true" level="info"/>
+    </target>
+
+    <!-- ### Reinstall packages from composer.json to remove all staff not defined in composer.json. -->
+    <target name="composer-install"
+            description="Reinstall packages from composer.json">
+        <exec passthru="true" command="composer install --no-dev" logoutput="true" level="info"/>
     </target>
 
     <target name="drupal:config:import-translations" depends="setup-phing-drush" description="Run the drush commands to import the projects .po file">
@@ -35,6 +48,42 @@
             <param>ru</param>
             <param>sites/default/translations</param>
         </drush>
+    </target>
+
+    <!-- ### Reverts all features, updates db. -->
+    <target name="config-rebuild"
+            depends="setup-phing-drush"
+            description="Reverts all features, updates db.">
+        <!-- Rebuilds registry -->
+        <!--<drush command="rr"></drush>-->
+
+        <!--Updates the database-->
+        <drush command="updb" assume="yes" />
+        <!--Reverts all features-->
+        <drush command="features-revert-all" assume="yes" />
+        <!-- Rebuild permissions -->
+        <drush command="php-eval" assume="yes">
+            <param>"node_access_rebuild();"</param>
+        </drush>
+        <!-- Clear the cache -->
+        <drush command="cache-clear">
+            <param>all</param>
+        </drush>
+    </target>
+
+    <!-- ### Get latest changes from dev branch  -->
+    <target name="git-pull-dev" description="Get latest changes from dev branch">
+        <exec passthru="true" command="git pull origin dev"/>
+    </target>
+
+    <!-- ###Run composer, update db, revert features, install modules. -->
+    <target name="config-rebuild-full"
+            depends="setup-phing-drush"
+            description="Run composer, update db, revert features, install modules.">
+
+        <phingcall target="composer-install"/>
+        <phingcall target="modules-rebuild"/>
+        <phingcall target="config-rebuild"/>
     </target>
 
     <property name="drupal.root" value="${phing.dir}/docroot" />

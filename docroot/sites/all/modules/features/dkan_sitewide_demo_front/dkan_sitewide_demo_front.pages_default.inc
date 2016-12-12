@@ -133,7 +133,7 @@ function dkan_sitewide_demo_front_default_page_manager_pages() {
       'title' => '',
       'body' => '<h2>Как используются открытые данные</h2>
 <ul class="front-case-studies">
-	<li><a href="data.by/blog/777">В бизнесе</a></li>
+	<li><a href="/blog/777">В бизнесе</a></li>
 	<li><a href="/blog/776">Для города</a></li>
 	<li><a href="/blog/775">В журналистике</a></li>
 </ul>',

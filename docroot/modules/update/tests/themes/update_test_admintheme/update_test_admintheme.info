@@ -1,6 +1,5 @@
-name = Testing
-description = Minimal profile for running tests. Includes absolutely required modules only.
-version = VERSION
+name = Update test admin theme
+description = Test theme which is used as admin theme.
 core = 7.x
 hidden = TRUE
 

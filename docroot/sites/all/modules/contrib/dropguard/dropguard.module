@@ -44,15 +44,14 @@ function dropguard_menu() {
 /**
  * Access callback for page which exposes info about a web site.
  *
- * @param $client_id
+ * @param int $client_id
  *   Client ID in Drop Guard system.
- *
- * @param $type
+ * @param string $type
  *   Type of request. Currently supported two types:
  *   - connect. Checks if Drop Guard is able to connect to this web site.
  *   - modules. Returns array with information about enabled modules/themes.
  *
- * @return boolean
+ * @return bool
  *   Access permission.
  */
 function dropguard_site_info_access($client_id, $type) {
@@ -77,13 +76,6 @@ function dropguard_site_info_access($client_id, $type) {
     return FALSE;
   }
 
-  // Make sure that request comes from Drop Guard service.
-  // TODO: Uncomment when Drop Guard will be publicly available.
-  //$allowed_ip = gethostbyname('drop-guard.net');
-  //if (!empty($allowed_ip) && $allowed_ip != ip_address()) {
-  //  return FALSE;
-  //}
-
   // If openssl extension is disabled, then we can't allow Drop Guard to
   // get any data from this side, because it might be insecure. Remember,
   // security is on the first place!
@@ -97,7 +89,7 @@ function dropguard_site_info_access($client_id, $type) {
 /**
  * Returns info about site's enabled modules and themes.
  *
- * @param $distribution_update
+ * @param int $distribution_update
  *   Contains value which indicates how distribution should be updated
  *   (if it is enabled in the current project).
  *
@@ -106,9 +98,14 @@ function dropguard_site_info_access($client_id, $type) {
  *   should be tracked for possible updates.
  */
 function dropguard_enabled_projects_info($distribution_update) {
+  module_load_include('inc', 'update', 'update.compare');
 
   // Get list of modules and themes.
-  $projects = system_list('module_enabled') + list_themes();
+  $projects = &drupal_static(__FUNCTION__, array());
+  $module_data = system_rebuild_module_data();
+  $theme_data = system_rebuild_theme_data();
+  _update_process_info_list($projects, $module_data, 'module', TRUE);
+  _update_process_info_list($projects, $theme_data, 'theme', TRUE);
 
   // Check if web site is running on a custom profile.
   $custom_profile = _dropguard_custom_profile_installed();
@@ -118,31 +115,35 @@ function dropguard_enabled_projects_info($distribution_update) {
   // support base profile integration as well.
   $custom_base_profile = variable_get('install_base_profile');
 
+  // Unset Drupal item because it will be added separately.
+  unset($projects['drupal']);
+
   $enabled_projects = array();
   foreach ($projects as $project) {
-
-    // We don't care about disabled and core's projects.
-    $project_is_enabled = !empty($project->status);
-    $core_project = !empty($project->info['package']) && $project->info['package'] == 'Core';
 
     // If project doesn't have datestamp from drupal.org bot, then it was not
     // downloaded from drupal.org or was modified. We can track only projects
     // which were downloaded from drupal.org.
-    $no_datestamp = empty($project->info['datestamp']);
-    if (!$project_is_enabled || $core_project || $no_datestamp) {
+    if (empty($project['info']['datestamp'])) {
       continue;
     }
 
     // Drop Guard also need a path to project. This is necessary to help
     // Drop Guard to find a proper project location and replace it with a new
     // version.
-    $project_path = drupal_get_path($project->type, $project->name);
+    $project_path = drupal_get_path($project['project_type'], $project['name']);
 
-    // If project doesn't have a path, it means that most likely it was removed
-    // from the code, but not from the database. To prevent issues with such
-    // projects, we also have to exclude them from list of tracked projects.
     if (empty($project_path)) {
-      continue;
+      $path = drupal_realpath('sites/all') . '/' . $project['project_type'] . 's';
+      $project_path = _dropguard_find_directory_recursively($path, $project['name'], 2);
+
+      // If a project doesn't have a path, it means that most likely it was
+      // removed from the code, but not from the database.
+      // To prevent issues with such projects, we also have to exclude them
+      // from the list of tracked projects.
+      if (empty($project_path)) {
+        continue;
+      }
     }
 
     // Here is implemented distribution support.
@@ -151,8 +152,8 @@ function dropguard_enabled_projects_info($distribution_update) {
 
         // If current project is actually a profile, then mark it as a profile
         // for Drop Guard.
-        if ($profile == $project->name) {
-          $project->type = 'profile';
+        if ($profile == $project['name']) {
+          $project['project_type'] = 'profile';
         }
 
         // If distribution should be updated as a solid project then we have to
@@ -167,28 +168,20 @@ function dropguard_enabled_projects_info($distribution_update) {
         // If each module and theme inside of distribution should be updated
         // separately then we shouldn't check for distribution update, because
         // it may override updates for modules and themes inside of it.
-        elseif ($profile == $project->name) {
+        elseif ($profile == $project['name']) {
           continue(2);
         }
       }
     }
 
-    // We need to have info only about base modules or themes. For example,
-    // we don't need to retrieve information about views_ui module, because it
-    // is part of views module, and if views_ui will have updates, then these
-    // updates will be reflected inside of views project.
-    $base_project = !empty($project->info['project']) && $project->name == $project->info['project'];
-
     // Collect info about base modules.
-    if ($base_project) {
-      $enabled_projects[$project->name] = array(
-        'name' => $project->info['name'],
-        'version' => $project->info['version'],
-        'type' => $project->type,
-        'path' => $project_path,
-        'datestamp' => $project->info['datestamp'],
-      );
-    }
+    $enabled_projects[$project['name']] = array(
+      'name' => $project['info']['name'],
+      'version' => $project['info']['version'],
+      'type' => $project['project_type'],
+      'path' => $project_path,
+      'datestamp' => $project['info']['datestamp'],
+    );
   }
 
   // Add info about drupal core. It have to be in the list for sure!
@@ -205,7 +198,7 @@ function dropguard_enabled_projects_info($distribution_update) {
 /**
  * Encrypts data.
  *
- * @param $data
+ * @param string $data
  *   Data which has to be encrypted.
  *
  * @return string
@@ -233,7 +226,7 @@ function dropguard_encrypt($data) {
 
   return array(
     'data' => base64_encode($encrypted_data),
-    'password' => base64_encode($encrypted_password)
+    'password' => base64_encode($encrypted_password),
   );
 }
 
@@ -243,4 +236,45 @@ function dropguard_encrypt($data) {
 function _dropguard_custom_profile_installed() {
   $profile = variable_get('install_profile', 'standard');
   return in_array($profile, array('minimal', 'standard', 'testing')) ? FALSE : $profile;
+}
+
+/**
+ * Locate project's real directory.
+ *
+ * @param string $parent_directory
+ *   The parent directory.
+ * @param string $search
+ *   The project name.
+ * @param int $levels
+ *   Count of directory levels for searching.
+ *
+ * @return string
+ *   The path to project.
+ */
+function _dropguard_find_directory_recursively($parent_directory, $search, $levels) {
+  $level = 0;
+  $project_path = NULL;
+
+  while ($level < $levels) {
+    $files = array_diff(scandir($parent_directory), array('..', '.'));
+    foreach ($files as $file) {
+      if (is_dir($current_dir = $parent_directory . DIRECTORY_SEPARATOR . $file)) {
+        if ($file == $search) {
+          $project_path = $current_dir;
+          break;
+        }
+        else {
+          $project_path = _dropguard_find_directory_recursively($current_dir, $search, --$levels);
+        }
+      }
+    }
+
+    if (!empty($project_path)) {
+      return str_replace(DRUPAL_ROOT . '/', '', $project_path);
+    }
+
+    $level++;
+  }
+
+  return $project_path;
 }

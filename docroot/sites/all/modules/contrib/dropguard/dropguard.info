@@ -3,9 +3,9 @@ description = Provides integration with the Drop Guard service to automate Drupa
 core = 7.x
 configure = admin/config/services/dropguard
 
-; Information added by Drupal.org packaging script on 2015-07-05
-version = "7.x-1.0-beta1"
+; Information added by Drupal.org packaging script on 2017-01-27
+version = "7.x-1.2"
 core = "7.x"
 project = "dropguard"
-datestamp = "1436111942"
+datestamp = "1485510186"
 

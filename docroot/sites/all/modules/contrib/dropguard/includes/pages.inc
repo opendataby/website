@@ -8,7 +8,7 @@
 /**
  * Access callback for page which exposes info about a web site.
  *
- * @param $type
+ * @param string $type
  *   Type of request. Currently supported two types:
  *   - connect. Checks if Drop Guard is able to connect to this web site.
  *   - modules. Returns array with information about enabled modules/themes.

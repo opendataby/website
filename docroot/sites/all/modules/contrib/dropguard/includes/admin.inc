@@ -13,7 +13,7 @@ function dropguard_settings_form($form) {
   $link = l(t('Drop Guard'), 'http://drop-guard.net');
   $form['info'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Connect to Drop Guard'),    
+    '#title' => t('Connect to Drop Guard'),
     '#description' => t('All information below are available when creating a new project to support automated updates using !link', array('!link' => $link)),
     '#collapsible' => TRUE,
   );

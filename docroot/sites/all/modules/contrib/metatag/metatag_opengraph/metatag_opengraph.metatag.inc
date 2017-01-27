@@ -186,7 +186,7 @@ function metatag_opengraph_metatag_info() {
   ) + $og_defaults;
   $info['tags']['og:image:url'] = array(
     'label' => t('Image URL'),
-    'description' => t('A alternative version of og:image and has exactly the same requirements; only one needs to be used.'),
+    'description' => t('A alternative version of og:image and has exactly the same requirements; only one needs to be used. Note: some services do not accept this tag and will only accept the "image" tag above.'),
     'multiple' => TRUE,
     'image' => TRUE,
     'weight' => ++$weight,
@@ -301,6 +301,7 @@ function metatag_opengraph_metatag_info() {
     'label' => t('Locale'),
     'description' => 'The locale these tags are marked up in, must be in the format language_TERRITORY. Default is en_US.',
     'weight' => ++$weight,
+    'is_language' => TRUE,
     'devel_generate' => array(
       'maxlength' => 1,
     ),
@@ -310,6 +311,7 @@ function metatag_opengraph_metatag_info() {
     'description' => 'Other locales this content is available in, must be in the format language_TERRITORY, e.g. "fr_FR".',
     'weight' => ++$weight,
     'multiple' => TRUE,
+    'is_language' => TRUE,
     'devel_generate' => array(
       'maxlength' => 1,
     ),
@@ -601,6 +603,7 @@ function _metatag_opengraph_type_options() {
       'city' => t('City'),
       'country' => t('Country'),
       'landmark' => t('Landmark'),
+      'place' => t('Place'),
       'state_province' => t('State or province'),
     ),
     t('Products and Entertainment') => array(
@@ -610,6 +613,7 @@ function _metatag_opengraph_type_options() {
       'food' => t('Food'),
       'game' => t('Game'),
       'product' => t('Product'),
+      'product.group' => t('Product group'),
       'song' => t('Song'),
       'video.movie' => t('Movie'),
       'video.tv_show' => t('TV show'),

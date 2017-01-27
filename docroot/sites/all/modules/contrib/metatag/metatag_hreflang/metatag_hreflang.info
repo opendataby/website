@@ -9,11 +9,17 @@ dependencies[] = metatag
 dependencies[] = locale
 
 ; Tests.
-files[] = metatag_hreflang.test
+files[] = tests/metatag_hreflang.test
+files[] = tests/metatag_hreflang.tags.test
 
-; Information added by Drupal.org packaging script on 2016-02-04
-version = "7.x-1.13"
+; Entity Translation integration.
+test_dependencies[] = devel
+test_dependencies[] = entity_translation
+files[] = tests/metatag_hreflang.with_entity_translation.test
+
+; Information added by Drupal.org packaging script on 2017-01-18
+version = "7.x-1.20"
 core = "7.x"
 project = "metatag"
-datestamp = "1454628866"
+datestamp = "1484735128"
 

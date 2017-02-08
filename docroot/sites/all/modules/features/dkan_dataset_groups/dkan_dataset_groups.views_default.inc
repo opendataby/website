@@ -405,7 +405,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '5';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
-  /* Relationship: OG membership: OG membership from Node group */
+  /* Relationship: OG membership: OG membership from Content group */
   $handler->display->display_options['relationships']['og_membership_rel_group']['id'] = 'og_membership_rel_group';
   $handler->display->display_options['relationships']['og_membership_rel_group']['table'] = 'node';
   $handler->display->display_options['relationships']['og_membership_rel_group']['field'] = 'og_membership_rel_group';
@@ -584,13 +584,13 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = 'No results were found. Please try another keyword.';
   $handler->display->display_options['empty']['area']['format'] = 'plain_text';
-  /* Field: Indexed Node: Title */
+  /* Field: Indexed Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  /* Field: Indexed Node: The main body text » Summary */
+  /* Field: Indexed Content: The main body text » Summary */
   $handler->display->display_options['fields']['body_summary']['id'] = 'body_summary';
   $handler->display->display_options['fields']['body_summary']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['fields']['body_summary']['field'] = 'body_summary';
@@ -598,21 +598,21 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['fields']['body_summary']['alter']['max_length'] = '100';
   $handler->display->display_options['fields']['body_summary']['alter']['trim'] = TRUE;
   $handler->display->display_options['fields']['body_summary']['element_label_colon'] = FALSE;
-  /* Sort criterion: Indexed Node: Date changed */
+  /* Sort criterion: Indexed Content: Date changed */
   $handler->display->display_options['sorts']['changed']['id'] = 'changed';
   $handler->display->display_options['sorts']['changed']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['sorts']['changed']['field'] = 'changed';
   $handler->display->display_options['sorts']['changed']['order'] = 'DESC';
   $handler->display->display_options['sorts']['changed']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['changed']['expose']['label'] = 'Date changed';
-  /* Sort criterion: Indexed Node: Title */
+  /* Sort criterion: Indexed Content: Title */
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['sorts']['title']['field'] = 'title';
   $handler->display->display_options['sorts']['title']['order'] = 'DESC';
   $handler->display->display_options['sorts']['title']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['title']['expose']['label'] = 'Title';
-  /* Contextual filter: Indexed Node: Publisher */
+  /* Contextual filter: Indexed Content: Publisher */
   $handler->display->display_options['arguments']['og_group_ref']['id'] = 'og_group_ref';
   $handler->display->display_options['arguments']['og_group_ref']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['arguments']['og_group_ref']['field'] = 'og_group_ref';
@@ -627,7 +627,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['filters']['search_api_views_fulltext']['field'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['exposed'] = TRUE;
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator_id'] = 'search_api_views_fulltext_op';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['description'] = 'Search...';
+  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['description'] = 'Поиск';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator'] = 'search_api_views_fulltext_op';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['identifier'] = 'query';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['remember_roles'] = array(
@@ -677,7 +677,7 @@ function dkan_dataset_groups_views_default_views() {
     'title' => 'title',
   );
   $handler->display->display_options['row_options']['default_field_elements'] = FALSE;
-  /* Relationship: OG membership: OG membership from Node */
+  /* Relationship: OG membership: OG membership from Content */
   $handler->display->display_options['relationships']['og_membership_rel']['id'] = 'og_membership_rel';
   $handler->display->display_options['relationships']['og_membership_rel']['table'] = 'node';
   $handler->display->display_options['relationships']['og_membership_rel']['field'] = 'og_membership_rel';

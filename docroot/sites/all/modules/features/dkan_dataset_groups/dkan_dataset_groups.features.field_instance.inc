@@ -230,8 +230,8 @@ function dkan_dataset_groups_field_default_field_instances() {
     'display_label' => 1,
     'entity_type' => 'node',
     'field_name' => 'group_group',
-    'label' => 'Group',
-    'required' => FALSE,
+    'label' => 'Группа',
+    'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
@@ -248,9 +248,11 @@ function dkan_dataset_groups_field_default_field_instances() {
       ),
     ),
     'widget' => array(
+      'active' => 1,
       'module' => 'options',
       'settings' => array(
         'display_label' => 0,
+        'og_hide' => 1,
       ),
       'type' => 'options_onoff',
       'weight' => 2,
@@ -261,9 +263,9 @@ function dkan_dataset_groups_field_default_field_instances() {
   // Included for use with string extractors like potx.
   t('Body');
   t('Determine if this is an OG group.');
-  t('Group');
   t('Image');
   t('Publisher');
+  t('Группа');
 
   return $field_instances;
 }

@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="open data" default="build">
+<project name="open data" default="update">
     <import file="build.common.xml"/>
     <target name="update" description="Run the drush commands to update the database">
+        <phingcall target="composer:install"/>
         <exec dir="${drupal.root}" command="drush runbsu" logoutput="true" level="info"/>
         <exec dir="${drupal.root}" command="drush rr" logoutput="true" level="info"/>
         <exec dir="${drupal.root}" command="drush updb -y" logoutput="true" level="info"/>
-        <exec dir="${drupal.root}" command="drush master-execute --scope=${master.scope} -y" logoutput="true" level="info"/>
+        <phingcall target="master"/>
         <exec dir="${drupal.root}" command="drush cc all" logoutput="true" level="info"/>
         <exec dir="${drupal.root}" command="drush fra -y" logoutput="true" level="info"/>
+        <drush command="php-eval" assume="yes">
+            <param>"node_access_rebuild();"</param>
+        </drush>
+        <phingcall target="drupal:config:import-translations"/>
         <exec dir="${drupal.root}" command="drush cc all" logoutput="true" level="info"/>
     </target>
 
@@ -22,12 +27,12 @@
         <exec dir="${drupal.root}" command="drush master-execute --scope=${master.scope} -y" logoutput="true" level="info"/>
     </target>
 
-    <target name="composer" description="Run composer update">
+    <target name="composer:update" description="Run composer update">
         <exec dir="${phing.dir}" command="composer update" logoutput="true" level="info"/>
     </target>
 
     <!-- ### Reinstall packages from composer.json to remove all staff not defined in composer.json. -->
-    <target name="composer-install"
+    <target name="composer:install"
             description="Reinstall packages from composer.json">
         <exec passthru="true" command="composer install --no-dev" logoutput="true" level="info"/>
     </target>
@@ -74,16 +79,6 @@
     <!-- ### Get latest changes from dev branch  -->
     <target name="git-pull-dev" description="Get latest changes from dev branch">
         <exec passthru="true" command="git pull origin dev"/>
-    </target>
-
-    <!-- ###Run composer, update db, revert features, install modules. -->
-    <target name="config-rebuild-full"
-            depends="setup-phing-drush"
-            description="Run composer, update db, revert features, install modules.">
-
-        <phingcall target="composer-install"/>
-        <phingcall target="modules-rebuild"/>
-        <phingcall target="config-rebuild"/>
     </target>
 
     <property name="drupal.root" value="${phing.dir}/docroot" />

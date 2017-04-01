@@ -6,15 +6,20 @@ Please commit everything to the `dev` branch.
 
 ## Requirements
 
-In order to make changes here you need a way to run PHP scripts on your local machine and a database. Apps like MAMP, XAMPP and any LAMP/LEMP stacks will do just fine.
+In order to make changes here you need a way to run PHP scripts (also from the command line) on your local machine and a database. Apps like MAMP, XAMPP and any LAMP/LEMP stacks will do just fine.
 
 Sanitized version of the database to start with can be requested by saying hello to help@opendata.by (briefly introduce yourself).
 
 To work on styling you don't need LAMP/LEMP stack at all, as you can save the static page to your local machine and edit theme files directly in the repository.
-
 Theme path is `/docroot/sites/all/themes/data_radix`. You need a way to compile CSS files from SCSS (i.e. Compass).
 
-## Initial configuration
+## Initial installation and configuration
+
+1. Pull the `dev` branch from this repository
+
+2. Provided that you have Composer ready, run `composer install`. It will download all required libraries.
+
+3. Run `.bin/phing update` to rebuild the local website according to the latest changes from Git.
 
 Make sure the website has the English locale, otherwise all exports will be screwed. Insert
 the following code into settings.local.php (the same file with db connection details):
@@ -47,7 +52,7 @@ When working with .po files make sure you'e got the latest version of files from
 
 Go to `/admin/config/regional/translate/translate`, edit the strings using a configuration form, save and export all the translations via `/admin/config/regional/translate/export`.
 
-Again, before editing, saving and exporting or making any changes make sure you'e pulled the recent version of the codebase from Git and ran `phing drupal:config:import-translations`, OR (if you prefer the UI), import the .po files using the "Import" tab.
+Again, before editing, saving and exporting or making any changes make sure you'e pulled the recent version of the codebase from Git and ran `.bin/phing drupal:config:import-translations`, OR (if you prefer the UI), import the .po files using the "Import" tab.
  
 Whatever method you use just remember - get the most recent version of the stuff you what to change from Git first and import it to Drupal. 
 

@@ -4992,6 +4992,13 @@ ul.action-links {
   clear: both;
 }
 
+/* line 187, ../sass/partials/_page.scss */
+img.tibo {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
 /* line 4, ../sass/partials/_view.scss */
 .front .view-popular-tags {
   margin-top: 20px;
@@ -6371,4 +6378,274 @@ div[class*="pane-facetapi"] a.facetapi-limit-link.open:before,
   margin: 8px 0;
   position: relative;
   width: 100%;
+}
+/* line 46, ../sass/global/_mixin.scss */
+.search-form input.form-text,
+#dkan-sitewide-dataset-search-form input.form-text,
+#dkan-sitewide-dataset-search-form--2 input.form-text {
+  padding-right: 30px;
+}
+/* line 49, ../sass/global/_mixin.scss */
+.search-form button[type="submit"],
+.search-form input[type="submit"],
+#dkan-sitewide-dataset-search-form button[type="submit"],
+#dkan-sitewide-dataset-search-form input[type="submit"],
+#dkan-sitewide-dataset-search-form--2 button[type="submit"],
+#dkan-sitewide-dataset-search-form--2 input[type="submit"] {
+  background: none !important;
+  border: none;
+  content: "\f002";
+  color: #555555;
+  display: inline-block;
+  font-size: 1.3em;
+  font-family: "FontAwesome";
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 10px;
+  top: 3px;
+  width: 25px;
+}
+
+/* line 9, ../sass/partials/_search.scss */
+#dkan-sitewide-dataset-search-form input[type="submit"],
+#dkan-sitewide-dataset-search-form--2 input[type="submit"] {
+  top: 3px;
+}
+
+/* line 21, ../sass/partials/_search.scss */
+#block-dkan-sitewide-dkan-sitewide-search-bar {
+  clear: both;
+}
+@media all and (min-width: 768px) {
+  /* line 21, ../sass/partials/_search.scss */
+  #block-dkan-sitewide-dkan-sitewide-search-bar {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    width: 172px;
+  }
+  /* line 27, ../sass/partials/_search.scss */
+  #block-dkan-sitewide-dkan-sitewide-search-bar form {
+    width: 172px;
+  }
+  /* line 30, ../sass/partials/_search.scss */
+  #block-dkan-sitewide-dkan-sitewide-search-bar input.form-control {
+    width: 170px;
+    height: 36px;
+    margin: 0;
+  }
+}
+/* line 40, ../sass/global/_mixin.scss */
+#block-dkan-sitewide-dkan-sitewide-search-bar form {
+  display: block;
+  margin: 8px 0;
+  position: relative;
+  width: 100%;
+}
+/* line 46, ../sass/global/_mixin.scss */
+#block-dkan-sitewide-dkan-sitewide-search-bar input.form-text {
+  padding-right: 30px;
+}
+/* line 49, ../sass/global/_mixin.scss */
+#block-dkan-sitewide-dkan-sitewide-search-bar button[type="submit"],
+#block-dkan-sitewide-dkan-sitewide-search-bar input[type="submit"] {
+  background: none !important;
+  border: none;
+  content: "\f002";
+  color: #555555;
+  display: inline-block;
+  font-size: 1.3em;
+  font-family: "FontAwesome";
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 10px;
+  top: 3px;
+  width: 25px;
+}
+/* line 38, ../sass/partials/_search.scss */
+#block-dkan-sitewide-dkan-sitewide-search-bar .views-exposed-form .form-submit {
+  margin: 22px 0 0;
+  text-shadow: none;
+}
+/* line 42, ../sass/partials/_search.scss */
+#block-dkan-sitewide-dkan-sitewide-search-bar input[type="submit"] {
+  top: 3px;
+}
+
+@media all and (max-width: 768px) {
+  /* line 2, ../sass/partials/_dkan.scss */
+  .node-dataset .resource-list li {
+    padding-right: 0;
+  }
+  /* line 4, ../sass/partials/_dkan.scss */
+  .node-dataset .resource-list li span.links {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: 10px 0;
+    display: block;
+    padding: 0;
+  }
+  /* line 12, ../sass/partials/_dkan.scss */
+  .node-dataset .resource-list li a.btn {
+    margin: 0 5px 10px 0;
+  }
+}
+/* line 18, ../sass/partials/_dkan.scss */
+.stages li {
+  font-size: 14px;
+}
+
+/* line 26, ../sass/partials/_dkan.scss */
+.node-type-dataset .field-name-field-tags .field-label,
+.node-type-dataset .field-name-field-topic .field-label,
+.node-type-dataset .field-name-field-preview-thumbail .field-label {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 2em;
+  margin-bottom: .5em;
+}
+
+/* line 31, ../sass/partials/_dkan.scss */
+.field-name-field-topic .field-item {
+  display: inline-block;
+}
+
+@media all and (max-width: 767px) {
+  /* line 2, ../sass/partials/_responsive.scss */
+  aside[class|='col'],
+  section[class|='col'] {
+    padding: 0;
+  }
+
+  /* line 6, ../sass/partials/_responsive.scss */
+  .container {
+    width: 100%;
+  }
+
+  /* line 10, ../sass/partials/_responsive.scss */
+  .panel-full-width .panel-top .panel-col-first,
+  .panel-full-width .panel-top .panel-col-second,
+  .panel-full-width .panel-bottom .panel-col-first,
+  .panel-full-width .panel-bottom .panel-col-second,
+  .panel-full-width .panel-bottom .panel-col-third {
+    width: 100%;
+    float: none;
+  }
+  /* line 17, ../sass/partials/_responsive.scss */
+  .panel-full-width .panel-top .panel-col-first .inside,
+  .panel-full-width .panel-top .panel-col-second .inside,
+  .panel-full-width .panel-bottom .panel-col-first .inside,
+  .panel-full-width .panel-bottom .panel-col-second .inside,
+  .panel-full-width .panel-bottom .panel-col-third .inside {
+    margin: 20px 15px;
+  }
+
+  /* line 21, ../sass/partials/_responsive.scss */
+  .views_slideshow_cycle_teaser_section .views-slideshow-cycle-main-frame-row-item {
+    clear: both;
+    width: 100%;
+    margin-bottom: 2em;
+  }
+
+  /* line 26, ../sass/partials/_responsive.scss */
+  .pane-projects-front-slideshow h2 {
+    text-align: center;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  /* line 31, ../sass/partials/_responsive.scss */
+  .pane-projects-front-slideshow h4.title {
+    margin-top: 0.4em;
+  }
+}
+@media screen and (max-width: 768px) {
+  /* line 38, ../sass/partials/_responsive.scss */
+  .front .panel-top {
+    background: #2a2f4e;
+  }
+}
+/* line 2, ../sass/partials/_admin.scss */
+.admin-list dt, .admin-list dd {
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+}
+
+/* line 10, ../sass/partials/_admin.scss */
+.views-edit-view .action-list input.btn,
+.views-edit-view .action-list input.btn:active,
+.views-edit-view .action-list input.btn:focus,
+.views-edit-view .action-list input.btn:hover,
+.views-edit-view .action-list input[type="submit"]:hover {
+  background: inherit;
+  border: none;
+  color: inherit;
+}
+/* line 20, ../sass/partials/_admin.scss */
+.views-edit-view .footer {
+  background: inherit;
+}
+
+/* line 26, ../sass/partials/_admin.scss */
+.modal-content .panels-root-content-box a.btn {
+  white-space: normal;
+}
+/* line 29, ../sass/partials/_admin.scss */
+.modal-content .panel-title {
+  padding-right: 55px;
+}
+
+/* line 34, ../sass/partials/_admin.scss */
+.views-displays .secondary .open > a:hover {
+  color: #666;
+}
+
+/* line 37, ../sass/partials/_admin.scss */
+input.form-submit.features-refresh-button {
+  background: #2a2f4e;
+}
+
+/* line 3, ../sass/partials/_recline.scss */
+.recline-pager .pagination li {
+  vertical-align: middle;
+}
+/* line 5, ../sass/partials/_recline.scss */
+.recline-pager .pagination li a {
+  line-height: 1em;
+  padding: 0 10px;
+}
+/* line 8, ../sass/partials/_recline.scss */
+.recline-pager .pagination li a.btn {
+  line-height: 32px;
+}
+/* line 13, ../sass/partials/_recline.scss */
+.recline-pager .pagination input {
+  height: 20px;
+  font-size: .8em;
+}
+
+/* line 19, ../sass/partials/_recline.scss */
+.recline-data-explorer .form-control {
+  border-color: #ccc;
+}
+/* line 22, ../sass/partials/_recline.scss */
+.recline-data-explorer .btn {
+  border: 1px solid #ccc;
+  font-size: 14px;
+  padding: 0px 12px;
+  line-height: 32px;
+}
+
+/* line 29, ../sass/partials/_recline.scss */
+.dropdown-menu.slick-contextmenu {
+  background: #fff;
+}
+/* line 31, ../sass/partials/_recline.scss */
+.dropdown-menu.slick-contextmenu li {
+  padding-left: 5px;
+  padding-right: 5px;
 }

@@ -13890,6 +13890,13 @@ ul.action-links {
   clear: both;
 }
 
+/* line 187, ../sass/partials/_page.scss */
+img.tibo {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
 /* line 4, ../sass/partials/_view.scss */
 .front .view-popular-tags {
   margin-top: 20px;

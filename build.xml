@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="open data" default="update">
-    <import file="build.common.xml"/>
-    <target name="update" description="Run the drush commands to update the database">
+
+    <!--Full update of database and translations import-->
+    <target name="update" depends="setup-phing-drush" description="Run the drush commands to update the database">
         <phingcall target="composer:install"/>
-        <exec dir="${drupal.root}" command="drush runbsu" logoutput="true" level="info"/>
         <exec dir="${drupal.root}" command="drush rr" logoutput="true" level="info"/>
         <exec dir="${drupal.root}" command="drush updb -y" logoutput="true" level="info"/>
         <phingcall target="master"/>
@@ -16,7 +16,7 @@
         <exec dir="${drupal.root}" command="drush cc all" logoutput="true" level="info"/>
     </target>
 
-    <!-- ### Enable/Disable modules by Master module  -->
+    <!--Enable/Disable modules by Master module  -->
     <target name="modules-rebuild"
             depends="setup-phing-drush"
             description="Enable/Disable modules by Master module">
@@ -79,6 +79,14 @@
     <!-- ### Get latest changes from dev branch  -->
     <target name="git-pull-dev" description="Get latest changes from dev branch">
         <exec passthru="true" command="git pull origin dev"/>
+    </target>
+
+    <target name="setup-phing-drush" description="Sets up Phing Drush module">
+        <!-- Register as custom Phing task -->
+        <taskdef name="drush" classname="DrushTask" classpath="drush/contrib/phingdrushtask" />
+        <property name="drush.root" value="docroot"/>
+        <!-- Define local drush execute file -->
+        <property name="drush.bin" value=".bin/drush"/>
     </target>
 
     <property name="drupal.root" value="${phing.dir}/docroot" />

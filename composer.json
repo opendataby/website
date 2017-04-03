@@ -1,5 +1,5 @@
 {
-  "name": "Open Data Composer",
+  "name": "opendata",
   "description": "File for managing patches and modifications",
   "type": "project",
   "license": "GPL-2.0+",
@@ -49,6 +49,18 @@
           "type": "file"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "drupal/drush_language",
+        "version": "7.1.5",
+        "type": "drupal-drush",
+        "dist": {
+          "url": "https://ftp.drupal.org/files/projects/drush_language-7.x-1.5.tar.gz",
+          "type": "tar"
+        }
+      }
     }
   ],
   "require": {
@@ -57,11 +69,11 @@
     "opendata/jquery.cycle": "3.0.3",
     "opendata/jcarousel": "0.2.9",
     "drupal/phingdrushtask": "^7.1",
+    "drupal/drush_language": "7.1.5",
     "drush/drush": "~8.0",
     "phing/phing": "^2.12"
   },
   "require-dev": {
-    "behat/mink": "~1.6",
     "behat/mink-goutte-driver": "~1.2",
     "jcalderonzumba/gastonjs": "^1.1@dev",
     "jcalderonzumba/mink-phantomjs-driver": "~0.3.1",

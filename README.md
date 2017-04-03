@@ -21,7 +21,7 @@ Theme path is `/docroot/sites/all/themes/data_radix`. You need a way to compile 
 
 3. Run `.bin/phing update` to rebuild the local website according to the latest changes from Git.
 
-Make sure the website has the English locale, otherwise all exports will be screwed. Insert
+Make sure your local website has the English locale, otherwise all exports will be screwed. Insert
 the following code into settings.local.php (the same file with db connection details):
 
 ```
@@ -56,3 +56,6 @@ Again, before editing, saving and exporting or making any changes make sure you'
  
 Whatever method you use just remember - get the most recent version of the stuff you what to change from Git first and import it to Drupal. 
 
+## Build process
+
+Both `dev` and `master` branches are being built regularly with Phing. All the build steps and process can be seen and modified in `build.xml`

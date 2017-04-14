@@ -56,7 +56,7 @@ function dkan_dataset_content_types_taxonomy_default_vocabularies() {
       ),
     ),
     'tags' => array(
-      'name' => 'Tags',
+      'name' => 'Тэги',
       'machine_name' => 'tags',
       'description' => 'eg. economy, mental health, government',
       'hierarchy' => 0,

@@ -14,10 +14,13 @@ function dkan_sitewide_default_fe_block_settings() {
 
   $export['menu-menu-footer-menu'] = array(
     'cache' => -1,
+    'css' => NULL,
     'custom' => 0,
     'delta' => 'menu-footer-menu',
+    'js' => NULL,
     'module' => 'menu',
     'node_types' => array(),
+    'noscript' => NULL,
     'pages' => '',
     'roles' => array(),
     'themes' => array(

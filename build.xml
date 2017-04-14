@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="open data" default="update">
+<project name="open data" default="import">
 
-    <!--Full update of database and translations import-->
-    <target name="update" depends="setup-phing-drush" description="Run the drush commands to update the database">
+    <!--Import configuration and translations from code to database-->
+    <target name="import" depends="setup-phing-drush" description="Import configuration and translations from code to database">
         <phingcall target="composer:install"/>
-        <exec dir="${drupal.root}" command="drush rr" logoutput="true" level="info"/>
-        <exec dir="${drupal.root}" command="drush updb -y" logoutput="true" level="info"/>
-        <phingcall target="master"/>
-        <exec dir="${drupal.root}" command="drush cc all" logoutput="true" level="info"/>
-        <exec dir="${drupal.root}" command="drush fra -y" logoutput="true" level="info"/>
-        <drush command="php-eval" assume="yes">
-            <param>"node_access_rebuild();"</param>
-        </drush>
+        <phingcall target="config-rebuild"/>
         <phingcall target="drupal:config:import-translations"/>
-        <exec dir="${drupal.root}" command="drush cc all" logoutput="true" level="info"/>
+        <drush command="cache-clear">
+            <param>all</param>
+        </drush>
+    </target>
+
+    <!--Export configuration and translations from database to code-->
+    <target name="export" depends="setup-phing-drush" description="Export configuration and translations from database to code">
+        <phingcall target="config-export"/>
+        <phingcall target="drupal:config:export-translations"/>
     </target>
 
     <!--Enable/Disable modules by Master module  -->
-    <target name="modules-rebuild"
+    <target name="modules-enable-disable"
             depends="setup-phing-drush"
             description="Enable/Disable modules by Master module">
-        <drush command="master-execute" assume="yes" />
+        <phingcall target="master"/>
     </target>
 
     <target name="master" description="Run the master module to enable/disable modules">
@@ -49,7 +50,7 @@
             depends="setup-phing-drush"
             description="Run the drush commands to get the latest contrib translations and export them with your custom translations to the projects .po file">
         <drush command="language-export">
-            <option name="replace"></option>
+            <option name="replace"/>
             <param>ru</param>
             <param>sites/default/translations</param>
         </drush>
@@ -60,8 +61,9 @@
             depends="setup-phing-drush"
             description="Reverts all features, updates db.">
         <!-- Rebuilds registry -->
-        <!--<drush command="rr"></drush>-->
-
+        <drush command="rr"/>
+        <!-- Enables and disables modules with Master module -->
+        <phingcall target="modules-enable-disable"/>
         <!--Updates the database-->
         <drush command="updb" assume="yes" />
         <!--Reverts all features-->
@@ -76,9 +78,23 @@
         </drush>
     </target>
 
-    <!-- ### Get latest changes from dev branch  -->
-    <target name="git-pull-dev" description="Get latest changes from dev branch">
-        <exec passthru="true" command="git pull origin dev"/>
+    <!-- ### Exports all features and translations -->
+    <target name="config-export" depends="setup-phing-drush" description="Exports all features and translations">
+        <!--Exports all features-->
+        <drush command="features-update" assume="yes">
+          <param>blog</param>
+          <param>dkan_dataset</param>
+          <param>dkan_dataset_content_types</param>
+          <param>dkan_dataset_groups</param>
+          <param>dkan_sitewide</param>
+          <param>dkan_sitewide_demo_front</param>
+          <param>dkan_sitewide_menu</param>
+          <param>dkan_sitewide_panels</param>
+          <param>dkan_sitewide_roles_perms</param>
+          <param>dkan_sitewide_search_db</param>
+          <param>feature_od_projects</param>
+          <param>feature_od_publication</param>
+        </drush>
     </target>
 
     <target name="setup-phing-drush" description="Sets up Phing Drush module">

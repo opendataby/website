@@ -405,7 +405,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_license',
-    'label' => 'License',
+    'label' => 'Лицензия',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -432,7 +432,7 @@ other-open|Other (Open)
 other-pd|Other (Public Domain)
 uk-ogl|UK Open Government Licence (OGL)',
         'available_options_php' => '',
-        'markup_available_options_php' => '&lt;none&gt;',
+        'markup_available_options_php' => '&lt;ничего&gt;',
         'other' => 'Other',
         'other_size' => 60,
         'other_title' => '',
@@ -559,7 +559,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
     'entity_type' => 'node',
     'field_name' => 'field_resources',
-    'label' => 'Resources',
+    'label' => 'Ресурсы',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -748,7 +748,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
     'entity_type' => 'node',
     'field_name' => 'field_tags',
-    'label' => 'Tags',
+    'label' => 'Тэги',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -758,8 +758,10 @@ uk-ogl|UK Open Government Licence (OGL)',
       'module' => 'autocomplete_deluxe',
       'settings' => array(
         'autocomplete_deluxe_path' => 'autocomplete_deluxe/taxonomy',
+        'delimiter' => '',
         'limit' => 10,
         'min_length' => 0,
+        'not_found_message' => 'The term \'@term\' will be added.',
         'size' => 60,
       ),
       'type' => 'autocomplete_deluxe_taxonomy',
@@ -925,7 +927,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     ),
     'entity_type' => 'node',
     'field_name' => 'field_format',
-    'label' => 'Format',
+    'label' => 'Формат',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -936,8 +938,10 @@ uk-ogl|UK Open Government Licence (OGL)',
       'settings' => array(
         'apply_chosen' => 0,
         'autocomplete_deluxe_path' => 'autocomplete_deluxe/taxonomy',
-        'autocomplete_path' => 'taxonomy/autocomplete',
-        'mode' => 'single',
+        'delimiter' => '',
+        'limit' => 10,
+        'min_length' => 0,
+        'not_found_message' => 'The term \'@term\' will be added.',
         'size' => 60,
       ),
       'type' => 'autocomplete_deluxe_taxonomy',
@@ -1182,23 +1186,19 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('Data Dictionary');
   t('Dataset');
   t('Description');
-  t('Format');
   t('Frequency');
   t('Granularity');
   t('Groups audience');
-  t('License');
   t('License definitions and additional information can be found at <a href="http://opendefinition.org">opendefinition.org</a>');
   t('Link API');
   t('Link File');
   t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See Project Open Data <a href="http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.');
   t('Public Access Level');
   t('Related Content');
-  t('Resources');
   t('Spatial / Geographical Coverage Area');
   t('Spatial / Geographical Coverage Location');
   t('Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
   t('Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
-  t('Tags');
   t('Temporal Coverage');
   t('The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
   t('The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.');
@@ -1206,6 +1206,10 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('This is the author of the dataset.');
   t('This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://project-open-data.github.io/schema/#expanded-fields">DCAT Granularity</a> for more info.');
   t('Upload');
+  t('Лицензия');
+  t('Ресурсы');
+  t('Тэги');
+  t('Формат');
 
   return $field_instances;
 }

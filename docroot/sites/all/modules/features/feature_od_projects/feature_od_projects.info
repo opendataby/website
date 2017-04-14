@@ -29,5 +29,6 @@ features[variable][] = menu_parent_project
 features[variable][] = node_options_project
 features[variable][] = node_preview_project
 features[variable][] = node_submitted_project
+features[variable][] = xmlsitemap_settings_node_project
 features[views_view][] = Projects
 features_exclude[dependencies][views_slideshow] = views_slideshow

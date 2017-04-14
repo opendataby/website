@@ -49,5 +49,6 @@ features[variable][] = node_options_blog_post
 features[variable][] = node_preview_blog_post
 features[variable][] = node_submitted_blog_page
 features[variable][] = node_submitted_blog_post
+features[variable][] = xmlsitemap_settings_node_blog_post
 features[views_view][] = blog
 project path = sites/all/modules/features

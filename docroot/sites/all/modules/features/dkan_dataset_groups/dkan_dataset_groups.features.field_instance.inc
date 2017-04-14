@@ -35,11 +35,12 @@ function dkan_dataset_groups_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'og_group_ref',
-    'label' => 'Publisher',
+    'label' => 'Группа',
     'required' => 0,
     'settings' => array(
       'behaviors' => array(
         'og_widget' => array(
+          'access_override' => 0,
           'admin' => array(
             'widget_type' => 'options_buttons',
           ),
@@ -264,7 +265,6 @@ function dkan_dataset_groups_field_default_field_instances() {
   t('Body');
   t('Determine if this is an OG group.');
   t('Image');
-  t('Publisher');
   t('Группа');
 
   return $field_instances;

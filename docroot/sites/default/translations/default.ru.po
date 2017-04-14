@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2016-11-23 11:30+0300\n"
-"PO-Revision-Date: 2016-11-23 11:30+0300\n"
+"POT-Creation-Date: 2017-04-14 17:21+0300\n"
+"PO-Revision-Date: 2017-04-14 17:21+0300\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -723,6 +723,7 @@ msgstr "(не поддерживается)"
 msgid "(active page)"
 msgstr "(активная страница)"
 
+#: ; misc/vertical-tabs.js
 msgid "(active tab)"
 msgstr "(активная вкладка)"
 
@@ -2107,6 +2108,7 @@ msgstr "настройки @driver_name"
 msgid "@drupal installation complete"
 msgstr "Установка @drupal завершена"
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter_tab.js
 msgid "@enabled of @total"
 msgstr "@enabled из @total"
 
@@ -5105,6 +5107,7 @@ msgstr "Выравнивание"
 msgid "Alignment"
 msgstr "Выравнивание"
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter_tab.js
 msgid "All"
 msgstr "Все"
 
@@ -5685,6 +5688,7 @@ msgstr "Уже добавленные языки"
 msgid "Already exists"
 msgstr "Уже существует"
 
+#: ; profiles/dkan/modules/contrib/admin_menu/admin_menu.admin.js
 msgid "Also allow !name role to !permission?"
 msgstr "Также присвоить роли !name права !permission?"
 
@@ -5833,9 +5837,11 @@ msgstr ""
 "Дата окончания обязательна для поля "
 "%field #%delta."
 
+#: ; misc/drupal.js
 msgid "An AJAX HTTP error occurred."
 msgstr "Возникла AJAX HTTP ошибка."
 
+#: ; misc/drupal.js
 msgid "An AJAX HTTP request terminated abnormally."
 msgstr "HTTP запрос AJAX завершен неправильно."
 
@@ -7093,6 +7099,7 @@ msgstr "Автодополнение (в стиле тегов)"
 msgid "Autocomplete matching"
 msgstr "Совпадение автодополнения"
 
+#: ; misc/autocomplete.js
 msgid "Autocomplete popup"
 msgstr "Всплывающее автозаполнение"
 
@@ -7205,6 +7212,7 @@ msgstr "Доступные редакторы"
 msgid "Available menus"
 msgstr "Доступные меню"
 
+#: ; profiles/dkan/modules/contrib/token/token.js
 msgid "Available tokens"
 msgstr "Доступные токены"
 
@@ -8893,6 +8901,7 @@ msgstr ""
 msgid "Changes have been saved."
 msgstr "Изменения сохранены."
 
+#: ; misc/tabledrag.js
 msgid ""
 "Changes made in this table will not be saved until the form is "
 "submitted."
@@ -9950,6 +9959,7 @@ msgstr "Настройки сохранены."
 msgid "Configuration status"
 msgstr "Состояние конфигурации"
 
+#: ; modules/contextual/contextual.js
 msgid "Configure"
 msgstr "Настроить"
 
@@ -11566,6 +11576,7 @@ msgstr ""
 "Пользовательские значения времени "
 "должны быть числовыми."
 
+#: ; misc/drupal.js
 msgid "CustomMessage: !customMessage"
 msgstr "Собственное сообщение: !customMessage"
 
@@ -12059,6 +12070,7 @@ msgstr ""
 msgid "Debugging"
 msgstr "Отладка"
 
+#: ; misc/drupal.js
 msgid "Debugging information follows."
 msgstr "Следует отладочная информация."
 
@@ -13033,6 +13045,7 @@ msgstr ""
 "Описание вашего сайта, включённое в "
 "каждый RSS-канал."
 
+#: ; profiles/dkan/modules/contrib/features/features.js
 msgid "Deselect all"
 msgstr "Снять выделение со всего"
 
@@ -13343,6 +13356,7 @@ msgstr ""
 "Отключить кэширование данных "
 "представлений"
 
+#: ; profiles/dkan/modules/contrib/search_api/search_api.admin.js
 msgid "Disabled"
 msgstr "Отключено"
 
@@ -14248,6 +14262,7 @@ msgstr ""
 msgid "Drag to add filters."
 msgstr "Перетащите для добавления фильтра."
 
+#: ; misc/tabledrag.js
 msgid "Drag to re-order"
 msgstr ""
 "Изменить порядок можно, перетащив "
@@ -14602,6 +14617,7 @@ msgstr ""
 msgid "Ecuador"
 msgstr "Эквадор"
 
+#: ; misc/machine-name.js
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -15380,6 +15396,7 @@ msgstr ""
 msgid "Enable/Disable"
 msgstr "Включить/Выключить"
 
+#: ; profiles/dkan/modules/contrib/search_api/search_api.admin.js
 msgid "Enabled"
 msgstr "Включено"
 
@@ -17245,6 +17262,14 @@ msgstr "Фильтр"
 msgid "Filter aliases"
 msgstr "Фильтр синонимов"
 
+#: /dataset/433/resource/e6cb8a96-5c9c-458d-94a3-3a08fbd17150
+msgid "Filter by @title:"
+msgstr "Фильтр: @title."
+
+#: /dataset/433/resource/e6cb8a96-5c9c-458d-94a3-3a08fbd17150
+msgid "Filter by @type."
+msgstr "Фильтр: @type."
+
 msgid "Filter by access."
 msgstr "Фильтр по доступу."
 
@@ -17418,6 +17443,7 @@ msgstr "Первый"
 msgid "First and last only"
 msgstr "Только первый и последний"
 
+#: ; profiles/dkan/modules/contrib/token/token.js
 msgid "First click a text field to insert your tokens into."
 msgstr ""
 "Сначала кликните в текстовое поле, "
@@ -18532,6 +18558,7 @@ msgstr ""
 "Ошибка HTTP запроса при импорте %filename: "
 "@error"
 
+#: ; misc/drupal.js
 msgid "HTTP Result Code: !status"
 msgstr "Полученный код HTTP: !status"
 
@@ -18757,6 +18784,7 @@ msgstr ""
 "администраторам в модулях и в темах "
 "оформления."
 
+#: ; misc/collapse.js
 msgid "Hide"
 msgstr "Скрыть"
 
@@ -18826,6 +18854,7 @@ msgstr "Скрыть правило повторения"
 msgid "Hide rewriting if empty"
 msgstr "Скрыть перезаписанное, если пусто"
 
+#: ; misc/tabledrag.js
 msgid "Hide row weights"
 msgstr "Скрыть вес строк"
 
@@ -20720,6 +20749,15 @@ msgstr "Импортировать эти файлы?"
 msgid "Import translation"
 msgstr "Импортировать перевод"
 
+#: /node/add/dataset
+msgid ""
+"Important: By submitting content, you agree to release your "
+"contributions under the Open Database License."
+msgstr ""
+"Важно! Загружая данные, вы "
+"соглашаетесь публиковать их под "
+"лицензией Open Database License."
+
 msgid ""
 "Imported %file into %locale: %number new strings added, %update "
 "updated and %delete removed."
@@ -21228,6 +21266,7 @@ msgstr "Добавить пункт в указанное меню."
 msgid "Insert position"
 msgstr "Позиция для добавления"
 
+#: ; profiles/dkan/modules/contrib/token/token.js
 msgid "Insert this token into your form"
 msgstr "Вставить этот токен в вашу форму"
 
@@ -22587,6 +22626,7 @@ msgstr "Список (целые числа)"
 msgid "List (text)"
 msgstr "Список (текст)"
 
+#: ; profiles/dkan/modules/contrib/search_api/search_api.admin.js
 msgid "List additional actions"
 msgstr "Список дополнительных действий"
 
@@ -22749,6 +22789,7 @@ msgstr "Метод загрузки"
 msgid "Loading timeout"
 msgstr "Тайм-аут загрузки"
 
+#: ; profiles/dkan/modules/contrib/token/token.js
 msgid "Loading token browser..."
 msgstr "Загрузка браузера токенов..."
 
@@ -23183,6 +23224,10 @@ msgstr "Мальтийский"
 
 msgid "Manage"
 msgstr "Управление"
+
+#: /admin/config/regional/language
+msgid "Manage Datastore"
+msgstr "Управление Хранилищем Данных"
 
 msgid "Manage actions"
 msgstr "Управление действиями"
@@ -24020,11 +24065,13 @@ msgstr "Имя модуля/темы/движка тем"
 msgid "Modules"
 msgstr "Модули"
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter_tab.js
 msgid "Modules enabled/disabled within the last week."
 msgstr ""
 "Модули, включённые/выключенные за "
 "последнюю неделю."
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter_tab.js
 msgid "Modules installed within the last week."
 msgstr ""
 "Модули, установленные за последнюю "
@@ -24497,6 +24544,7 @@ msgstr "Никогда (вручную)"
 msgid "Never cache"
 msgstr "Не кэшировать"
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter_tab.js
 msgid "New"
 msgstr "Новое"
 
@@ -24993,6 +25041,7 @@ msgstr ""
 msgid "No minimum"
 msgstr "Не установлено"
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter_tab.js
 msgid "No modules added within the last week."
 msgstr ""
 "Нет модулей, добавленных за последнюю "
@@ -25004,6 +25053,7 @@ msgstr "Нет доступных для удаления модулей."
 msgid "No modules selected."
 msgstr "Ни один модуль не выбран."
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter_tab.js
 msgid "No modules were enabled or disabled within the last week."
 msgstr ""
 "Нет модулей, которые были включены или "
@@ -25060,6 +25110,7 @@ msgstr "Нет  доступных элементов Quicktab."
 msgid "No replacement, just delete"
 msgstr "Без замены, только удаление"
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter.js
 msgid "No results"
 msgstr "Нет результатов"
 
@@ -25296,6 +25347,7 @@ msgstr ""
 "временного идентификатора (OpenID nonce) с "
 "адреса @ip, идентификатор: @nonce."
 
+#: ; profiles/dkan/modules/contrib/autocomplete_deluxe/autocomplete_deluxe.js
 msgid "None"
 msgstr "Нет"
 
@@ -25361,6 +25413,7 @@ msgstr "Не утверждено"
 msgid "Not configured"
 msgstr "Не настроено"
 
+#: ; modules/block/block.js
 msgid "Not customizable"
 msgstr "Не настраиваемый"
 
@@ -25397,6 +25450,7 @@ msgstr "Не защищён"
 msgid "Not published"
 msgstr "Не опубликовано"
 
+#: ; modules/block/block.js
 msgid "Not restricted"
 msgstr "Без ограничений"
 
@@ -27279,6 +27333,7 @@ msgstr ""
 "Путь к загруженным файлам "
 "относительно document root."
 
+#: ; misc/drupal.js
 msgid "Path: !uri"
 msgstr "Путь: !uri"
 
@@ -27698,6 +27753,7 @@ msgstr ""
 msgid "Please wait"
 msgstr "Пожалуйста, подождите"
 
+#: ; misc/ajax.js
 msgid "Please wait..."
 msgstr "Пожалуйста, подождите..."
 
@@ -28947,6 +29003,7 @@ msgstr ""
 "Восстановление порядка страниц книги "
 "и изменение названий"
 
+#: ; misc/tabledrag.js
 msgid "Re-order rows by numerical weight instead of dragging."
 msgstr ""
 "Упорядочить строки по весу вместо "
@@ -29020,6 +29077,7 @@ msgstr "Прочитать свежие обсуждения форума."
 msgid "Ready to update"
 msgstr "Готов для обновления"
 
+#: ; misc/drupal.js
 msgid "ReadyState: !readyState"
 msgstr "ReadyState: !readyState"
 
@@ -29085,6 +29143,7 @@ msgstr ""
 "Получать оповещения по электронной "
 "почте"
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter_tab.js
 msgid "Recent"
 msgstr "Последний"
 
@@ -29962,6 +30021,7 @@ msgstr "Ресурс"
 msgid "Resources"
 msgstr "Ресурсы"
 
+#: ; misc/drupal.js
 msgid "ResponseText: !responseText"
 msgstr "Текст Ответа: !responseText"
 
@@ -30022,6 +30082,7 @@ msgstr ""
 msgid "Restricted"
 msgstr "Органиченный"
 
+#: ; modules/block/block.js
 msgid "Restricted to certain pages"
 msgstr "Ограничено для определённых страниц"
 
@@ -30906,6 +30967,7 @@ msgstr "Поиск %type по запросу %keys."
 msgid "Searching content and users"
 msgstr "Поиск содержимого и пользователей"
 
+#: ; misc/autocomplete.js
 msgid "Searching for matches..."
 msgstr "Поиск совпадений..."
 
@@ -31118,6 +31180,7 @@ msgstr ""
 msgid "Select a view"
 msgstr "Выберите представление"
 
+#: ; profiles/dkan/modules/contrib/features/features.js
 msgid "Select all"
 msgstr "Выделить все"
 
@@ -32170,6 +32233,7 @@ msgstr ""
 "если используется наследование "
 "настроек навигатора."
 
+#: ; misc/collapse.js
 msgid "Show"
 msgstr "Показать"
 
@@ -32275,6 +32339,10 @@ msgstr ""
 "Показывать фасеты для определенных "
 "ролей"
 
+#: profiles/dkan/modules/contrib/facetapi/facetapi.js
+msgid "Show fewer"
+msgstr "Показать меньше"
+
 msgid "Show filters on the list of views"
 msgstr ""
 "Показывать фильтры в списке "
@@ -32298,6 +32366,10 @@ msgstr "Перейти в редактор макета"
 
 msgid "Show links"
 msgstr "Отображать ссылки"
+
+#: profiles/dkan/modules/contrib/facetapi/facetapi.js
+msgid "Show more"
+msgstr "Показать больше"
 
 msgid "Show more content"
 msgstr "Показать больше материалов"
@@ -32349,6 +32421,7 @@ msgstr ""
 "Показывать форму ответа на той же "
 "странице, что и комментарии"
 
+#: ; misc/tabledrag.js
 msgid "Show row weights"
 msgstr "Показать вес строк"
 
@@ -33378,6 +33451,7 @@ msgstr "Статус"
 msgid "Status report"
 msgstr "Отчёт о состоянии"
 
+#: ; misc/drupal.js
 msgid "StatusText: !statusText"
 msgstr "Текст Состояния: !statusText"
 
@@ -37126,6 +37200,7 @@ msgstr ""
 msgid "The block %name has been removed."
 msgstr "Блок %name удален."
 
+#: ; modules/block/block.js
 msgid "The block cannot be placed in this region."
 msgstr ""
 "Блок не может быть размещён в данной "
@@ -37196,6 +37271,7 @@ msgstr "Кэш очищен."
 msgid "The calculation operator."
 msgstr "Оператор вычисления."
 
+#: ; misc/ajax.js
 msgid "The callback URL is not local and not trusted: !url"
 msgstr ""
 "URL-адрес обратного вызова не является "
@@ -37244,6 +37320,7 @@ msgstr ""
 msgid "The changes have been saved."
 msgstr "Изменения сохранены."
 
+#: ; modules/block/block.js
 msgid ""
 "The changes to these blocks will not be saved until the <em>Save "
 "blocks</em> button is clicked."
@@ -40124,6 +40201,7 @@ msgstr "Страница \"@path\" не найдена."
 msgid "The requested page could not be found."
 msgstr "Запрашиваемая страница не найдена."
 
+#: ; misc/ajax.js
 msgid "The response failed verification so will not be processed."
 msgstr ""
 "Ответ не прошел проверку поэтому "
@@ -43045,6 +43123,7 @@ msgstr "Эта панель всегда выбрана."
 msgid "This panel will be selected if @conditions."
 msgstr "Эта панель будет выбрана, если @conditions."
 
+#: ; modules/user/user.permissions.js
 msgid "This permission is inherited from the authenticated user role."
 msgstr ""
 "Это право наследуется от роли "
@@ -43574,6 +43653,7 @@ msgstr ""
 "Это создаст пропущенные строки для "
 "выбранных языковых групп."
 
+#: ; profiles/dkan/modules/contrib/panels/panels_ipe/js/panels_ipe.js
 msgid "This will discard all unsaved changes. Are you sure?"
 msgstr ""
 "Все несохранённые изменения будут "
@@ -49770,6 +49850,22 @@ msgstr ""
 msgid "Your e-mail address"
 msgstr "Ваш email"
 
+#: /node/435
+msgid "Your file for this resource has been added to the datastore."
+msgstr ""
+"Ваш файл для этого ресурса был "
+"добавлен в хранилище данных."
+
+#: /dataset
+msgid ""
+"Your file for this resource is not added to the datastore. Click "
+"\"Manage Datastore\" to import file into the datastore."
+msgstr ""
+"Ваш файл для этого ресурса не добавлен "
+"в хранилище данных. Нажмите "
+"\"Управление Хранилищем Данных\", чтобы "
+"импортировать файл."
+
 msgid "Your groups"
 msgstr "Мои группы"
 
@@ -50519,6 +50615,7 @@ msgstr "флажок"
 msgid "checkboxes"
 msgstr "флажки"
 
+#: ; profiles/dkan/modules/contrib/module_filter/js/module_filter.js
 msgid "clear"
 msgstr "Очистить"
 

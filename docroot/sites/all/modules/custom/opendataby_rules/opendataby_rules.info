@@ -1,0 +1,4 @@
+name = Opendata.by custom rules
+description = "Custom rules actions for opendata.by"
+package = opendata.by
+core = 7.x

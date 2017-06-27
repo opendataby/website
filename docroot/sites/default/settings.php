@@ -37,6 +37,7 @@ $conf['master_modules'] = array(
     'xmlsitemap_node',
     'xmlsitemap_engines',
     'cpn',
+    'opendataby_rules',
   ),
   'local' => array(),
   'dev' => array(),

@@ -23,3 +23,6 @@ docroot/sites/all/modules/dev
 !drush/
 drush/*
 !drush/custom
+
+docker-compose.yml
+docker-sync.yml

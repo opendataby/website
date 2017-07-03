@@ -20,6 +20,8 @@
     <?php if (!empty($site_slogan)): ?>
       <div class="site-slogan"><?php print $site_slogan; ?></div>
     <?php endif; ?>
+    <!-- email subscription link -->
+    <div class="header-subscribe"><a href="http://infograf.us10.list-manage.com/subscribe?u=997ece874168faf5845e91b5c&id=244bd88daf">e-mail подписка</a></div>
     <!-- views exposed search -->
     <?php
       $block = block_load('dkan_sitewide', 'dkan_sitewide_search_bar');
@@ -104,5 +106,3 @@
     <small class="pull-right"><?php print render($page['footer']); ?></small>
   </div>
 </footer>
-<img class="tibo" src="/sites/all/themes/data_radix/assets/images/tibo.jpg">
-

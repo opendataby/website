@@ -270,3 +270,15 @@ div[class*="pane-facetapi"],
     z-index: 1;
   }
 }
+
+// Subscribe link in site header.
+.header-subscribe {
+  width: 200px;
+  float: right;
+  margin-right: 120px;
+  margin-top: 25px;
+  a {
+    color: white;
+  }
+}
+

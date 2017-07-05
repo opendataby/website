@@ -24,5 +24,6 @@ docroot/sites/all/modules/dev
 drush/*
 !drush/custom
 
+#T emporary exclude those until we make'em reusable
 docker-compose.yml
 docker-sync.yml

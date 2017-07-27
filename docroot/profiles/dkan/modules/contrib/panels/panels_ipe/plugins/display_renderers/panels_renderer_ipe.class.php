@@ -1,18 +1,54 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Renderer class for all In-Place Editor (IPE) behavior.
  */
 class panels_renderer_ipe extends panels_renderer_editor {
   // The IPE operates in normal render mode, not admin mode.
   var $admin = FALSE;
 
+  // Whether or not the user has access.
+  var $access = NULL;
+
+  function invoke_panels_ipe_access() {
+    if (user_access('bypass access in place editing')) {
+      return TRUE;
+    }
+    // Modules can return TRUE, FALSE or NULL, for allowed, disallowed,
+    // or don't care - respectively. On the first FALSE, we deny access,
+    // otherwise allow.
+    foreach (module_invoke_all('panels_ipe_access', $this->display) as $result) {
+      if ($result === FALSE) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+
+  function access() {
+    if (is_null($this->access)) {
+      $this->access = $this->invoke_panels_ipe_access();
+    }
+    return $this->access;
+  }
+
   function render() {
     $output = parent::render();
-    return "<div id='panels-ipe-display-{$this->clean_key}' class='panels-ipe-display-container'>$output</div>";
+    if ($this->access()) {
+      return "<div id='panels-ipe-display-{$this->clean_key}' class='panels-ipe-display-container'>$output</div>";
+    }
+    return $output;
   }
 
   function add_meta() {
+    if (!$this->access()) {
+      return parent::add_meta();
+    }
+
     ctools_include('display-edit', 'panels');
     ctools_include('content');
 
@@ -22,7 +58,6 @@ class panels_renderer_ipe extends panels_renderer_editor {
     // @todo we may need an else to load the cache, but I am not sure we
     // actually need to load it if we already have our cache key, and doing
     // so is a waste of resources.
-
     ctools_include('cleanstring');
     $this->clean_key = ctools_cleanstring($this->display->cache_key);
     $button = array(
@@ -42,7 +77,7 @@ class panels_renderer_ipe extends panels_renderer_editor {
       '#suffix' => '</div>',
     );
 
-    panels_ipe_toolbar_add_button($this->clean_key, 'panels-ipe-startedit', $button);
+    panels_ipe_toolbar_add_button($this->display->cache_key, 'panels-ipe-startedit', $button);
 
     // @todo this actually should be an IPE setting instead.
     if (user_access('change layouts in place editing')) {
@@ -59,11 +94,11 @@ class panels_renderer_ipe extends panels_renderer_editor {
           'ipe_cache_key' => $this->clean_key,
         ),
 
-      '#prefix' => '<div class="panels-ipe-pseudobutton-container">',
-      '#suffix' => '</div>',
+        '#prefix' => '<div class="panels-ipe-pseudobutton-container">',
+        '#suffix' => '</div>',
       );
 
-      panels_ipe_toolbar_add_button($this->clean_key, 'panels-ipe-change-layout', $button);
+      panels_ipe_toolbar_add_button($this->display->cache_key, 'panels-ipe-change-layout', $button);
     }
 
     ctools_include('ajax');
@@ -72,6 +107,7 @@ class panels_renderer_ipe extends panels_renderer_editor {
 
     ctools_add_css('panels_dnd', 'panels');
     ctools_add_css('panels_admin', 'panels');
+    ctools_add_js('panels-base', 'panels');
     ctools_add_js('panels_ipe', 'panels_ipe');
     ctools_add_css('panels_ipe', 'panels_ipe');
 
@@ -94,6 +130,9 @@ class panels_renderer_ipe extends panels_renderer_editor {
     $output = parent::render_pane($pane);
     if (empty($output)) {
       return;
+    }
+    if (!$this->access()) {
+      return $output;
     }
 
     // If there are region locks, add them.
@@ -120,13 +159,13 @@ class panels_renderer_ipe extends panels_renderer_editor {
 
     if (empty($pane->IPE_empty)) {
       // Add an inner layer wrapper to the pane content before placing it into
-      // draggable portlet
+      // draggable portlet.
       $output = "<div class=\"panels-ipe-portlet-content\">$output</div>";
     }
     else {
       $output = "<div class=\"panels-ipe-portlet-content panels-ipe-empty-pane\">$output</div>";
     }
-    // Hand it off to the plugin/theme for placing draggers/buttons
+    // Hand it off to the plugin/theme for placing draggers/buttons.
     $output = theme('panels_ipe_pane_wrapper', array('output' => $output, 'pane' => $pane, 'display' => $this->display, 'renderer' => $this));
 
     if (!empty($pane->locks['type']) && $pane->locks['type'] == 'immovable') {
@@ -137,6 +176,10 @@ class panels_renderer_ipe extends panels_renderer_editor {
   }
 
   function prepare_panes($panes) {
+    if (!$this->access()) {
+      return parent::prepare_panes($panes);
+    }
+
     // Set to admin mode just for this to ensure all panes are represented.
     $this->admin = TRUE;
     $panes = parent::prepare_panes($panes);
@@ -144,6 +187,10 @@ class panels_renderer_ipe extends panels_renderer_editor {
   }
 
   function render_pane_content(&$pane) {
+    if (!$this->access()) {
+      return parent::render_pane_content($pane);
+    }
+
     if (!empty($pane->shown) && panels_pane_access($pane, $this->display)) {
       $content = parent::render_pane_content($pane);
     }
@@ -174,6 +221,10 @@ class panels_renderer_ipe extends panels_renderer_editor {
    * @param $panes
    */
   function render_region($region_id, $panes) {
+    if (!$this->access()) {
+      return parent::render_region($region_id, $panes);
+    }
+
     // Generate this region's 'empty' placeholder pane from the IPE plugin.
     $empty_ph = theme('panels_ipe_placeholder_pane', array('region_id' => $region_id, 'region_title' => $this->plugins['layout']['regions'][$region_id]));
 
@@ -214,6 +265,23 @@ class panels_renderer_ipe extends panels_renderer_editor {
   }
 
   /**
+   *
+   */
+  function get_panels_storage_op_for_ajax($method) {
+    switch ($method) {
+      case 'ajax_unlock_ipe':
+      case 'ajax_save_form':
+        return 'update';
+
+      case 'ajax_change_layout':
+      case 'ajax_set_layout':
+        return 'change layout';
+    }
+
+    return parent::get_panels_storage_op_for_ajax($method);
+  }
+
+  /**
    * AJAX callback to unlock the IPE.
    *
    * This is called whenever something server side determines that editing
@@ -238,7 +306,7 @@ class panels_renderer_ipe extends panels_renderer_editor {
 
     // Reset the $_POST['ajax_html_ids'] values to preserve
     // proper IDs on form elements when they are rebuilt
-    // by the Panels IPE without refreshing the page
+    // by the Panels IPE without refreshing the page.
     $_POST['ajax_html_ids'] = array();
 
     $form_state = array(
@@ -247,7 +315,7 @@ class panels_renderer_ipe extends panels_renderer_editor {
       'content_types' => $this->cache->content_types,
       'rerender' => FALSE,
       'no_redirect' => TRUE,
-      // Panels needs this to make sure that the layout gets callbacks
+      // Panels needs this to make sure that the layout gets callbacks.
       'layout' => $this->plugins['layout'],
     );
 
@@ -284,6 +352,12 @@ class panels_renderer_ipe extends panels_renderer_editor {
       // rendered.
       $this->meta_location = 'inline';
       $this->commands[] = ajax_command_replace("#panels-ipe-display-{$this->clean_key}", panels_render_display($this->display, $this));
+      $buttons = &drupal_static('panels_ipe_toolbar_buttons', array());
+      $output = theme('panels_ipe_toolbar', array('buttons' => $buttons));
+      $this->commands[] = ajax_command_replace('#panels-ipe-control-container', $output);
+
+      $storage_id = $this->cache->display->storage_id;
+      cache_clear_all('panels_mini_load:' . $storage_id, 'cache_panels', TRUE);
     }
     else {
       // Cancelled. Clear the cache.
@@ -319,10 +393,13 @@ class panels_renderer_ipe extends panels_renderer_editor {
       $layouts = panels_common_get_allowed_layouts('panels_page');
     }
 
-    // Filter out builders
+    // Filter out builders.
     $layouts = array_filter($layouts, '_panels_builder_filter');
 
-    // Define the current layout
+    // Let other modules filter the layouts.
+    drupal_alter('panels_layouts_available', $layouts);
+
+    // Define the current layout.
     $current_layout = $this->plugins['layout']['name'];
 
     $output = panels_common_print_layout_links($layouts, $this->get_url('set_layout'), array('attributes' => array('class' => array('use-ajax'))), $current_layout);
@@ -347,7 +424,7 @@ class panels_renderer_ipe extends panels_renderer_editor {
 
     // Reset the $_POST['ajax_html_ids'] values to preserve
     // proper IDs on form elements when they are rebuilt
-    // by the Panels IPE without refreshing the page
+    // by the Panels IPE without refreshing the page.
     $_POST['ajax_html_ids'] = array();
 
     $output = drupal_build_form('panels_change_layout', $form_state);
@@ -418,6 +495,7 @@ class panels_renderer_ipe extends panels_renderer_editor {
       'key' => $this->clean_key,
     );
   }
+
 }
 
 /**
@@ -426,8 +504,7 @@ class panels_renderer_ipe extends panels_renderer_editor {
 function panels_ipe_edit_control_form($form, &$form_state) {
   $display = &$form_state['display'];
   // @todo -- this should be unnecessary as we ensure cache_key is set in add_meta()
-//  $display->cache_key = isset($display->cache_key) ? $display->cache_key : $display->did;
-
+  //   $display->cache_key = isset($display->cache_key) ? $display->cache_key : $display->did;
   // Annoyingly, theme doesn't have access to form_state so we have to do this.
   $form['#display'] = $display;
 

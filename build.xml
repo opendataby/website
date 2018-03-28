@@ -66,8 +66,6 @@
         <phingcall target="modules-enable-disable"/>
         <!--Updates the database-->
         <drush command="updb" assume="yes" />
-        <!--Reverts all features-->
-        <drush command="features-revert-all" assume="yes" />
         <!-- Rebuild permissions -->
         <drush command="php-eval" assume="yes">
             <param>"node_access_rebuild();"</param>

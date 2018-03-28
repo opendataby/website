@@ -1,3 +1,162 @@
+Search API 1.22 (2017-07-18):
+-----------------------------
+- #1710212 by drunken monkey: Added a data alteration for indexing a user's
+  content.
+- #2879892 by blacklabel_tom, drunken monkey: Fixed link in description of
+  "Stemmer" processor.
+- #2788593 by drunken monkey: Fixed error in Views query settings for specific
+  setups.
+- #2749963 by drunken monkey: Fixed "Index hierarchy" not having values
+  numerically indexed.
+- #2875793 by drunken monkey: Fixed buggy error handling in Views.
+- #2860624 by drunken monkey: Fixed problem with empty words in Views fulltext
+  filter.
+- #2855447 by mparker17, drunken monkey: Added "Separator" option for
+  aggregated fields of type "Fulltext".
+- #2863445 by dbjpanda, drunken monkey: Fixed phrasing in README.txt.
+
+Search API 1.21 (2017-02-23):
+-----------------------------
+- #2780341 by Berdir: Fixed passing of custom ranges to date facets.
+- #2765317 by JorgenSandstrom, NWOM, drunken monkey: Added a "Last" aggregation
+  type.
+- #2842856 by drunken monkey: Fixed language filters for "Multiple types"
+  indexes.
+- #2844990 by drunken monkey: Made the "Role filter" data alteration available
+  for multi-type indexes.
+- #2837745 by drunken monkey, klausi: Fixed NULL tags on old serialized queries.
+- #2833482 by drunken monkey: Fixed undefined constant when uninstalling facets
+  module.
+- #2840261 by alan-ps: Fixed usage of outdated hash functions.
+- #1670420 by kyletaylored, dorficus, drunken monkey: Fixed potential fatal
+  error in facet adapter's getSearchKeys() method.
+- #2838075 by dsnopek: Fixed possible race condition in
+  hook_system_info_alter().
+- #2836687 by sarthak drupal: Fixed one doc comment typo.
+- #2632880 by drunken monkey, donquixote: Added possibility to change indexed
+  bundles on disabled indexes.
+- #2828380 by jansete: Fixed taxonomy term access tag in Views filter.
+- #2827717 by Fabien.Godineau, drunken monkey: Fixed disabling of search views
+  when reverting an index.
+- #2822836 by prince_zyxware: Fixed some Drupal coding standards violations.
+- #2822145 by drunken monkey: Fixed problem with phrase search in Views
+  fulltext filter.
+- #2778261 by drunken monkey, BAHbKA: Fixed "Index items immediately"
+  functionality for unindexed items.
+- #2358065 by Jelle_S, graper, drunken monkey: Added the option for
+  highlighting of partial matches to the processor.
+- #2779159 by mark_fullmer, drunken monkey: Added a Stemmer processor.
+- #2649412 by relaxnow, GoZ: Added support for minimum granularity to date
+  facets.
+- #2769021 by Plazik, drunken monkey: Added the generated Search API query to
+  the Views preview.
+- #2769877 by mfernea: Fixed database exception when filtering for anonymous
+  user.
+
+Search API 1.20 (2016-07-21):
+-----------------------------
+- #2731103 by drunken monkey: Fixed the default value for the taxonomy term
+  filter "multiple" setting.
+- #1818572 by morningtime, drunken monkey, lodey, guillaumev: Added pretty
+  paths support to the Views facets block.
+- #2753441 by Johnny vd Laar: Fixed translated field names in
+  language-independent cache.
+
+Search API 1.19 (2016-07-05):
+-----------------------------
+- #2724687 by StefanPr, drunken monkey: Fixed failed sanitization of NULL field
+  values.
+- #2744189 by nikolabintev, drunken monkey: Fixed highlighting for single-word
+  fields.
+- #2744995 by John Cook, drunken monkey: Fixed search views without pager.
+- #2742053 by tunic: Fixed change notification on node access records change.
+- #2733447 by jsacksick: Fixed translatability of our Views taxonomy term
+  filter.
+- #2720465 by drunken monkey: Fixed bundle filter's handling of entity types
+  with no bundles on multi-type indexes.
+- #2710893 by alan-ps, drunken monkey: Fixed creation of comment indexes when
+  no nodes exist.
+- #2707039 by alan-ps: Fixed indexes of flag entities with "bundles" setting.
+- #2700879 by drunken monkey: Fixed breadcrumbs on index tabs.
+- #1889940 by cspurk, Yaron Tal: Fixed "HTML filter" processor to recognize all
+  valid HTML tags.
+- #2700011 by drunken monkey: Fixed compatibility issues of facets from
+  different indexes.
+- #2665970 by andrei.colesnic, drunken monkey: Added "Limit list to selected
+  items" exposed option support for Views taxonomy term filters.
+- #2703675 by drunken monkey, heykarthikwithu: Fixed accidental assumption that
+  all facets are taxonomy terms.
+- #2419853 by drunken monkey: Fixed HTML filter leaves escaped entities in
+  field values sometimes.
+
+Search API 1.18 (2016-04-20):
+-----------------------------
+- Various security fixes – see https://www.drupal.org/node/2710063.
+- #2693425 by jojyja: Fixed a typo in search_api.info.
+
+Search API 1.17 (2016-03-14):
+-----------------------------
+- #2665586 by recrit, drunken monkey: Fixed parsing of invalid date facet
+  filters.
+- #2677900 by stefan.r, drunken monkey: Added the possibility to change date
+  facet formats.
+- #2678856 by stefan.r, drunken monkey: Fixed date facets showing wrong month
+  on certain days.
+- #2667872 by Les Lim: Added "0" to field boost options.
+- #2654328 by drunken monkey, donquixote: Fixed use of "<" and ">" for open
+  facet ranges.
+- #2639200 by joachim: Added sorting to "related fields" select box.
+- #2638740 by joachim, drunken monkey: Added a link to the index to the
+  "re-indexing necessary" message.
+- #2629136 by drunken monkey, deranga: Fixed wrong facet counts in edge cases
+  for active OR facets.
+- #2569461 by kraynuk.m, drunken monkey: Fixed existing table in update #7118.
+- #2631276 by tauno: Fixed the MLT handler for multi-entity indexes.
+- #2576265 by drunken monkey: Fixed view trying to search on non-fulltext field.
+- #2572487 by drunken monkey: Removed operator setting for date facets.
+- #2611714 by rakesh.gectcr, drunken monkey: Improved compliance with
+  documentation standards.
+- #2613054 by temkin: Fixed the "search-api-index" Drush command to allow
+  setting further options when indexing on all indexes.
+- #2611726 by Hubbs, rakesh.gectcr: Fixed several typos.
+- #2603500 by drunken monkey, krishna savithraj: Fixed Views fulltext searches
+  for keyword "All".
+- #2529262 by kingmackenzie, stefan.r: Added an option to Views date filters to
+  choose the format used by date popup.
+- #2583263 by drunken monkey: Fixed Views integration in combination with
+  Search API ET and similar modules.
+- #2592231 by drunken monkey, balintcsaba: Fixed ignored item language when
+  viewing translated items.
+- #2570879 by thePanz, drunken monkey: Added sorting of remembered search IDs.
+- #2565743 by drunken monkey: Fixed creation of comment indexes with specific
+  bundles.
+- #2563793 by drunken monkey, smitty, ReBa: Fixed Views base table definition
+  for "Multiple types" indexes.
+- #2567775 by joseph.olstad, drunken monkey: Fixed handling of broken HTML in
+  the "HTML filter" processor.
+- #2565005 by drunken monkey: Properly escape labels of "checkboxes"/"radios"
+  options
+- #2524314 by drunken monkey: Fixed bundle-setting for taxonomy term indexes.
+- #2550599 by ACF, drunken monkey: Fixed error on entity rebuilds.
+
+Search API 1.16 (2015-08-30):
+-----------------------------
+- #2502819: Fixed example code for hook_search_api_query_alter().
+- #2491175 by ptmkenny, drunken monkey: Added a data alteration for filtering
+  out blocked users.
+- #1197538 by thePanz, k4v, drunken monkey, ayalon, nadavoid, timodwhit, becw,
+  Elvar: Added support for the "Global: Random" sort in Views.
+- #2520934 by drunken monkey: Added an item type for indexing several types of
+  entities in one index.
+- #2533096 by drunken monkey: Fixed uncaught exception when deleting a server.
+- #2479453 by prics, drunken monkey: Added a Drush command to
+  list/enable/disable servers.
+- #2520684 by drunken monkey: Fixed "bundles" setting on indexes with "Index
+  immediately".
+- #2489882 by dww: Fixed Views taxonomy filter with "is (not) empty" operator
+- #2447213 by drunken monkey: Fixed issues with stale field settings for MLT
+  contextual filter.
+
 Search API 1.15 (2015-06-03):
 -----------------------------
 - #2190627 by m1n0, drunken monkey: Fixed fatal errors for views of disabled

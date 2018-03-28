@@ -139,6 +139,17 @@ function filefield_sources_field_process($element, &$form_state, $form) {
   // Do all processing as needed by each source.
   $sources = filefield_sources_info();
   $enabled_sources = _filefield_sources_enabled($instance['widget']['settings']['filefield_sources']);
+
+
+  $context = array(
+    'enabled_sources' => &$enabled_sources,
+    'element'         => $element,
+    'form_state'      => $form_state,
+  );
+
+  // Allow other modules to alter the sources.
+  drupal_alter('filefield_sources_sources', $sources, $context);
+
   foreach ($sources as $source_name => $source) {
     if (empty($enabled_sources[$source_name])) {
       unset($sources[$source_name]);
@@ -414,6 +425,18 @@ function filefield_sources_includes($include = TRUE, $enabled_only = TRUE) {
  * @see hook_file_download().
  */
 function filefield_sources_file_access($uri) {
+  // Always allow access to public files.
+  $scheme = file_uri_scheme($uri);
+  if ($scheme === 'public') {
+    return TRUE;
+  }
+
+  // Or if the current user has the "bypass file access" permission from the
+  // File Entity module, then reuse of any file is permitted.
+  if (user_access('bypass file access')) {
+    return TRUE;
+  }
+
   $headers = array();
   foreach (module_implements('file_download') as $module) {
     $function = $module . '_file_download';
@@ -513,6 +536,13 @@ function filefield_sources_save_file($filepath, $validators = array(), $destinat
   // Ensure the destination is writable.
   file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
 
+  // Check if this is actually the same file being "attached" to a file record.
+  // If so, it acts as a file replace, except no file is actually moved.
+  $reuse_file = ($destination . $file->filename === $file->uri);
+  if ($reuse_file) {
+    $replace = FILE_EXISTS_REPLACE;
+  }
+
   $file->destination = file_destination($destination . $file->filename, $replace);
   // If file_destination() returns FALSE then $replace == FILE_EXISTS_ERROR and
   // there's an existing file so we need to bail.
@@ -544,7 +574,7 @@ function filefield_sources_save_file($filepath, $validators = array(), $destinat
   // directory. This overcomes open_basedir restrictions for future file
   // operations.
   $file->uri = $file->destination;
-  if (!file_unmanaged_copy($filepath, $file->uri, $replace)) {
+  if (!$reuse_file && !file_unmanaged_copy($filepath, $file->uri, $replace)) {
     drupal_set_message(t('File upload error. Could not move uploaded file.'), 'error');
     watchdog('file', 'Upload error. Could not move uploaded file %file to destination %destination.', array('%file' => $file->filename, '%destination' => $file->uri));
     return FALSE;
@@ -563,7 +593,17 @@ function filefield_sources_save_file($filepath, $validators = array(), $destinat
   }
 
   // If we made it this far it's safe to record this file in the database.
-  return file_save($file);
+  if ($file = file_save($file)) {
+    // Track non-public files in the session if they were uploaded by an
+    // anonymous user. This allows modules such as the File module to only
+    // grant view access to the specific anonymous user who uploaded the file.
+    // See similar code in file_save_upload().
+    if (!$user->uid && !in_array($destination_scheme, variable_get('file_public_schema', array('public')))) {
+      $_SESSION['anonymous_allowed_file_ids'][$file->fid] = $file->fid;
+    }
+    return $file;
+  }
+  return FALSE;
 }
 
 /**

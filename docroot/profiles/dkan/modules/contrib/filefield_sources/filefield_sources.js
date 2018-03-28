@@ -13,15 +13,15 @@ Drupal.behaviors.fileFieldSources.attach = function(context, settings) {
       $(this).parents('div.filefield-sources-list').find('a.active').removeClass('active');
 
       // Find the unique FileField Source class name.
-      var fileFieldSourceClass = this.className.match(/filefield-source-[0-9a-z]+/i)[0];
+      var fileFieldSourceClass = this.className.match(/filefield-source-[0-9a-z_]+/i)[0];
 
       // The default upload element is a special case.
       if ($(this).is('.filefield-source-upload')) {
-        $fileFieldElement.find('div.filefield-sources-list').siblings('input.form-file, input.form-submit').css('display', '');
+        $fileFieldElement.find('div.filefield-sources-list').siblings('.form-file, .form-submit').css('display', '');
         $fileFieldElement.find('div.filefield-source').css('display', 'none');
       }
       else {
-        $fileFieldElement.find('div.filefield-sources-list').siblings('input.form-file, input.form-submit').css('display', 'none');
+        $fileFieldElement.find('div.filefield-sources-list').siblings('.form-file, .form-submit').css('display', 'none');
         $fileFieldElement.find('div.filefield-source').not('div.' + fileFieldSourceClass).css('display', 'none');
         $fileFieldElement.find('div.' + fileFieldSourceClass).css('display', '');
       }

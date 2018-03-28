@@ -90,5 +90,46 @@ function hook_fieldable_panels_pane_view($panels_pane, $view_mode, $langcode) {
 }
 
 /**
+ * All the list of CTools plugin specs for FPP objects to be modified.
+ *
+ * @param array $types
+ *   All of the CTools plugin specifications for these FPP objects.
+ * @param string $bundle
+ *   The FPP bundle.
+ * @param array $entities
+ *   All of the FPP entities for this bundle indexed by their CTools subtype,
+ *   e.g. fpid:123, vid:123, uuid:123.
+ */
+function hook_fieldable_panels_panes_content_types_alter(&$types, $bundle, $entities) {
+  foreach ($types as $name => &$type) {
+    $type['icon'] = 'icon_funnyface.png';
+  }
+}
+
+/**
+ * Allow other modules to control access to Fieldable Panels Pane objects.
+ *
+ * @param string $op
+ *   The operation to be performed.
+ * @param $entity
+ *   The fieldable panels pane that is being accessed.
+ * @param $account
+ *   The user account whose access should be checked.
+ *
+ * @return TRUE|FALSE|NULL
+ *   Returns TRUE to allow access, FALSE to deny, or NULL to pass the access
+ *   decision off to the next hook or the module itself.
+ *
+ * @ingroup fieldable_panels_pane_api_hooks
+ */
+function hook_fieldable_panels_panes_access($op, $entity = NULL, $account = NULL) {
+  // Example implementation which restricts access to edit reusable panes.
+  if ($op == 'update' && !empty($entity) && $entity->reusable && !user_access('administer fieldable panels panes')) {
+    return FALSE;
+  }
+  return NULL;
+}
+
+/**
  * @} End of "addtogroup hooks".
  */

@@ -72,12 +72,12 @@ function taxonomy_permission() {
   );
   foreach (taxonomy_get_vocabularies() as $vocabulary) {
     $permissions += array(
-      'edit terms in ' . $vocabulary->machine_name => array(
+      'edit terms in ' . $vocabulary->vid => array(
         'title' => t('Edit terms in %vocabulary', array('%vocabulary' => $vocabulary->name)),
       ),
     );
     $permissions += array(
-       'delete terms in ' . $vocabulary->machine_name => array(
+       'delete terms in ' . $vocabulary->vid => array(
          'title' => t('Delete terms from %vocabulary', array('%vocabulary' => $vocabulary->name)),
       ),
     );
@@ -283,6 +283,8 @@ function taxonomy_menu() {
     'title' => 'Taxonomy term',
     'title callback' => 'taxonomy_term_title',
     'title arguments' => array(2),
+    // The page callback also invokes drupal_set_title() in case
+    // the menu router's title is overridden by a menu link.
     'page callback' => 'taxonomy_term_page',
     'page arguments' => array(2),
     'access arguments' => array('access content'),
@@ -371,14 +373,7 @@ function taxonomy_admin_paths() {
  * Return edit access for a given term.
  */
 function taxonomy_term_edit_access($term) {
-  if (user_access('administer taxonomy')) {
-    return TRUE;
-  }
-  if (!isset($term->vocabulary_machine_name)) {
-    $vocabulary = taxonomy_vocabulary_load($term->vid);
-    $term->vocabulary_machine_name = $vocabulary->machine_name;
-  }
-  return user_access("edit terms in $term->vocabulary_machine_name");
+  return user_access("edit terms in $term->vid") || user_access('administer taxonomy');
 }
 
 /**
@@ -1721,13 +1716,15 @@ function taxonomy_field_formatter_prepare_view($entity_type, $entities, $field, 
 }
 
 /**
- * Title callback for term pages.
+ * Title callback: Returns the title of the taxonomy term.
  *
  * @param $term
  *   A term object.
  *
  * @return
- *   The term name to be used as the page title.
+ *   An unsanitized string that is the title of the taxonomy term.
+ *
+ * @see taxonomy_menu()
  */
 function taxonomy_term_title($term) {
   return $term->name;

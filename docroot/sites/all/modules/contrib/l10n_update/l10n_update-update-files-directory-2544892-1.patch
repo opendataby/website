@@ -1,0 +1,53 @@
+commit 215aeb046159f3e97bd839997e5d4b8c1e6ea98d
+Author: Erik Stielstra <info@erikstielstra.nl>
+Date:   Mon Aug 3 22:15:43 2015 +0200
+
+    #1
+
+diff --git a/l10n_update.install b/l10n_update.install
+index 5ea0845..6412818 100644
+--- a/l10n_update.install
++++ b/l10n_update.install
+@@ -303,24 +303,27 @@ function l10n_update_update_7200() {
+     registry_rebuild();
+   }
+ 
++  // If no translation directory was set, set one here. We try different
++  // alternative paths as the default may not always be writable.
+   if (!variable_get('l10n_update_download_store', '')) {
+-    variable_set('l10n_update_download_store', 'sites/all/translations');
+-  }
+-  // Create the translation directory. We try different alternative paths as the
+-  // default may not always be writable.
+-  $directories = array(
+-    variable_get('l10n_update_download_store', L10N_UPDATE_DEFAULT_TRANSLATION_PATH),
+-    variable_get('file_public_path', conf_path() . '/files') . '/translations',
+-    'sites/default/files/translations',
+-  );
+-  foreach ($directories as $directory) {
+-    if (file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+-      variable_set('l10n_update_download_store', $directory);
+-      return;
++    $directories = array(
++      variable_get('l10n_update_download_store', L10N_UPDATE_DEFAULT_TRANSLATION_PATH),
++      variable_get('file_public_path', conf_path() . '/files') . '/translations',
++      'sites/default/files/translations',
++    );
++    $directory_created = FALSE;
++    foreach ($directories as $directory) {
++      if (file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
++        variable_set('l10n_update_download_store', $directory);
++        $directory_created = TRUE;
++        break;
++      }
++    }
++    if (!$directory_created) {
++      watchdog('l10n_update', 'The directory %directory does not exist or is not writable.', array('%directory' => $directories[0]), WATCHDOG_ERROR);
++      drupal_set_message(t('The directory %directory does not exist or is not writable.', array('%directory' => $directories[0])), 'error');
+     }
+   }
+-  watchdog('l10n_update', 'The directory %directory does not exist or is not writable.', array('%directory' => $directories[0]), WATCHDOG_ERROR);
+-  drupal_set_message(t('The directory %directory does not exist or is not writable.', array('%directory' => $directories[0])), 'error');
+ 
+   // Translation source 'Remote server only' is no longer supported. Use 'Remote
+   // and local' instead.

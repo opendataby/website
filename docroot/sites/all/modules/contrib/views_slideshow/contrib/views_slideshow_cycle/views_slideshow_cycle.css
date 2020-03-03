@@ -1,9 +1,21 @@
+/**
+ * @file
+ * Basic styling for Views Slideshow Cycle.
+ */
 
 .views_slideshow_cycle_no_display,
 .views_slideshow_cycle_hidden,
 .views_slideshow_cycle_controls,
+.views-slideshow-controls-bottom,
+.views-slideshow-controls-top,
 .views_slideshow_cycle_image_count {
   display: none;
+}
+
+/* Only show control blocks if the JavaScript successfully initialized. */
+.views-slideshow-cycle-processed .views-slideshow-controls-bottom,
+.views-slideshow-cycle-processed .views-slideshow-controls-top {
+  display: block;
 }
 
 /* Pager Settings */

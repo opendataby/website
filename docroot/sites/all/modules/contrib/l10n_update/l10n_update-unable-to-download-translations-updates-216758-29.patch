@@ -1,0 +1,24 @@
+diff --git a/l10n_update.fetch.inc b/l10n_update.fetch.inc
+index 85178b2..3cdb91d 100644
+--- a/l10n_update.fetch.inc
++++ b/l10n_update.fetch.inc
+@@ -95,6 +95,19 @@ function l10n_update_batch_fetch_build($projects = array(), $langcodes = array()
+ function _l10n_update_fetch_operations($projects, $langcodes, $options) {
+   $operations = array();
+ 
++  // If the process is going to download files from a remote, make sure the
++  // files can be saved in the download directory.
++  if (!empty($projects) && l10n_update_use_remote_source()) {
++    $directory = variable_get('l10n_update_download_store', L10N_UPDATE_DEFAULT_TRANSLATION_PATH);
++
++    // Do not download files if the directory is missing or can not be created.
++    if (!file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
++      drupal_set_message(t('The directory %directory does not exist or is not writable.', array('%directory' => $directory)), 'error');
++      watchdog('file system', 'The directory %directory does not exist or is not writable.', array('%directory' => $directory), WATCHDOG_ERROR);
++      return $operations;
++    }
++  }
++
+   foreach ($projects as $project) {
+     foreach ($langcodes as $langcode) {
+       if (l10n_update_use_remote_source()) {

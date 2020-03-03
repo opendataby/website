@@ -1,0 +1,306 @@
+diff --git a/includes/gettext/PoItem.php b/includes/gettext/PoItem.php
+index 4434746..8b26481 100644
+--- a/includes/gettext/PoItem.php
++++ b/includes/gettext/PoItem.php
+@@ -205,12 +205,6 @@ class PoItem {
+     if (isset($values['comment'])){
+       $this->setComment($values['comment']);
+     }
+-    if (isset($this->_source) &&
+-        strpos($this->_source, L10N_UPDATE_PLURAL_DELIMITER) !== FALSE) {
+-      $this->setSource(explode(L10N_UPDATE_PLURAL_DELIMITER, $this->_source));
+-      $this->setTranslation(explode(L10N_UPDATE_PLURAL_DELIMITER, $this->_translation));
+-      $this->setPlural(count($this->_translation) > 1);
+-    }
+   }
+ 
+   /**
+diff --git a/includes/gettext/PoMemoryWriter.php b/includes/gettext/PoMemoryWriter.php
+index 18e0791..080a2b0 100644
+--- a/includes/gettext/PoMemoryWriter.php
++++ b/includes/gettext/PoMemoryWriter.php
+@@ -28,12 +28,18 @@ class PoMemoryWriter implements PoWriterInterface {
+    * Implements PoWriterInterface::writeItem().
+    */
+   public function writeItem(PoItem $item) {
++    $context = $item->getContext();
++
+     if (is_array($item->getSource())) {
+-      $item->setSource(implode(L10N_UPDATE_PLURAL_DELIMITER, $item->getSource()));
+-      $item->setTranslation(implode(L10N_UPDATE_PLURAL_DELIMITER, $item->getTranslation()));
++      $sources = $item->getSource();
++      $translations = $item->getTranslation();
++      for ($index = 0; $index < count($sources); $index++) {
++        $this->_items[$context != NULL ? $context : ''][$sources[$index]] = $translations[$index];
++      }
++    }
++    else {
++      $this->_items[$context != NULL ? $context : ''][$item->getSource()] = $item->getTranslation();
+     }
+-    $context = $item->getContext();
+-    $this->_items[$context != NULL ? $context : ''][$item->getSource()] = $item->getTranslation();
+   }
+ 
+   /**
+diff --git a/includes/locale/PoDatabaseWriter.php b/includes/locale/PoDatabaseWriter.php
+index 1920a8d..9aee62d 100644
+--- a/includes/locale/PoDatabaseWriter.php
++++ b/includes/locale/PoDatabaseWriter.php
+@@ -195,10 +195,18 @@ class PoDatabaseWriter implements PoWriterInterface {
+    */
+   function writeItem(PoItem $item) {
+     if ($item->isPlural()) {
+-      $item->setSource(join(L10N_UPDATE_PLURAL_DELIMITER, $item->getSource()));
+-      $item->setTranslation(join(L10N_UPDATE_PLURAL_DELIMITER, $item->getTranslation()));
++      $sources = $item->getSource();
++      $translations = $item->getTranslation();
++
++      for ($index = 0; $index < count($sources); $index++) {
++        $item->setSource($sources[$index]);
++        $item->setTranslation($translations[$index]);
++        $this->importString($item);
++      }
++    }
++    else {
++      $this->importString($item);
+     }
+-    $this->importString($item);
+   }
+ 
+   /**
+diff --git a/includes/locale/StringBase.php b/includes/locale/StringBase.php
+index 0504858..36f5a57 100644
+--- a/includes/locale/StringBase.php
++++ b/includes/locale/StringBase.php
+@@ -102,21 +102,6 @@ abstract class StringBase implements StringInterface {
+   }
+ 
+   /**
+-   * Implements StringInterface::getPlurals().
+-   */
+-  public function getPlurals() {
+-    return explode(L10N_UPDATE_PLURAL_DELIMITER, $this->getString());
+-  }
+-
+-  /**
+-   * Implements StringInterface::setPlurals().
+-   */
+-  public function setPlurals($plurals) {
+-    $this->setString(implode(L10N_UPDATE_PLURAL_DELIMITER, $plurals));
+-    return $this;
+-  }
+-
+-  /**
+    * Implements StringInterface::getStorage().
+    */
+   public function getStorage() {
+diff --git a/includes/locale/StringInterface.php b/includes/locale/StringInterface.php
+index 7231dc6..97111db 100644
+--- a/includes/locale/StringInterface.php
++++ b/includes/locale/StringInterface.php
+@@ -68,27 +68,6 @@ interface StringInterface {
+   public function setString($string);
+ 
+   /**
+-   * Splits string to work with plural values.
+-   *
+-   * @return array
+-   *   Array of strings that are plural variants.
+-   */
+-  public function getPlurals();
+-
+-  /**
+-   * Sets this string using array of plural values.
+-   *
+-   * Serializes plural variants in one string glued by L10N_UPDATE_PLURAL_DELIMITER.
+-   *
+-   * @param array $plurals
+-   *   Array of strings with plural variants.
+-   *
+-   * @return LocaleString
+-   *   The called object.
+-  */
+-  public function setPlurals($plurals);
+-
+-  /**
+    * Gets the string storage.
+    *
+    * @return StringStorageInterface
+diff --git a/l10n_update.drush.inc b/l10n_update.drush.inc
+index 3f06cfc..a7104d0 100644
+--- a/l10n_update.drush.inc
++++ b/l10n_update.drush.inc
+@@ -26,6 +26,19 @@ function l10n_update_drush_command() {
+       'mode' => 'Determine if existing translations are overwitten during import. Use "overwrite" to overwrite any existing translation, "replace" to replace previously imported translations but not overwrite edited strings, "keep" to keep any existing translation and only add new translations. Default value: "keep"'
+     ),
+   );
++
++  // Convert imported D8 style plural translations to D7 format.
++  $commands['l10n-update-d8-plural-fix'] = array(
++    'description' => 'Convert previously imported D8 style plural translations',
++    'options' => array(
++      'overwrite' => dt('Overwrite existing translations.'),
++    ),
++    'examples' => array(
++      'drush l10n-update-d8-plural-fix' => dt('Convert all previously imported D8 style plural translations'),
++      'drush l10n-update-d8-plural-fix --overwrite' => dt('Overwrite existing translations'),
++    ),
++  );
++
+   return $commands;
+ }
+ 
+@@ -251,3 +264,152 @@ function _drush_l10n_update_get_updates() {
+     drush_log(dt('No languages to update.'), 'warning');
+   }
+ }
++
++/**
++ * Callback for l10n-update-d8-plural-fix command.
++ */
++function drush_l10n_update_d8_plural_fix() {
++  // Establish whether any D8 style translations have been imported.
++  if (_l10n_update_d8_plural_get_strings() !== FALSE) {
++    // Confirm that the user indeed wishes to convert D8 style plurals and proceed
++    // accordingly.
++    if (drush_confirm('The conversion operation is permanent - Are you sure you want to continue?', $indent = 0)) {
++      $mode = (drush_get_option('overwrite')) ? LOCALE_IMPORT_OVERWRITE : LOCALE_IMPORT_KEEP;
++      $drush_message = dt('Initialising: Converting imported D8 style plurals into D7 format');
++      drush_log($drush_message . PHP_EOL, 'status');
++      _l10n_update_d8_plural_conversion($mode);
++    }
++  }
++  else {
++    // No D8 style translation strings have been imported
++    $drush_message = dt('No D8 style translation strings could be found; Exiting.');
++    drush_log($drush_message . PHP_EOL, 'status');
++  }
++}
++
++/**
++ * Helper function to return a list of imported D8 style translation strings.
++ *
++ * @return Array|Bool
++ *  An array of imported strings if found, otherwise FALSE.
++ *
++ */
++function _l10n_update_d8_plural_get_strings() {
++  $translation_strings =  &drupal_static(__FUNCTION__);
++  if (! isset($translation_strings)) {
++    // Retrieve a list of all affected translation strings.
++    $query = db_select('locales_source', 'ls');
++    $query->fields('ls', array('lid', 'location', 'textgroup', 'source', 'context', 'version'));
++    $query->fields('lt', array('translation', 'language', 'plid', 'plural', 'l10n_status'));
++    $query->innerJoin('locales_target', 'lt', 'ls.lid = lt.lid');
++    $query->condition('source','%' . db_like(L10N_UPDATE_PLURAL_DELIMITER) . '%', 'LIKE');
++    $results = $query->execute();
++
++    // If we have found some results then return these accordingly.
++    if ($results->rowCount()) {
++      foreach ($results as $result) {
++        $translation_strings[] = $result;
++      }
++      return $translation_strings;
++    }
++    else {
++      // No valid results could be retrieved.
++      return FALSE;
++    }
++  }
++  else {
++    return $translation_strings;
++  }
++}
++
++/**
++ * Helper function to convert D8 style translations strings into D7 format.
++ *
++ * @param Int $mode
++ *  Specifies the mode used for importing strings into the database.
++ *
++ */
++function _l10n_update_d8_plural_conversion($mode = LOCALE_IMPORT_KEEP) {
++  module_load_include('translation.inc', 'l10n_update');
++  $warnings_encountered = FALSE;
++
++  // Retrieve the list of D8 style translation strings
++  $results = _l10n_update_d8_plural_get_strings();
++
++  // Iterate through each string
++  foreach ($results as $result) {
++    // Extract the source & target strings and other relevant data.
++    $original = $result->source;
++    $sources = explode(L10N_UPDATE_PLURAL_DELIMITER, $result->source);
++    $translations = explode(L10N_UPDATE_PLURAL_DELIMITER, $result->translation);
++    $language = $result->language;
++    $text_group = $result->textgroup;
++    $lid = $result->lid;
++
++    // Iterate through each source string and convert if appropriate
++    for ($index = 0; $index < count($sources); $index++) {
++      $source = $sources[$index];
++      $translation = $translations[$index];
++
++      // Establish whether a correct translation already exists for the source strings
++      $query = db_select('locales_source', 'ls');
++      $query->addField('ls', 'source');
++      $query->addField('lt', 'translation');
++      $query->innerJoin('locales_target', 'lt', 'ls.lid = lt.lid');
++      $query->condition('source', $source, '=');
++      $query->condition('language', $language, '=');
++      $result = $query->execute();
++
++      // Translations already exist for the plural string components
++      if ($result->rowCount() && $mode == LOCALE_IMPORT_KEEP) {
++        drush_log(dt('Cannot convert string \'@original\': @language translation already exists for source string \'@source\'', array('@original' => $original, '@language' => $language, '@source' => $source)), 'warning');
++        $warnings_encountered = TRUE;
++      }
++      else {
++        // Insert the new translations into the database
++        $report = array('skips' => 0, 'additions' => 0, 'updates' => 0, 'deletes' => 0);
++
++        // @todo: add actual context support.
++        _l10n_update_locale_import_one_string_db($report, $language, '', $source, $translation, $text_group, NULL, LOCALE_IMPORT_OVERWRITE, L10N_UPDATE_STRING_CUSTOM);
++        cache_clear_all('locale:', 'cache', TRUE);
++        _locale_invalidate_js($language);
++        if (!empty($report['skips'])) {
++          $message = dt('Not saved locally due to invalid HTML content.');
++          $status = 'error';
++        }
++        elseif (!empty($report['additions']) || !empty($report['updates'])) {
++          $message = dt('Updated translations for source string \'@source\'', array('@source' => $source));
++          $status = 'ok';
++        }
++        elseif (!empty($report['deletes'])) {
++          $message = dt('Translation successfuly removed locally.');
++          $status = 'ok';
++        }
++        else {
++          $message = dt('Unknown error while saving translation locally.');
++          $status = 'error';
++        }
++
++        // Delete the existing D8 format translation string from the database
++        if ($status != 'error') {
++          db_delete('locales_source')
++            ->condition('lid', $lid, '=')
++            ->execute();
++
++          db_delete('locales_target')
++            ->condition('lid', $lid, '=')
++            ->execute();
++        }
++
++        drush_log($message, $status);
++      }
++    }
++  }
++
++  // Correct translations already exist - alert the user to the --overwrite option
++  if ($warnings_encountered) {
++    drush_print(PHP_EOL . dt('Re-run the command with the --overwrite option to replace existing translations'));
++  }
++
++  drush_log(PHP_EOL . dt('Finished D8 => D7 translation conversion operations.') . PHP_EOL, 'ok');
++}
+\ No newline at end of file

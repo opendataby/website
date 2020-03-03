@@ -105,6 +105,7 @@ class semanticviews_plugin_style_default extends views_plugin_style {
         'ul' => t('Unordered list'),
         'ol' => t('Ordered list'),
         'dl' => t('Definition list'),
+        'div' => t('Division <div>'),
       ),
       '#default_value' => $this->options['list']['element_type'],
     );

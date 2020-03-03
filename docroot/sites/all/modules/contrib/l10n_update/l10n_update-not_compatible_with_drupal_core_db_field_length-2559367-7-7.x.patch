@@ -1,0 +1,25 @@
+diff --git a/l10n_update.install b/l10n_update.install
+index 68347f0..a8ca795 100644
+--- a/l10n_update.install
++++ b/l10n_update.install
+@@ -61,7 +61,7 @@ function l10n_update_schema() {
+       'project' => array(
+         'description' => 'A unique short name to identify the project.',
+         'type' => 'varchar',
+-        'length' => '50',
++        'length' => '255',
+         'not null' => TRUE,
+       ),
+       'language' => array(
+@@ -375,3 +375,11 @@ function l10n_update_update_7204() {
+   $schema = l10n_update_schema();
+   db_change_field('l10n_update_project', 'name', 'name', $schema['l10n_update_project']['fields']['name']);
+ }
++
++/**
++ * Increase the length of the name column.
++ */
++function l10n_update_update_7205() {
++  $schema = l10n_update_schema();
++  db_change_field('l10n_update_file', 'project', 'project', $schema['l10n_update_file']['fields']['project']);
++}

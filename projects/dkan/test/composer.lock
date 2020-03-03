@@ -1,10 +1,9 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "2ae23488d1c0e3377e826314239553b7",
     "content-hash": "18e4a0facba65c851a8ca10a45df3263",
     "packages": [
         {
@@ -86,7 +85,7 @@
                 "symfony",
                 "testing"
             ],
-            "time": "2015-08-22 11:49:54"
+            "time": "2015-08-22T11:49:54+00:00"
         },
         {
             "name": "behat/gherkin",
@@ -144,7 +143,7 @@
                 "gherkin",
                 "parser"
             ],
-            "time": "2015-09-29 13:41:19"
+            "time": "2015-09-29T13:41:19+00:00"
         },
         {
             "name": "behat/mink",
@@ -202,7 +201,7 @@
                 "testing",
                 "web"
             ],
-            "time": "2015-09-20 20:24:03"
+            "time": "2015-09-20T20:24:03+00:00"
         },
         {
             "name": "behat/mink-browserkit-driver",
@@ -258,7 +257,7 @@
                 "browser",
                 "testing"
             ],
-            "time": "2015-09-21 20:56:13"
+            "time": "2015-09-21T20:56:13+00:00"
         },
         {
             "name": "behat/mink-extension",
@@ -317,7 +316,7 @@
                 "test",
                 "web"
             ],
-            "time": "2015-09-29 17:42:41"
+            "time": "2015-09-29T17:42:41+00:00"
         },
         {
             "name": "behat/mink-goutte-driver",
@@ -372,7 +371,7 @@
                 "headless",
                 "testing"
             ],
-            "time": "2015-09-21 21:31:11"
+            "time": "2015-09-21T21:31:11+00:00"
         },
         {
             "name": "behat/mink-selenium2-driver",
@@ -433,7 +432,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2015-09-21 21:02:54"
+            "time": "2015-09-21T21:02:54+00:00"
         },
         {
             "name": "behat/transliterator",
@@ -473,7 +472,7 @@
                 "slug",
                 "transliterator"
             ],
-            "time": "2015-09-28 16:26:35"
+            "time": "2015-09-28T16:26:35+00:00"
         },
         {
             "name": "devinci/devinci-behat-extension",
@@ -517,7 +516,7 @@
                 "Behat",
                 "test"
             ],
-            "time": "2015-10-01 20:37:27"
+            "time": "2015-10-01T20:37:27+00:00"
         },
         {
             "name": "drupal/drupal-driver",
@@ -568,7 +567,7 @@
                 "test",
                 "web"
             ],
-            "time": "2015-10-27 17:03:05"
+            "time": "2015-10-27T17:03:05+00:00"
         },
         {
             "name": "drupal/drupal-extension",
@@ -622,7 +621,7 @@
                 "test",
                 "web"
             ],
-            "time": "2015-09-16 19:51:36"
+            "time": "2015-09-16T19:51:36+00:00"
         },
         {
             "name": "fabpot/goutte",
@@ -671,7 +670,7 @@
             "keywords": [
                 "scraper"
             ],
-            "time": "2015-08-29 16:16:56"
+            "time": "2015-08-29T16:16:56+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -733,7 +732,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2015-09-08 17:36:26"
+            "time": "2015-09-08T17:36:26+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -784,7 +783,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2015-10-15 22:28:00"
+            "time": "2015-10-15T22:28:00+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -842,7 +841,7 @@
                 "stream",
                 "uri"
             ],
-            "time": "2015-08-15 19:32:36"
+            "time": "2015-08-15T19:32:36+00:00"
         },
         {
             "name": "instaclick/php-webdriver",
@@ -900,7 +899,7 @@
                 "webdriver",
                 "webtest"
             ],
-            "time": "2015-06-15 20:19:33"
+            "time": "2015-06-15T20:19:33+00:00"
         },
         {
             "name": "nucivic/dkanextension",
@@ -908,12 +907,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NuCivic/dkanextension.git",
-                "reference": "d75f036b861d89265fb0a8edd81fcb5271e0aa74"
+                "reference": "1f19830b93812dd27f02fb8eaa8fe0cd56a0997d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/d75f036b861d89265fb0a8edd81fcb5271e0aa74",
-                "reference": "d75f036b861d89265fb0a8edd81fcb5271e0aa74",
+                "url": "https://api.github.com/repos/NuCivic/dkanextension/zipball/1f19830b93812dd27f02fb8eaa8fe0cd56a0997d",
+                "reference": "1f19830b93812dd27f02fb8eaa8fe0cd56a0997d",
                 "shasum": ""
             },
             "require": {
@@ -941,7 +940,7 @@
                 "test",
                 "web"
             ],
-            "time": "2015-10-27 14:23:12"
+            "time": "2016-12-09T20:40:24+00:00"
         },
         {
             "name": "psr/http-message",
@@ -990,7 +989,7 @@
                 "request",
                 "response"
             ],
-            "time": "2015-05-04 20:22:00"
+            "time": "2015-05-04T20:22:00+00:00"
         },
         {
             "name": "symfony/browser-kit",
@@ -1044,7 +1043,7 @@
             ],
             "description": "Symfony BrowserKit Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-23 14:47:27"
+            "time": "2015-10-23T14:47:27+00:00"
         },
         {
             "name": "symfony/class-loader",
@@ -1093,7 +1092,7 @@
             ],
             "description": "Symfony ClassLoader Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-23 14:47:27"
+            "time": "2015-10-23T14:47:27+00:00"
         },
         {
             "name": "symfony/config",
@@ -1101,12 +1100,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "831f88908b51b9ce945f5e6f402931d1ac544423"
+                "reference": "524bc2ef778f99df0ba09f8985b23a379c668879"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/831f88908b51b9ce945f5e6f402931d1ac544423",
-                "reference": "831f88908b51b9ce945f5e6f402931d1ac544423",
+                "url": "https://api.github.com/repos/symfony/config/zipball/524bc2ef778f99df0ba09f8985b23a379c668879",
+                "reference": "524bc2ef778f99df0ba09f8985b23a379c668879",
                 "shasum": ""
             },
             "require": {
@@ -1140,7 +1139,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 09:39:48"
+            "time": "2015-10-11T09:39:48+00:00"
         },
         {
             "name": "symfony/console",
@@ -1196,7 +1195,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-20 14:38:46"
+            "time": "2015-10-20T14:38:46+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -1246,20 +1245,20 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 09:39:48"
+            "time": "2015-10-11T09:39:48+00:00"
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v2.7.6",
+            "version": "v2.8.52",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "af284e795ec8a08c80d1fc47518fd23004b89847"
+                "reference": "c306198fee8f872a8f5f031e6e4f6f83086992d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/af284e795ec8a08c80d1fc47518fd23004b89847",
-                "reference": "af284e795ec8a08c80d1fc47518fd23004b89847",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/c306198fee8f872a8f5f031e6e4f6f83086992d8",
+                "reference": "c306198fee8f872a8f5f031e6e4f6f83086992d8",
                 "shasum": ""
             },
             "require": {
@@ -1269,25 +1268,29 @@
                 "symfony/expression-language": "<2.6"
             },
             "require-dev": {
-                "symfony/config": "~2.2",
-                "symfony/expression-language": "~2.6",
-                "symfony/yaml": "~2.1"
+                "symfony/config": "~2.2|~3.0.0",
+                "symfony/expression-language": "~2.6|~3.0.0",
+                "symfony/yaml": "~2.3.42|~2.7.14|~2.8.7|~3.0.7"
             },
             "suggest": {
                 "symfony/config": "",
+                "symfony/expression-language": "For using expressions in service container configuration",
                 "symfony/proxy-manager-bridge": "Generate service proxies to lazy load them",
                 "symfony/yaml": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.7-dev"
+                    "dev-master": "2.8-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\DependencyInjection\\": ""
-                }
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1305,7 +1308,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-27 15:38:06"
+            "time": "2019-04-16T11:33:46+00:00"
         },
         {
             "name": "symfony/dom-crawler",
@@ -1357,7 +1360,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 09:39:48"
+            "time": "2015-10-11T09:39:48+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1414,7 +1417,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 09:39:48"
+            "time": "2015-10-11T09:39:48+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -1460,7 +1463,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-18 20:23:18"
+            "time": "2015-10-18T20:23:18+00:00"
         },
         {
             "name": "symfony/process",
@@ -1506,7 +1509,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-23 14:47:27"
+            "time": "2015-10-23T14:47:27+00:00"
         },
         {
             "name": "symfony/translation",
@@ -1566,7 +1569,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-27 15:38:06"
+            "time": "2015-10-27T15:38:06+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1612,7 +1615,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 09:39:48"
+            "time": "2015-10-11T09:39:48+00:00"
         }
     ],
     "packages-dev": [],

@@ -16,6 +16,16 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function markdowneditor_install() {
+  if (_markdowneditor_insert_latest()) {
+    $t = get_t();
+    drupal_set_message($t('Markdown Editor for BUEditor successfully installed. Go to !buesettings to set up "Role-editor assignments" to select the roles that may use it.', array('!buesettings' => l('Administration > Configuration > BUEditor', 'admin/config/content/bueditor'))));
+  }
+}
+
+/**
  * Implements hook_uninstall().
  */
 function markdowneditor_uninstall() {
@@ -106,4 +116,14 @@ function _markdowneditor_insert_latest($name = 'default') {
   variable_set('markdowneditor_content_fprint', $fprint);
 
   return $eid;
+}
+
+/**
+ * Update icons file extension from gif to png.
+ */
+function markdowneditor_update_7100() {
+  db_update('bueditor_buttons')
+    ->condition('icon', db_like('md-') . '%', 'LIKE')
+    ->expression('icon', 'replace(icon, :old_ext, :new_ext)', array(':old_ext' => '.gif', ':new_ext' => '.png'))
+    ->execute();
 }

@@ -30,6 +30,7 @@ Drupal.behaviors.horizontalTabs = {
       // Transform each fieldset into a tab.
       $fieldsets.each(function (i) {
         var $legend = $('> legend', this);
+        $('.element-invisible', $legend).remove();
         var horizontal_tab = new Drupal.horizontalTab({
           title: $legend.text(),
           fieldset: $(this)
@@ -51,8 +52,9 @@ Drupal.behaviors.horizontalTabs = {
       if (!tab_focus) {
         // If the current URL has a fragment and one of the tabs contains an
         // element that matches the URL fragment, activate that tab.
-        if (window.location.hash && window.location.hash !== '#' && $(window.location.hash, this).length) {
-          tab_focus = $(window.location.hash, this).closest('.horizontal-tabs-pane');
+        var hash = window.location.hash.replace(/[=%;,\/]/g, "");
+        if (hash !== '#' && $(hash, this).length) {
+          tab_focus = $(hash, this).closest('.horizontal-tabs-pane');
         }
         else {
           tab_focus = $('> .horizontal-tabs-pane:first', this);

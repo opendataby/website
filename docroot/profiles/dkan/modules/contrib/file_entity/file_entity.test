@@ -875,7 +875,7 @@ class FileEntityUsageTestCase extends FileEntityTestHelper {
 
     // Verify that the module name is used in place of a link to the entity.
     $this->assertNoLink('test_module');
-    $this->assertRaw('test_module', 'Module name used in place of link to the entity.');
+    $this->assertRaw('(entity not loaded)', '"(entity not loaded)" notice used in place of link to the entity.');
 
     // Verify that the entity type and use count information is also present.
     $expected_values = array(
@@ -976,6 +976,45 @@ class FileEntityAltTitleTestCase extends FileEntityTestHelper {
     $default_output = theme('image', $image_info);
     $this->assertRaw($default_output, 'Image displayed using updated alt and title attributes.');
   }
+}
+
+/**
+ * Test changing the scheme of a file.
+ */
+class FileEntityChangeSchemeTestCase extends FileEntityTestHelper {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Changing file scheme',
+      'description' => 'Test changing the scheme of a file.',
+      'group' => 'File entity',
+    );
+  }
+
+  function testChangeScheme() {
+    // Select the first text test file to use.
+    $file = $this->createFileEntity(array('type' => 'document'));
+    $this->assertEqual(file_uri_scheme($file->uri), 'public', 'File is public.');
+
+    // Create a user with file edit permissions.
+    $user = $this->drupalCreateUser(array('edit any document files'));
+    $this->drupalLogin($user);
+
+    $this->drupalGet('file/' . $file->fid . '/edit');
+    $this->assertNoFieldByName('scheme');
+
+    // Create a user with file admin permissions.
+    $user = $this->drupalCreateUser(array('edit any document files', 'administer files'));
+    $this->drupalLogin($user);
+
+    $this->drupalGet('file/' . $file->fid . '/edit');
+    $this->assertFieldByName('scheme', 'public');
+
+    $this->drupalPost(NULL, array('scheme' => 'private'), 'Save');
+    $file = entity_load_unchanged('file', $file->fid);
+    $this->assertEqual(file_uri_scheme($file->uri), 'private', 'File has changed to private.');
+  }
+
 }
 
 /**
@@ -1156,7 +1195,7 @@ class FileEntityTypeTestCase extends FileEntityTestHelper {
     $type_machine_label = 'foobar';
     $type = $this->createFileType(array('type' => $type_machine_type, 'label' => $type_machine_label));
     $loaded_type = file_type_load($type_machine_type);
-    $this->assertEqual($loaded_type->label, $type_machine_label, "Was able to create a type and retreive it.");
+    $this->assertEqual($loaded_type->label, $type_machine_label, "Was able to create a type and retrieve it.");
   }
 
   /**
@@ -1166,7 +1205,7 @@ class FileEntityTypeTestCase extends FileEntityTestHelper {
     $this->drupalGet('admin/structure/file-types');
     $this->assertResponse(403, 'File types UI page is not accessible to unauthorized users.');
 
-    $user = $this->drupalCreateUser(array('administer file types'));
+    $user = $this->drupalCreateUser(array('administer file types', 'administer fields'));
     $this->drupalLogin($user);
 
     $this->drupalGet('admin/structure/file-types');

@@ -109,6 +109,7 @@ function current_search_block_view($delta = '') {
           $build[$name] = $return;
           $build[$name]['#theme_wrappers'][] = 'current_search_item_wrapper';
           $build[$name]['#current_search_id'] = $settings['id'];
+          $build[$name]['#current_search_name'] = $name;
         }
       }
     }
@@ -225,7 +226,7 @@ function current_search_get_block_searcher($delta) {
  * @return
  *   The default searcher.
  *
- * @todo Figure out a beter default system.
+ * @todo Figure out a better default system.
  */
 function current_search_get_default_searcher() {
   $options = current_search_get_searcher_options();

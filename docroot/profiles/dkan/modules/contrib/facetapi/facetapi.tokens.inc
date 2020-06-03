@@ -71,6 +71,11 @@ function facetapi_token_info() {
     'description' => t('The total number of results matched by the search query.'),
   );
 
+  $results['search-path'] = array(
+    'name' => t('Search path'),
+    'description' => t('Path to the current page without any filter'),
+  );
+
   // Tokens related to active facet items.
   $active['active-value'] = array(
     'name' => t('Mapped value'),
@@ -92,6 +97,11 @@ function facetapi_token_info() {
     'description' => t('The human readable label of the active item\'s facet.'),
   );
 
+  $active['facet-title'] = array(
+    'name' => t('Facet title'),
+    'description' => t('The overridden title of the active item\'s facet block, if it was overridden. Otherwise, it defaults to facet label.'),
+  );
+
   $active['facet-name'] = array(
     'name' => t('Facet name'),
     'description' => t('The machine readable name of the active item\'s facet.'),
@@ -106,6 +116,11 @@ function facetapi_token_info() {
   $facet['facet-name'] = array(
     'name' => t('Facet name'),
     'description' => t('The machine readable name of the active item\'s facet.'),
+  );
+
+  $facet['facet-title'] = array(
+    'name' => t('Facet title'),
+    'description' => t('The overridden title of the active item\'s facet block, if it was overridden. Otherwise, it defaults to facet label.'),
   );
 
   return array(
@@ -157,13 +172,18 @@ function facetapi_tokens($type, $tokens, array $data = array(), array $options =
 
         case 'start-count':
           $offset = (($adapter->getPageNumber() - 1) * $adapter->getPageLimit()) + 1;
-          $replacements[$original] = $offset;
+          $total_max = (int) $adapter->getResultCount();
+          $replacements[$original] = min($offset, $total_max);
           break;
 
         case 'end-count':
           $page_max = $adapter->getPageNumber() * $adapter->getPageLimit();
           $total_max = (int) $adapter->getResultCount();
           $replacements[$original] = min($page_max, $total_max);
+          break;
+
+        case 'search-path':
+          $replacements[$original] = $adapter->getSearchPath();
           break;
       }
     }
@@ -195,6 +215,13 @@ function facetapi_tokens($type, $tokens, array $data = array(), array $options =
           }
           break;
 
+        case 'facet-title':
+          if ($facet = facetapi_facet_load($item['facets'][0], $adapter->getSearcher())) {
+            $facet_settings = $adapter->getFacet($facet)->getSettings('block');
+            $replacements[$original] = isset($facet_settings->settings['title_override']) && !empty($facet_settings->settings['title_override']) ? check_plain($facet_settings->settings['title']) : check_plain($facet['label']);
+          }
+          break;
+
         case 'facet-name':
           $replacements[$original] = check_plain($item['facets'][0]);
           break;
@@ -204,6 +231,7 @@ function facetapi_tokens($type, $tokens, array $data = array(), array $options =
   elseif ('facetapi_facet' == $type && !empty($data['facetapi_facet'])) {
 
     $facet = $data['facetapi_facet'];
+    $options += array('adapter' => NULL);
     foreach ($tokens as $name => $original) {
       switch ($name) {
 
@@ -213,6 +241,15 @@ function facetapi_tokens($type, $tokens, array $data = array(), array $options =
 
         case 'facet-name':
           $replacements[$original] = check_plain($facet['name']);
+          break;
+
+        case 'facet-title':
+          $replacements[$original] = check_plain($facet['label']);
+
+          if ($adapter = $options['adapter']) {
+            $facet_settings = $adapter->getFacet($facet)->getSettings('block');
+            $replacements[$original] = isset($facet_settings->settings['title_override']) && !empty($facet_settings->settings['title_override']) ? check_plain($facet_settings->settings['title']) : check_plain($facet['label']);
+          }
           break;
       }
     }

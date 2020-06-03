@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Use a different menu as the Administration Menu.
@@ -56,14 +55,23 @@ function admin_menu_source_theme() {
 function admin_menu_source_admin_menu_output_alter(&$content) {
   global $user;
   
-  $rid = key(array_reverse($user->roles, TRUE));
-  $source_menu = _admin_menu_source_get_role_menu($rid);
-  
-  if (!empty($source_menu)) {
-    $content['menu'] = admin_menu_links_menu(admin_menu_tree($source_menu));
-    $content['menu']['#theme'] = 'admin_menu_links';
-    $content['menu']['#weight'] = 0;
-    $content['menu']['#sorted'] = TRUE;
+  // $rid = key(array_reverse($user->roles, TRUE));
+
+  // Find the user role rid.
+  $roles_ids = array_keys(user_roles(TRUE, 'access administration menu'));
+  $user_roles_ids = array_keys($user->roles);
+  $user_roles = array_reverse(array_intersect($roles_ids, $user_roles_ids));
+
+  if (count($user_roles)) {
+    $rid = $user_roles[0];
+    $source_menu = _admin_menu_source_get_role_menu($rid);
+
+    if (!empty($source_menu)) {
+      $content['menu'] = admin_menu_links_menu(admin_menu_tree($source_menu));
+      $content['menu']['#theme'] = 'admin_menu_links';
+      $content['menu']['#weight'] = 0;
+      $content['menu']['#sorted'] = TRUE;
+    }
   }
 }
 
@@ -97,20 +105,20 @@ function theme_admin_menu_source_settings_form($variables) {
 }
 
 /**
- * Helper function to get settings for admin_menu_source
+ * Helper function to get settings for admin_menu_source.
  */
 function _admin_menu_source_get_settings() {
   return variable_get('admin_menu_source_settings', array());
 }
 
 /**
- * Helper function to get source menu per role
+ * Helper function to get source menu per role.
  *
  * @param $rid
  *  the user role id
  */
 function _admin_menu_source_get_role_menu($rid) {
-  //load the settings
+  // Load the settings.
   $settings = _admin_menu_source_get_settings();
   
   return isset($settings[$rid]['source']) ? $settings[$rid]['source'] : '';

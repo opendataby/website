@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Rules UI forms
+ * @file
+ * Rules User Interface forms.
  */
 
 /**
@@ -35,7 +36,7 @@ function rules_ui_parameter_replace_submit($form, &$form_state) {
 }
 
 /**
- * General form submit handler, that rebuilds the form
+ * General form submit handler, that rebuilds the form.
  */
 function rules_form_submit_rebuild($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
@@ -54,8 +55,9 @@ function rules_ui_form_edit_rules_config($form, &$form_state, $rules_config, $ba
 }
 
 /**
- * General rules configuration form validation callback. Also populates the
- * rules configuration with the form values.
+ * General rules configuration form validation callback.
+ *
+ * Also populates the rules configuration with the form values.
  */
 function rules_ui_form_rules_config_validate($form, &$form_state) {
   $form_state['rules_element']->form_validate($form, $form_state);
@@ -78,7 +80,6 @@ function rules_ui_form_edit_rules_config_submit($form, &$form_state) {
 function rules_ui_form_clone_rules_config($form, &$form_state, $rules_config, $base_path) {
   RulesPluginUI::$basePath = $base_path;
   $rules_config = clone $rules_config;
-  $rules_config->module = 'rules';
   $rules_config->id = NULL;
   $rules_config->name = '';
   $rules_config->label .= ' (' . t('cloned') . ')';
@@ -166,13 +167,29 @@ function rules_ui_confirm_operations($op, $rules_config) {
 
   switch ($op) {
     case 'enable':
-      return array(t('Are you sure you want to enable the %plugin %label?', $vars), '');
+      return array(
+        t('Are you sure you want to enable the %plugin %label?', $vars),
+        '',
+      );
+
     case 'disable':
-      return array(t('Are you sure you want to disable the %plugin %label?', $vars), '');
+      return array(
+        t('Are you sure you want to disable the %plugin %label?', $vars),
+        '',
+      );
+
     case 'revert':
-      return array(t('Are you sure you want to revert the %plugin %label?', $vars), t('This action cannot be undone.'));
+      return array(
+        t('Are you sure you want to revert the %plugin %label?', $vars),
+        t('This action cannot be undone.'),
+      );
+
     case 'delete':
-      return array(t('Are you sure you want to delete the %plugin %label?', $vars), t('This action cannot be undone.'));
+      return array(
+        t('Are you sure you want to delete the %plugin %label?', $vars),
+        t('This action cannot be undone.'),
+      );
+
     default:
       return FALSE;
   }
@@ -194,9 +211,10 @@ function rules_ui_form_rules_config_confirm_op($form, &$form_state, $rules_confi
 }
 
 /**
- * Applies the operation and returns the message to show to the user. Also the
- * operation is logged to the watchdog. Note that the string is defined two
- * times so that the translation extractor can find it.
+ * Applies the operation and returns the message to show to the user.
+ *
+ * The operation is also logged to the watchdog. Note that the string is
+ * defined two times so that the translation extractor can find it.
  */
 function rules_ui_confirm_operation_apply($op, $rules_config) {
   $vars = array('%plugin' => $rules_config->plugin(), '%label' => $rules_config->label());
@@ -291,8 +309,9 @@ function rules_ui_add_element($form, &$form_state, $rules_config, $plugin_name, 
 
 /**
  * Add element submit callback.
+ *
  * Used for "abstract plugins" to create the initial element object with the
- * given implemenation name and rebuild the form.
+ * given implementation name and rebuild the form.
  */
 function rules_ui_add_element_submit($form, &$form_state) {
   $element = rules_plugin_factory($form_state['plugin'], $form_state['values']['element_name']);
@@ -349,7 +368,10 @@ function rules_ui_delete_element($form, &$form_state, $rules_config, $rules_elem
     }
   }
 
-  $confirm_question = t('Are you sure you want to delete the %element_plugin %element_name?', array('%element_plugin' => $rules_element->plugin(), '%element_name' => $rules_element->label(), '%plugin' => $rules_config->plugin(), '%label' => $rules_config->label()));
+  $confirm_question = t('Are you sure you want to delete the %element_plugin %element_name?', array(
+    '%element_plugin' => $rules_element->plugin(),
+    '%element_name' => $rules_element->label(),
+  ));
   return confirm_form($form, $confirm_question, RulesPluginUI::path($rules_config->name), t('This action cannot be undone.'), t('Delete'), t('Cancel'));
 }
 
@@ -363,7 +385,6 @@ function rules_ui_delete_element_submit($form, &$form_state) {
     $form_state['redirect'] = RulesPluginUI::defaultRedirect($form_state['element_parent']);
   }
 }
-
 
 /**
  * Configure a rule element.
@@ -394,43 +415,20 @@ function rules_ui_edit_element_submit($form, &$form_state) {
 }
 
 /**
- * Add a new event.
+ * Form builder for the "add event" page.
  */
-function rules_ui_add_event($form, &$form_state, RulesReactionRule $rules_config, $base_path) {
+function rules_ui_add_event_page($form, &$form_state, RulesTriggerableInterface $rules_config, $base_path) {
   RulesPluginUI::$basePath = $base_path;
-  $form_state += array('rules_config' => $rules_config);
-  $events = array_diff_key(rules_fetch_data('event_info'), array_flip($rules_config->events()));
-
-  $form['help'] = array(
-    '#markup' => t('Select the event to add. However note that all added events need to provide all variables that should be available to your rule.'),
-  );
-  $form['event'] = array(
-    '#type' => 'select',
-    '#title' => t('React on event'),
-    '#options' => RulesPluginUI::getOptions('event', $events),
-    '#description' => t('Whenever the event occurs, rule evaluation is triggered.'),
-  );
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Add'),
-  );
-  $form_state['redirect'] = RulesPluginUI::path($rules_config->name);
+  RulesPluginUI::formDefaults($form, $form_state);
+  $form = rules_ui_add_event($form, $form_state, $rules_config, $base_path);
+  $form['#validate'][] = 'rules_ui_add_event_validate';
   return $form;
-}
-
-/**
- * Submit callback that just adds the selected event.
- *
- * @see rules_admin_add_reaction_rule()
- */
-function rules_ui_add_event_apply($form, &$form_state) {
-  $form_state['rules_config']->event($form_state['values']['event']);
 }
 
 /**
  * Submit the event configuration.
  */
-function rules_ui_add_event_submit($form, &$form_state) {
+function rules_ui_add_event_page_submit($form, &$form_state) {
   rules_ui_add_event_apply($form, $form_state);
   $rules_config = $form_state['rules_config'];
 
@@ -453,13 +451,71 @@ function rules_ui_add_event_submit($form, &$form_state) {
 }
 
 /**
- * Form to remove a event from a rule.
+ * Add a new event.
+ */
+function rules_ui_add_event($form, &$form_state, RulesReactionRule $rules_config, $base_path) {
+  $form_state += array('rules_config' => $rules_config);
+  $events = array_diff_key(rules_fetch_data('event_info'), array_flip($rules_config->events()));
+
+  $form['help'] = array(
+    '#markup' => t('Select the event to add. However note that all added events need to provide all variables that should be available to your rule.'),
+  );
+  $form['event'] = array(
+    '#type' => 'select',
+    '#title' => t('React on event'),
+    '#options' => RulesPluginUI::getOptions('event', $events),
+    '#description' => t('Whenever the event occurs, rule evaluation is triggered.'),
+    '#ajax' => rules_ui_form_default_ajax(),
+    '#required' => TRUE,
+  );
+  if (!empty($form_state['values']['event'])) {
+    $handler = rules_get_event_handler($form_state['values']['event']);
+    $form['event_settings'] = $handler->buildForm($form_state);
+  }
+  else {
+    $form['event_settings'] = array();
+  }
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add'),
+  );
+  $form_state['redirect'] = RulesPluginUI::path($rules_config->name);
+  return $form;
+}
+
+/**
+ * Validation callback for adding an event.
+ */
+function rules_ui_add_event_validate($form, $form_state) {
+  $handler = rules_get_event_handler($form_state['values']['event']);
+  $handler->extractFormValues($form['event_settings'], $form_state);
+  try {
+    $handler->validate();
+  }
+  catch (RulesIntegrityException $e) {
+    form_set_error(implode('][', $e->keys), $e->getMessage());
+  }
+}
+
+/**
+ * Submit callback that just adds the selected event.
+ *
+ * @see rules_admin_add_reaction_rule()
+ */
+function rules_ui_add_event_apply($form, &$form_state) {
+  $handler = rules_get_event_handler($form_state['values']['event']);
+  $handler->extractFormValues($form['event_settings'], $form_state);
+  $form_state['rules_config']->event($form_state['values']['event'], $handler->getSettings());
+}
+
+/**
+ * Form to remove an event from a rule.
  */
 function rules_ui_remove_event($form, &$form_state, $rules_config, $event, $base_path) {
   RulesPluginUI::$basePath = $base_path;
   $form_state += array('rules_config' => $rules_config, 'rules_event' => $event);
-  $events = rules_fetch_data('event_info');
-  $form_state['event_label'] = $events[$event]['label'];
+  $event_info = rules_get_event_info($event);
+  $form_state['event_label'] = $event_info['label'];
   $confirm_question = t('Are you sure you want to remove the event?');
   return confirm_form($form, $confirm_question, RulesPluginUI::path($rules_config->name), t('You are about to remove the event %event.', array('%event' => $form_state['event_label'])), t('Remove'), t('Cancel'));
 }
@@ -564,6 +620,7 @@ function rules_ui_import_form_submit($form, &$form_state) {
 
 /**
  * FAPI process callback for the data selection widget.
+ *
  * This finalises the auto completion callback path by appending the form build
  * id.
  */
@@ -623,12 +680,12 @@ function rules_ui_form_data_selection_auto_completion($parameter, $form_build_id
   drupal_json_output($matches);
 }
 
-
 /**
- * FAPI validation of an integer element. Copy of the private function
- * _element_validate_integer().
+ * FAPI validation of an integer element.
+ *
+ * Copy of the core Drupal private function _element_validate_integer().
  */
-function rules_ui_element_integer_validate($element, &$form_state) {;
+function rules_ui_element_integer_validate($element, &$form_state) {
   $value = $element['#value'];
   if (isset($value) && $value !== '' && (!is_numeric($value) || intval($value) != $value)) {
     form_error($element, t('%name must be an integer value.', array('%name' => isset($element['#title']) ? $element['#title'] : t('Element'))));
@@ -636,8 +693,9 @@ function rules_ui_element_integer_validate($element, &$form_state) {;
 }
 
 /**
- * FAPI validation of a decimal element. Improved version of the private
- * function _element_validate_number().
+ * FAPI validation of a decimal element.
+ *
+ * Improved version of the private function _element_validate_number().
  */
 function rules_ui_element_decimal_validate($element, &$form_state) {
   // Substitute the decimal separator ",".
@@ -651,9 +709,21 @@ function rules_ui_element_decimal_validate($element, &$form_state) {
 }
 
 /**
- * FAPI validation of a date element. Makes sure the specified date format is
- * correct and converts date values specifiy a fixed (= non relative) date to
- * a timestamp. Relative dates are handled by the date input evaluator.
+ * FAPI callback to validate an IP address.
+ */
+function rules_ui_element_ip_address_validate($element, &$form_state) {
+  $value = $element['#value'];
+  if ($value != '' && !filter_var($value, FILTER_VALIDATE_IP)) {
+    form_error($element, t('%name is not a valid IP address.', array('%name' => $element['#title'])));
+  }
+}
+
+/**
+ * FAPI validation of a date element.
+ *
+ * Makes sure the specified date format is correct and converts date values
+ * specify a fixed (= non relative) date to a timestamp. Relative dates are
+ * handled by the date input evaluator.
  */
 function rules_ui_element_date_validate($element, &$form_state) {
   $value = $element['#value'];
@@ -722,8 +792,9 @@ function rules_ui_element_duration_multipliers() {
 }
 
 /**
- * Helper function to determine the value for a rules duration form
- * element.
+ * Helper function a rules duration form element.
+ *
+ * Determines the value for a rules duration form element.
  */
 function rules_ui_element_duration_value($element, $input = FALSE) {
   // This runs before child elements are processed, so we cannot calculate the
@@ -737,6 +808,7 @@ function rules_ui_element_duration_value($element, $input = FALSE) {
 
 /**
  * FAPI after build callback for the duration parameter type form.
+ *
  * Fixes up the form value by applying the multiplier.
  */
 function rules_ui_element_duration_after_build($element, &$form_state) {
@@ -765,7 +837,6 @@ function rules_ui_element_fix_empty_after_build($element, &$form_state) {
   }
   return $element;
 }
-
 
 /**
  * FAPI after build callback for specifying a list of values.
@@ -833,6 +904,7 @@ function rules_ui_element_machine_name_validate($element, &$form_state) {
 
 /**
  * FAPI callback to validate the form for editing variable info.
+ *
  * @see RulesPluginUI::getVariableForm()
  */
 function rules_ui_element_variable_form_validate($elements, &$form_state) {

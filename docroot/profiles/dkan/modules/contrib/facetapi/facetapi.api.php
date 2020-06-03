@@ -246,6 +246,27 @@ function hook_facetapi_facet_info_alter(array &$facet_info, array $searcher_info
 }
 
 /**
+ * Allows for alterations of the facets on the fly, without caching.
+ *
+ * @param array &$enabled_facets
+ *   The return facets, which enabled for current search.
+ * @param $searcher
+ *   The machine readable name of the searcher.
+ * @param $realm_name
+ *   The machine readable name of the realm.
+ */
+function hook_facetapi_enabled_facets_alter(array &$enabled_facets, $searcher, $realm_name) {
+  if ($searcher == 'something') {
+    // Put facet1 to the end.
+    if (!empty($enabled_facets['facet1'])) {
+      $facet1 = $enabled_facets['facet1'];
+      unset($enabled_facets['facet1']);
+      $enabled_facets['facet1'] = $facet1;
+    }
+  }
+}
+
+/**
  * Define all facets sorting algorithms provided by the module.
  *
  * Sorts are applied in the FacetapiWidget::sortFacet() method which is called
@@ -257,6 +278,9 @@ function hook_facetapi_facet_info_alter(array &$facet_info, array $searcher_info
  *   - title: The human readable name of the sort displayed in the admin UI.
  *   - callback: The uasort() callback the render array is passed to.
  *   - description: The description of the sort displayed in the admin UI.
+ *   - requirements: An array of requirements that must pass in order for this
+ *       sort to be displayed. Requirements are associative arrays keyed by
+ *       function to requirement options. Optional.
  *   - weight: (optional) The default weight of the sort specifying its
  *     default processing order. Defaults to 0.
  *
@@ -269,6 +293,8 @@ function hook_facetapi_sort_info() {
   $sorts['active'] = array(
     'label' => t('Facet active'),
     'callback' => 'facetapi_sort_active',
+    // @see: facetapi_get_available_sorts().
+    'requirements' => array('facetapi_sort_active_requirements' => TRUE),
     'description' => t('Sort by whether the facet is active or not.'),
     'weight' => -50,
   );
@@ -490,7 +516,7 @@ function hook_facetapi_force_delta_mapping() {
     'my_searcher' => array(
       // The realm we are mapping, usually block.
       'block' => array(
-        // Machine readable names of facets whose mappping are being forced.
+        // Machine readable names of facets whose mapping are being forced.
         // Regardless of whether they are enabled via the Facet API interface,
         // their blocks will be available to enable and position via
         // admin/structure/block.
@@ -499,6 +525,20 @@ function hook_facetapi_force_delta_mapping() {
       ),
     ),
   );
+}
+
+/**
+ * Alters the hash that is generated for block deltas.
+ *
+ * @param type &$hash
+ *   The delta hash.
+ * @param type $delta
+ *   The block's delta.
+ *
+ * @see https://www.drupal.org/node/1828396
+ */
+function hook_facetapi_hash_alter(&$hash, $delta) {
+  $hash = drupal_html_class($hash);
 }
 
 /**

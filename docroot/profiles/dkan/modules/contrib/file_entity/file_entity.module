@@ -388,6 +388,24 @@ function file_entity_menu() {
     }
   }
 
+  // Devel generate integration.
+  if (module_exists('devel_generate')) {
+    $items['admin/config/development/generate/file'] = array(
+      'title' => 'Generate files',
+      'description' => 'Generate a given number of files. Optionally delete current files.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('file_entity_generate_file_form'),
+      'access arguments' => array('administer files'),
+      'file' => 'file_entity.devel_generate.inc',
+    );
+    $items['admin/content/file/generate'] = $items['admin/config/development/generate/file'];
+    $items['admin/content/file/generate']['type'] = MENU_LOCAL_ACTION;
+    $items['file/add/generate'] = $items['admin/config/development/generate/file'];
+    $items['file/add/generate']['title'] = 'Generate';
+    $items['file/add/generate']['type'] = MENU_LOCAL_TASK;
+    $items['file/add/generate']['weight'] = 50;
+  }
+
   return $items;
 }
 
@@ -876,6 +894,10 @@ function file_entity_theme() {
       'variables' => array(
         'files' => array(),
         'controls' => TRUE,
+        'controls_list' => array(
+          'download' => 'download',
+          'remote_playback' => 'remote_playback',
+        ),
         'autoplay' => FALSE,
         'loop' => FALSE,
         'preload' => NULL,
@@ -886,7 +908,13 @@ function file_entity_theme() {
       'variables' => array(
         'files' => array(),
         'controls' => TRUE,
+        'controls_list' => array(
+          'fullscreen' => 'fullscreen',
+          'download' => 'download',
+          'remote_playback' => 'remote_playback',
+        ),
         'autoplay' => FALSE,
+        'playsinline' => FALSE,
         'loop' => FALSE,
         'muted' => FALSE,
         'width' => NULL,
@@ -950,6 +978,7 @@ function file_entity_entity_info_alter(&$entity_info) {
         'path' => 'admin/structure/file-types/manage/%file_type',
         'real path' => 'admin/structure/file-types/manage/' . $type->type,
         'bundle argument' => 4,
+        'access arguments' => array('administer file types'),
       ),
     );
   }
@@ -1122,8 +1151,8 @@ function file_entity_file_formatter_info() {
       'label' => t('Image'),
       'default settings' => array(
         'image_style' => '',
-        'alt' => '[file:field_file_image_alt_text]',
-        'title' => '[file:field_file_image_title_text]'
+        'alt' => '[file:field-file-image-alt-text]',
+        'title' => '[file:field-file-image-title-text]'
       ),
       'view callback' => 'file_entity_file_formatter_file_image_view',
       'settings callback' => 'file_entity_file_formatter_file_image_settings',
@@ -1203,7 +1232,7 @@ function file_entity_file_formatter_file_field_settings($form, &$form_state, $se
     // Invoke hook_field_formatter_settings_form(). We are reusing field
     // formatter functions, but we are not working with a Field API field, so
     // set $field accordingly. Unfortunately, the API is for $settings to be
-    // transfered via the $instance parameter, so we must mock it.
+    // transferred via the $instance parameter, so we must mock it.
     if (isset($field_formatter_info['module']) && ($function = ($field_formatter_info['module'] . '_field_formatter_settings_form')) && function_exists($function)) {
       $field = NULL;
       $mock_instance = array(
@@ -1219,6 +1248,86 @@ function file_entity_file_formatter_file_field_settings($form, &$form_state, $se
       return $function($field, $mock_instance, $view_mode, $form, $form_state);
     }
   }
+}
+
+/**
+ * Replace file entity title text.
+ *
+ * @param $file
+ *   The file entity.
+ * @param $replace_options
+ *   (Optional) Options to pass to token_replace().
+ * @param $title
+ *   (Optional) The title text to use.
+ * @param string $langcode
+ *   (Optional) Language code
+ *
+ * @return string
+ *   Returns the replaced title text.
+ */
+function file_entity_replace_title($file, $replace_options = [], $title = NULL, $langcode = NULL) {
+  $replace_options += [
+    'clear' => TRUE,
+    'sanitize' => FALSE,
+  ];
+
+  $title_default = '[file:field_file_image_title_text]';
+  if (!isset($title)) {
+    $title = variable_get('file_entity_title', $title_default);
+  }
+  // If the defaults are not changed then inlining replacement is much faster
+  // than dealing with the token system.
+  if ($title === $title_default) {
+    $title_items = field_get_items('file', $file, 'field_file_image_title_text', $langcode);
+    return $title_items ? $title_items[0]['value'] : '';
+  }
+  elseif (!empty($title)) {
+    $token_replaced = token_replace($title, ['file' => $file], $replace_options);
+    return decode_entities($token_replaced); // Filter out possible XSS.
+  }
+
+  return '';
+}
+
+/**
+ * Replace file entity alt.
+ *
+ * @param $file
+ *   The file entity.
+ * @param array $replace_options
+ *   (Optional) Options to pass to token_replace().
+ * @param $alt
+ *   (Optional) The alt text to use.
+ * @param string $langcode
+ *   (Optional) Language code
+ *
+ * @return string
+ *   Returns the replaced alt text.
+ */
+function file_entity_replace_alt($file, $replace_options = [], $alt = NULL, $langcode = NULL) {
+  $replace_options += [
+    'clear' => TRUE,
+    'sanitize' => FALSE,
+  ];
+
+  $alt_default = '[file:field_file_image_alt_text]';
+
+  if (!isset($alt)) {
+    $alt = variable_get('file_entity_alt', $alt_default);
+  }
+
+  // If the defaults are not changed then inlining replacement is much faster
+  // than dealing with the token system.
+  if ($alt === $alt_default) {
+    $alt_items = field_get_items('file', $file, 'field_file_image_alt_text', $langcode);
+    return $alt_items ? $alt_items[0]['value'] : '';
+  }
+  elseif (!empty($alt)) {
+    $token_replaced = token_replace($alt, ['file' => $file], $replace_options);
+    return decode_entities($token_replaced); // Filter out possible XSS.
+  }
+
+  return '';
 }
 
 /**
@@ -1261,8 +1370,8 @@ function file_entity_file_formatter_file_image_view($file, $display, $langcode) 
         '#path' => $file->uri,
         '#width' => isset($file->override['attributes']['width']) ? $file->override['attributes']['width'] : $file->metadata['width'],
         '#height' => isset($file->override['attributes']['height']) ? $file->override['attributes']['height'] : $file->metadata['height'],
-        '#alt' => token_replace($display['settings']['alt'], array('file' => $file), $replace_options),
-        '#title' => token_replace($display['settings']['title'], array('file' => $file), $replace_options),
+        '#alt' => file_entity_replace_alt($file, $replace_options, $display['settings']['alt'], $langcode),
+        '#title' => file_entity_replace_title($file, $replace_options, $display['settings']['title'], $langcode),
       );
     }
     else {
@@ -1271,8 +1380,8 @@ function file_entity_file_formatter_file_image_view($file, $display, $langcode) 
         '#path' => $file->uri,
         '#width' => isset($file->override['attributes']['width']) ? $file->override['attributes']['width'] : $file->metadata['width'],
         '#height' => isset($file->override['attributes']['height']) ? $file->override['attributes']['height'] : $file->metadata['height'],
-        '#alt' => token_replace($display['settings']['alt'], array('file' => $file), $replace_options),
-        '#title' => token_replace($display['settings']['title'], array('file' => $file), $replace_options),
+        '#alt' => file_entity_replace_alt($file, $replace_options, $display['settings']['alt'], $langcode),
+        '#title' => file_entity_replace_title($file, $replace_options, $display['settings']['title'], $langcode),
       );
     }
     return $element;
@@ -1658,7 +1767,19 @@ function file_entity_access($op, $file = NULL, $account = NULL) {
 
   // $file may be either an object or a file type. Since file types cannot be
   // an integer, use either fid or type as the static cache id.
-  $cache_id = is_object($file) ? $file->fid : $file;
+  $cache_id = NULL;
+  if (is_object($file) && !empty($file->fid)) {
+    $cache_id = $file->fid;
+  }
+  elseif ($op == 'create' && is_string($file)) {
+    $cache_id = $file;
+  }
+  elseif ($op == 'create' && is_object($file) && !empty($file->type)) {
+    $cache_id = $file->type;
+  }
+  else {
+    $cache_id = drupal_hash_base64(serialize($file));
+  }
 
   // If we've already checked access for this file, user and op, return from
   // cache.
@@ -1700,11 +1821,11 @@ function file_entity_access($op, $file = NULL, $account = NULL) {
         return $rights[$account->uid][$cache_id][$op] = TRUE;
       }
     }
-    elseif ($file->uid == $account->uid && user_access('view own files', $account)) {
+    elseif ($file->status == FILE_STATUS_PERMANENT && $file->uid == $account->uid && user_access('view own files', $account)) {
       // For non-private files, allow to see if user owns the file.
       return $rights[$account->uid][$cache_id][$op] = TRUE;
     }
-    elseif (user_access('view files', $account)) {
+    elseif ($file->status == FILE_STATUS_PERMANENT && user_access('view files', $account)) {
       // For non-private files, users can view if they have the 'view files'
       // permission.
       return $rights[$account->uid][$cache_id][$op] = TRUE;
@@ -1718,15 +1839,18 @@ function file_entity_access($op, $file = NULL, $account = NULL) {
  * Implements hook_file_entity_access().
  */
 function file_entity_file_entity_access($op, $file, $account) {
-  // If the file URI is invalid, deny access.
-  if (is_object($file) && !file_valid_uri($file->uri)) {
-    return FILE_ENTITY_ACCESS_DENY;
-  }
-
+  // If the op is "create," all that's needed is to check the create permission.
   if ($op == 'create') {
     if (user_access('create files')) {
       return FILE_ENTITY_ACCESS_ALLOW;
     }
+  }
+  // If the file URI is invalid, deny access.
+  if (is_object($file) && isset($file->uri) && !file_valid_uri($file->uri)) {
+    if(isset($file->is_new) && $file->is_new == true && user_access('create files')) {
+      return FILE_ENTITY_ACCESS_ALLOW;
+    }
+    return FILE_ENTITY_ACCESS_DENY;
   }
 
   if (!empty($file)) {
@@ -1801,13 +1925,23 @@ function _file_entity_query_file_entity_access_alter($query, $type) {
     return;
   }
 
+  // A conflict with og_query_og_membership_alter() causes a fatal error
+  // if both hooks alter the query.
+  if (module_exists('og') && $query->hasTag('og_membership')) {
+    foreach($query->getMetaData('entity_field_query')->fields as $field) {
+      if (og_is_group_audience_field($field['field_name'])) {
+        return;
+      }
+    }
+  }
+
   $tables = $query->getTables();
   $base_table = $query->getMetaData('base_table');
   // If no base table is specified explicitly, search for one.
   if (!$base_table) {
     $fallback = '';
     foreach ($tables as $alias => $table_info) {
-      if (!($table_info instanceof SelectQueryInterface)) {
+      if (!($table_info instanceof SelectQueryInterface || $table_info['table'] instanceof SelectQueryInterface)) {
         $table = $table_info['table'];
         // If the file_managed table is in the query, it wins immediately.
         if ($table == 'file_managed') {
@@ -2083,7 +2217,9 @@ function file_entity_file_default_types() {
     'label' => t('Document'),
     'description' => t('A <em>Document</em> file is written information.'),
     'mimetypes' => array(
+      'text/html',
       'text/plain',
+      'application/acad',
       'application/msword',
       'application/vnd.ms-excel',
       'application/pdf',
@@ -2094,6 +2230,10 @@ function file_entity_file_default_types() {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/zip',
+      'application/x-7z-compressed',
+      'application/x-tar',
+      'application/gzip',
     ),
   );
 
@@ -2272,6 +2412,11 @@ function pathauto_file_update_alias(stdClass $file, $op, array $options = array(
 
   // Skip processing if the file has no pattern.
   if (!pathauto_pattern_load_by_entity('file', $file->type, $options['language'])) {
+    return;
+  }
+
+  // Skip processing if pathauto_entity module is enabled.
+  if (module_exists('pathauto_entity')) {
     return;
   }
 
@@ -2460,6 +2605,9 @@ function file_entity_download_uri($file) {
 }
 
 function file_entity_file_get_mimetype_type($file) {
+  if (is_array($file)) {
+    $file = (object) $file;
+  }
   list($type, $subtype) = explode('/', $file->filemime, 2);
   return $type;
 }
@@ -2571,4 +2719,25 @@ function file_entity_get_public_and_private_stream_wrapper_names($flag = STREAM_
     }
   }
   return $wrappers;
+}
+
+/**
+ * Implements hook_features_pipe_alter() for the file type component.
+ */
+function file_entity_features_pipe_file_type_alter(&$pipe, $data, $export) {
+  foreach ($data as $file_type) {
+    $pipe['variable'][] = "pathauto_file_{$file_type}_pattern";
+  }
+}
+
+/**
+ * Implements hook_FORM_ID_alter().
+ */
+function file_entity_form_system_performance_settings_alter(&$form, &$form_state) {
+  $form['bandwidth_optimization']['file_entity_total_count_optimization'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Optimize the calculation of the total usage count of files in the files overview.'),
+    '#default_value' => variable_get('file_entity_total_count_optimization', FALSE),
+    '#description' => t('Recommended if the files admin page loads too slowly due to a high number of files.'),
+  );
 }

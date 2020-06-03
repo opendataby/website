@@ -5,10 +5,15 @@
  * Link base test file - contains common functions for testing links.
  */
 
+/**
+ * Base Test Class.
+ */
 class LinkBaseTestClass extends DrupalWebTestCase {
+
   protected $permissions = array(
     'access content',
     'administer content types',
+    'administer fields',
     'administer nodes',
     'administer filters',
     'access comments',
@@ -17,17 +22,21 @@ class LinkBaseTestClass extends DrupalWebTestCase {
     'create page content',
   );
 
-  function setUp() {
-    $modules = func_get_args();
-    $modules = (isset($modules[0]) && is_array($modules[0]) ? $modules[0] : $modules);
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(array $modules = array()) {
     $modules[] = 'field_ui';
     $modules[] = 'link';
     parent::setUp($modules);
-    
+
     $this->web_user = $this->drupalCreateUser($this->permissions);
     $this->drupalLogin($this->web_user);
   }
 
+  /**
+   * Create Link Field.
+   */
   protected function createLinkField($node_type = 'page', $settings = array()) {
     $name = strtolower($this->randomName());
     $edit = array(
@@ -36,8 +45,8 @@ class LinkBaseTestClass extends DrupalWebTestCase {
       'fields[_add_new_field][type]' => 'link_field',
       'fields[_add_new_field][widget_type]' => 'link_field',
     );
-    $field_name = 'field_'. $name;
-    $this->drupalPost('admin/structure/types/manage/'. $node_type .'/fields', $edit, t('Save'));
+    $field_name = 'field_' . $name;
+    $this->drupalPost('admin/structure/types/manage/' . $node_type . '/fields', $edit, t('Save'));
     $this->drupalPost(NULL, array(), t('Save field settings'));
     $this->drupalPost(NULL, $settings, t('Save settings'));
 
@@ -48,4 +57,5 @@ class LinkBaseTestClass extends DrupalWebTestCase {
 
     return $field_name;
   }
+
 }

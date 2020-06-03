@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Contains the UI controller for Rules.
+ * @file
+ * Contains the UI controller for Rules.
  */
 
 /**
@@ -35,8 +36,8 @@ class RulesUIController {
     );
     $items[$base_path . '/manage/%rules_config/add/%rules_element'] = array(
       // Adding another part to the path would hit the menu path-part-limit
-      // for base paths like admin/config/workflow/rules. Therefor we have to
-      // use this fugly way for setting the title.
+      // for base paths like admin/config/workflow/rules. Therefore we have to
+      // use this ugly way for setting the title.
       'title callback' => 'rules_menu_add_element_title',
       // Wrap the integer in an array, so it is passed as is.
       'title arguments' => array(array($base_count + 4)),
@@ -52,7 +53,7 @@ class RulesUIController {
       'title callback' => 'rules_get_title',
       'title arguments' => array('Adding event to !plugin "!label"', $base_count + 1),
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('rules_ui_add_event', $base_count + 1, $base_path),
+      'page arguments' => array('rules_ui_add_event_page', $base_count + 1, $base_path),
       'access callback' => 'rules_config_access',
       'access arguments' => array('update', $base_count + 1),
       'load arguments' => array($base_count + 1),
@@ -60,7 +61,7 @@ class RulesUIController {
       'file path' => drupal_get_path('module', 'rules'),
     );
     $items[$base_path . '/manage/%rules_config/delete/event'] = array(
-      //@todo: improve title.
+      // @todo Improve title.
       'title' => 'Remove event',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('rules_ui_remove_event', $base_count + 1, $base_count + 4, $base_path),
@@ -157,8 +158,10 @@ class RulesUIController {
   }
 
   /**
-   * Generates the render array for a overview configuration table for arbitrary
-   * rule configs that match the given conditions.
+   * Generates the render array for an overview configuration table.
+   *
+   * Generates the render array for an overview configuration table for
+   * arbitrary rule configs that match the given conditions.
    *
    * Note: The generated overview table contains multiple links for editing the
    * rule configurations. For the links to properly work use
@@ -182,7 +185,7 @@ class RulesUIController {
    *     currently set RulesPluginUI::$basePath. If no base path has been set
    *     yet, the current path is used by default.
    *
-   * @return Array
+   * @return array
    *   A renderable array.
    */
   public function overviewTable($conditions = array(), $options = array()) {
@@ -192,10 +195,14 @@ class RulesUIController {
       'show events' => isset($conditions['plugin']) && $conditions['plugin'] == 'reaction rule',
       'show execution op' => !(isset($conditions['plugin']) && $conditions['plugin'] == 'reaction rule'),
     );
+    // By default show only configurations owned by rules.
+    $conditions += array(
+      'owner' => 'rules',
+    );
     if (!empty($options['base path'])) {
       RulesPluginUI::$basePath = $options['base path'];
     }
-    else if (!isset(RulesPluginUI::$basePath)) {
+    elseif (!isset(RulesPluginUI::$basePath)) {
       // Default to the current path, only if no path has been set yet.
       RulesPluginUI::$basePath = current_path();
     }
@@ -237,7 +244,7 @@ class RulesUIController {
     $table['#attributes']['class'][] = 'rules-overview-table';
     $table['#attached']['css'][] = drupal_get_path('module', 'rules') . '/ui/rules.ui.css';
 
-    // TODO: hide configs where access() is FALSE.
+    // @todo Hide configs where access() is FALSE.
     return $table;
   }
 
@@ -257,8 +264,8 @@ class RulesUIController {
       $events = array();
       if ($config instanceof RulesTriggerableInterface) {
         foreach ($config->events() as $event_name) {
-          $this->event_info += array($event_name => array('label' => t('Unknown event "!event_name"', array('!event_name' => $event_name))));
-          $events[] = check_plain($this->event_info[$event_name]['label']);
+          $event_handler = rules_get_event_handler($event_name, $config->getEventSettings($event_name));
+          $events[] = $event_handler->summary();
         }
       }
       $row[] = implode(", ", $events);
@@ -275,12 +282,16 @@ class RulesUIController {
 
     // Add operations depending on the options and the exportable status.
     if (!$config->hasStatus(ENTITY_FIXED)) {
-      $row[] =  l(t('edit'), RulesPluginUI::path($name), array('attributes' => array('class' => array('edit', 'action'))));
-      $row[] =  l(t('translate'), RulesPluginUI::path($name, 'translate'), array('attributes' => array('class' => array('translate', 'action'))));
+      $row[] = l(t('edit'), RulesPluginUI::path($name), array('attributes' => array('class' => array('edit', 'action'))));
+      if (module_exists('rules_i18n')) {
+        $row[] = l(t('translate'), RulesPluginUI::path($name, 'translate'), array('attributes' => array('class' => array('translate', 'action'))));
+      }
     }
     else {
       $row[] = '';
-      $row[] = '';
+      if (module_exists('rules_i18n')) {
+        $row[] = '';
+      }
     }
 
     if (!$options['hide status op']) {
@@ -313,4 +324,5 @@ class RulesUIController {
     $row[] = l(t('export'), RulesPluginUI::path($name, 'export'), array('attributes' => array('class' => array('export', 'action'))));
     return $row;
   }
+
 }

@@ -2,14 +2,22 @@
 
 /**
  * @file
- * This module provides a set of fields that can be used to store
- * tabular data with a node. The implementation uses a custom CCK widget.
+ * Provides a set of fields that can be used to store tabular data with a node.
+ *
+ * @todo Should we create a helper function for sanitization?
+ *   - We should see if it makes sense to sanitize on load as well as view.
  */
 
 /**
- * @todo should we create a helper function for sanitization?
- *  - we should see if it makes sense to sanitize on load as well as view
+ * Implements hook_help().
  */
+function tablefield_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#tablefield':
+      // Return a line-break version of the README.txt.
+      return _filter_autop(file_get_contents(dirname(__FILE__) . '/README.txt'));
+  }
+}
 
 /**
  * Implements hook_menu().
@@ -25,8 +33,8 @@ function tablefield_menu() {
     'admin/config/content/tablefield' => array(
       'page callback' => 'drupal_get_form',
       'page arguments' => array('tablefield_admin_settings_form'),
-      'title' => 'tablefield',
-      'description' => 'Global configuration for the tablefield module',
+      'title' => 'Tablefield',
+      'description' => 'Global configuration for the Tablefield module.',
       'access arguments' => array('configure tablefield'),
     ),
   );
@@ -51,19 +59,6 @@ function tablefield_admin_settings_form() {
 }
 
 /**
- * Validation hook for tablefield_admin_settings_form form.
- *
- * @param array $form
- * @param array $form_state
- */
-function tablefield_admin_settings_form_validate($form, &$form_state) {
-  if (drupal_strlen($form_state['values']['tablefield_csv_separator']) !== 1) {
-    $message = t('Separator must be one character only!');
-    form_set_error('tablefield_csv_separator', $message);
-  }
-}
-
-/**
  * Implements hook_permission().
  */
 function tablefield_permission() {
@@ -83,33 +78,39 @@ function tablefield_permission() {
 /**
  * Menu callback to export a table as a CSV.
  *
- * @param String $entity_type
- *  The type of entity, e.g. node.
- * @param String $entity_id
- *  The id of the entity.
- * @param String $field_name
- *  The machine name of the field to load.
- * @param String $langcode
- *  The language code specified.
- * @param String $delta
- *  The field delta to load.
+ * @param string $entity_type
+ *   The type of entity, e.g. node.
+ * @param string $entity_id
+ *   The id of the entity.
+ * @param string $field_name
+ *   The machine name of the field to load.
+ * @param string $langcode
+ *   The language code specified.
+ * @param string $delta
+ *   The field delta to load.
  */
 function tablefield_export_csv($entity_type, $entity_id, $field_name, $langcode, $delta) {
   $filename = sprintf('%s_%s_%s_%s_%s.csv', $entity_type, $entity_id, $field_name, $langcode, $delta);
   $uri = 'temporary://' . $filename;
 
-  // Attempt to load the entity.
-  $ids = array($entity_id);
-  $entity = entity_load($entity_type, $ids);
-  $entity = array_pop($entity);
+  // Load the entity.
+  $entities = entity_load($entity_type, array($entity_id));
+  if (empty($entities)) return MENU_NOT_FOUND;
+  $entity = reset($entities);
+
+  if (!_tablefield_entity_access('view', $entity_type, $entity) ||
+      !field_access('view', $field_info, $entity_type, $entity)) {
+    return MENU_ACCESS_DENIED;
+  }
 
   // Ensure that the data is available and that we can load a
   // temporary file to stream the data.
   if (isset($entity->{$field_name}[$langcode][$delta]['value']) && $fp = fopen($uri, 'w+')) {
-    $table = tablefield_rationalize_table(unserialize($entity->{$field_name}[$langcode][$delta]['value']));
-
+    $table = unserialize($entity->{$field_name}[$langcode][$delta]['value']);
     // Save the data as a CSV file.
-    foreach ($table as $row) {
+    foreach ($table['tabledata'] as $row) {
+      // Remove the weight column.
+      array_pop($row);
       fputcsv($fp, $row, variable_get('tablefield_csv_separator', ','));
     }
 
@@ -123,7 +124,7 @@ function tablefield_export_csv($entity_type, $entity_id, $field_name, $langcode,
     );
 
     // IE needs special headers.
-    if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
       $http_headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0';
       $http_headers['Pragma'] = 'public';
     }
@@ -139,6 +140,36 @@ function tablefield_export_csv($entity_type, $entity_id, $field_name, $langcode,
   drupal_add_http_header('Status', '500 Internal Server Error');
   print t('Error generating CSV.');
   drupal_exit();
+}
+
+/**
+ * Helper function: A sort-of copy of entity_access() from entity API.
+ * @todo Remove if entity_acess() ends up in core.
+ */
+function _tablefield_entity_access($op, $entity_type, $entity = NULL, $account = NULL) {
+  $info = entity_get_info($entity_type);
+  // Use entity API access callbacks if provided.
+  if (isset($info[$entity_type]['access callback'])) {
+    $access_callback = $info[$entity_type]['access callback'];
+    return $access_callback($op, $entity, $account, $entity_type);
+  }
+  // Fall back to core entity access callbacks if EntityAPI is not available.
+  elseif ($entity_type == 'node') {
+    return node_access($op, $entity, $account);
+  }
+  elseif ($entity_type == 'user') {
+    return user_view_access($entity);
+  }
+  elseif ($entity_type == 'taxonomy_term') {
+    if (user_access('administer taxonomy', $account)) {
+      return TRUE;
+    }
+    if (user_access('access content', $account)) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
 }
 
 /**
@@ -164,7 +195,39 @@ function tablefield_property_info_callback(&$info, $entity_type, $field, $instan
   $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$field['field_name']];
   $property['getter callback'] = 'entity_metadata_field_verbatim_get';
   $property['setter callback'] = 'entity_metadata_field_verbatim_set';
+  // Needed for Search API indexing.
+  $property['property info'] = tablefield_item_property_info();
   unset($property['query callback']);
+}
+
+/**
+ * Define metadata about item properties. Search API indexing addition.
+ */
+function tablefield_item_property_info() {
+
+  $properties['table_value'] = array(
+    'type' => 'text',
+    'label' => t('The value of the table.'),
+    'computed' => TRUE,
+    'getter callback' => 'tablefield_get_table_value',
+  );
+
+  return $properties;
+}
+
+/**
+ * Get the property just as it is set in the data. Search API indexing addition.
+ */
+function tablefield_get_table_value($data, array $options, $name, $type, $info) {
+  if (isset($data['tabledata'])) {
+    $data['value'] = '';
+
+    foreach ($data['tabledata'] as $rows) {
+      $data['value'] .= implode(" ", $rows) . " ";
+    }
+  }
+
+  return trim($data['value']);
 }
 
 /**
@@ -172,19 +235,14 @@ function tablefield_property_info_callback(&$info, $entity_type, $field, $instan
  */
 function tablefield_field_settings_form($field, $instance, $has_data) {
   $form = array();
-  $form['export'] = array(
-    '#type' => 'checkbox',
-    '#title' => 'Allow users to export table data as CSV',
-    '#default_value' => isset($field['settings']['export']) ? $field['settings']['export'] : FALSE,
-  );
   $form['restrict_rebuild'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Restrict rebuilding to users with the permission "rebuild tablefield"',
+    '#title' => t('Restrict rebuilding to users with the permission "rebuild tablefield"'),
     '#default_value' => isset($field['settings']['restrict_rebuild']) ? $field['settings']['restrict_rebuild'] : FALSE,
   );
   $form['lock_values'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Lock table field defaults from further edits during node add/edit.',
+    '#title' => t('Lock table header so default values cannot be changed.'),
     '#default_value' => isset($field['settings']['lock_values']) ? $field['settings']['lock_values'] : FALSE,
   );
   $form['cell_processing'] = array(
@@ -193,7 +251,7 @@ function tablefield_field_settings_form($field, $instance, $has_data) {
     '#default_value' => isset($field['settings']['cell_processing']) ? $field['settings']['cell_processing'] : 0,
     '#options' => array(
       t('Plain text'),
-      t('Filtered text (user selects input format)')
+      t('Filtered text (user selects input format)'),
     ),
   );
   $form['default_message'] = array(
@@ -205,6 +263,18 @@ function tablefield_field_settings_form($field, $instance, $has_data) {
 }
 
 /**
+ * Implements hook_field_prepare_view().
+ */
+function tablefield_field_prepare_view($entity_type, $entities, $field, $instances, $langcode, &$items) {
+  // Reset the array's internal pointer to the first element.
+  $instance = reset($instances);
+  foreach ($entities as $id => $entity) {
+    $entity_items = &$items[$id];
+    tablefield_field_presave($entity_type, $entity, $field, $instance, $langcode, $entity_items);
+  }
+}
+
+/**
  * Implements hook_field_presave().
  */
 function tablefield_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
@@ -212,14 +282,35 @@ function tablefield_field_presave($entity_type, $entity, $field, $instance, $lan
     if (empty($table['value'])) {
       $tablefield = array();
       if (!empty($table['tablefield'])) {
-        foreach ($table['tablefield'] as $key => $value) {
-          $tablefield[$key] = $value;
+        unset($tablefield['tablefield']);
+        // Sort by weight.
+        uasort($table['tablefield']['tabledata'], 'drupal_sort_weight');
+        // Put the data in the desired order before saving.
+        $row_counter = $col_counter = 0;
+        foreach ($table['tablefield']['tabledata'] as $row) {
+          foreach ($row as $key => $cell) {
+            if ($key === 'weight') {
+              $tablefield['tablefield']['tabledata']['row_' . $row_counter]['weight'] = $cell;
+            }
+            else {
+              $tablefield['tablefield']['tabledata']['row_' . $row_counter]['col_' . $col_counter] = $cell;
+            }
+            $col_counter++;
+          }
+          $row_counter++;
+          $col_counter = 0;
         }
+
+        // Clear the old table data and repopulate it with the new values.
+        unset($table['tablefield']['tabledata']);
+        $table['tablefield']['tabledata'] = $tablefield['tablefield']['tabledata'];
+        // Add the non-value data back in before we save.
+        $tablefield = array_merge($tablefield, $table);
       }
-      $items[$delta]['value'] = serialize($tablefield);
+      $items[$delta]['value'] = isset($tablefield['tablefield']) ? serialize($tablefield['tablefield']) : '';
     }
     elseif (empty($table['tablefield'])) {
-      // Batch processing only provides the 'value'
+      // Batch processing only provides the 'value'.
       $items[$delta]['tablefield'] = unserialize($items[$delta]['value']);
     }
   }
@@ -229,8 +320,7 @@ function tablefield_field_presave($entity_type, $entity, $field, $instance, $lan
  * Implements hook_field_validate().
  */
 function tablefield_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
-  drupal_add_css(drupal_get_path('module', 'tablefield') . '/tablefield.css');
-  // Catch empty form submissions for required tablefields
+  // Catch empty form submissions for required tablefields.
   if ($instance['required'] && isset($items[0]) && tablefield_field_is_empty($items[0], $field)) {
     $message = t('@field is a required field.', array('@field' => $instance['label']));
     $errors[$field['field_name']][$langcode][0]['tablefield'][] = array(
@@ -247,7 +337,6 @@ function tablefield_field_widget_error($element, $error, $form, &$form_state) {
   form_error($element['tablefield'], $error[0]['message']);
 }
 
-
 /**
  * Implements hook_field_load().
  */
@@ -255,14 +344,14 @@ function tablefield_field_load($entity_type, $entities, $field, $instances, $lan
   foreach ($entities as $id => $entity) {
     foreach ($items[$id] as $delta => $item) {
       if (isset($item['value'])) {
-        $items[$id][$delta]['tabledata'] = tablefield_rationalize_table(unserialize($item['value']));
+        $items[$id][$delta]['tabledata'] = unserialize($item['value']);
       }
     }
   }
 }
 
 /**
- * Implementation of hook_field_is_empty().
+ * Implements hook_field_is_empty().
  */
 function tablefield_field_is_empty($item, $field) {
   // @todo, is this the best way to mark the default value form?
@@ -279,13 +368,21 @@ function tablefield_field_is_empty($item, $field) {
     return FALSE;
   }
 
-  // Remove the preference fields to see if the table cells are all empty
+  $count_rows = $item['tablefield']['rebuild']['count_rows'];
+  // Remove the preference fields to see if the table cells are all empty.
+  unset($item['tablefield']['caption']);
   unset($item['tablefield']['rebuild']);
   unset($item['tablefield']['import']);
-  if (!empty($item['tablefield'])) {
-    foreach ($item['tablefield'] as $cell) {
-      if (!empty($cell)) {
-        return FALSE;
+  unset($item['tablefield']['paste']);
+  if (!empty($item['tablefield']['tabledata'])) {
+
+    for ($i = 0; $i < $count_rows; $i++) {
+      foreach ($item['tablefield']['tabledata']["row_{$i}"] as $key => $cell) {
+        // Keys denoting weight data and anything still iterateable should be
+        // ignored while checking for empty cell data.
+        if (strpos($key, 'weight') === FALSE && !is_array($cell) && !empty($cell)) {
+          return FALSE;
+        }
       }
     }
   }
@@ -294,15 +391,154 @@ function tablefield_field_is_empty($item, $field) {
 }
 
 /**
- * Implementation of hook_field_formatter_info().
+ * Implements hook_field_formatter_info().
  */
 function tablefield_field_formatter_info() {
   return array(
     'tablefield_default' => array(
-      'label' => t('Tabular View'),
+      'label' => t('Tabular view'),
       'field types' => array('tablefield'),
+      'settings' => array(
+        'sticky_header' => TRUE,
+        'hide_header' => FALSE,
+        'hide_empty_rows' => FALSE,
+        'hide_empty_cols' => FALSE,
+        'hide_cols_skip_head' => FALSE,
+        'trim_trailing_cols' => FALSE,
+        'trim_trailing_rows' => FALSE,
+        'export_csv' => FALSE,
+      ),
+    ),
+    'format_raw' => array(
+      'label' => t('Raw data (JSON)'),
+      'field types' => array('tablefield'),
+      'settings' => array(
+        'usearraykeys' => 'No',
+        'vertheader' => FALSE,
+        'tabledataonly' => FALSE,
+      ),
     ),
   );
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function tablefield_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $summary = array();
+  switch ($display['type']) {
+    case 'format_raw':
+      $summary[] = t('Use first row/column values as array keys (if not empty): %tr', array('%tr' => $settings['usearraykeys']));
+      $summary[] = t('Vertical header (first column instead of first row): %tr', array('%tr' => $settings['vertheader'] ? t('Yes') : t('No')));
+      $summary[] = t('Table data only (no caption): %tr', array('%tr' => ($settings['tabledataonly']) ? t('Yes') : t('No')));
+      break;
+
+    default:
+      $summary[] = t('Sticky header: %tr', array('%tr' => ($settings['sticky_header']) ? t('Yes') : t('No')));
+      $summary[] = t('Hide table header: %tr', array('%tr' => ($settings['hide_header']) ? t('Yes') : t('No')));
+      $summary[] = t('Hide empty columns ignoring column header: %tr', array('%tr' => ($settings['hide_cols_skip_head']) ? t('Yes') : t('No')));
+      $summary[] = t('Trim empty trailing rows: %tr', array('%tr' => ($settings['trim_trailing_rows']) ? t('Yes') : t('No')));
+      $summary[] = t('Trim empty trailing columns: %tr', array('%tr' => ($settings['trim_trailing_cols']) ? t('Yes') : t('No')));
+      $summary[] = t('Hide empty rows: %tr', array('%tr' => ($settings['hide_empty_rows']) ? t('Yes') : t('No')));
+      $summary[] = t('Hide empty columns: %tr', array('%tr' => ($settings['hide_empty_cols']) ? t('Yes') : t('No')));
+      $permission = l(t('permission'), 'admin/people/permissions', array(
+        'fragment' => 'module-tablefield',
+        'attributes' => array(
+          'title' => t('Manage user permissions'),
+        ),
+      ));
+      $summary[] = t('Show link to export table data as CSV depending on !permission: %tr', array('%tr' => ($settings['hide_cols_skip_head']) ? t('Yes') : t('No'), '!permission' => $permission));
+  }
+  return implode('<br />', $summary);;
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function tablefield_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $element = array();
+  switch ($display['type']) {
+    case 'format_raw':
+      $element['usearraykeys'] = array(
+        '#type' => 'select',
+        '#title' => t('Use first row/column values as array keys (if not empty)'),
+        '#options' => array(
+          'No' => t('No'),
+          'Header' => t('Header only'),
+          'Both' => t('Both first row and first column (two headers, horizontal and vertical)'),
+        ),
+        '#default_value' => $settings['usearraykeys'],
+      );
+      $element['vertheader'] = array(
+        '#title' => t('Vertical header (first column instead of first row)'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['vertheader'],
+      );
+      $element['tabledataonly'] = array(
+        '#title' => t('Table data only (no caption)'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['tabledataonly'],
+      );
+      break;
+
+    default:
+      $element['sticky_header'] = array(
+        '#title' => t('Sticky header'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['sticky_header'],
+      );
+      $element['hide_header'] = array(
+        '#title' => t('Hide table header row'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['hide_header'],
+      );
+      $element['hide_cols_skip_head'] = array(
+        '#title' => t('Hide empty columns ignoring column header'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['hide_cols_skip_head'],
+      );
+      $element['trim_trailing_cols'] = array(
+        '#title' => t('Trim empty trailing columns'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['trim_trailing_cols'],
+      );
+      $element['trim_trailing_rows'] = array(
+        '#title' => t('Trim empty trailing rows'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['trim_trailing_rows'],
+      );
+      $element['hide_empty_rows'] = array(
+        '#title' => t('Hide empty rows'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['hide_empty_rows'],
+      );
+      $element['hide_empty_cols'] = array(
+        '#title' => t('Hide empty columns'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['hide_empty_cols'],
+      );
+      $element['hide_cols_skip_head'] = array(
+        '#title' => t('Hide empty columns ignoring column header'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['hide_cols_skip_head'],
+      );
+      $permission = l(t('permission'), 'admin/people/permissions', array(
+        'fragment' => 'module-tablefield',
+        'attributes' => array(
+          'title' => t('Manage user permissions'),
+        ),
+      ));
+      $element['export_csv'] = array(
+        '#title' => t('Show link to export table data as CSV depending on !permission', array('!permission' => $permission)),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['export_csv'],
+      );
+  }
+  return $element;
 }
 
 /**
@@ -312,62 +548,215 @@ function tablefield_field_formatter_view($entity_type, $entity, $field, $instanc
   $element = array();
   $settings = $display['settings'];
   $formatter = $display['type'];
-
-  foreach ($items as $delta => $table) {
-
-    // Rationalize the stored data
-    if (!empty($table['tabledata'])) {
-      $tabledata = $table['tabledata'];
-    }
-    elseif (!empty($table['value'])) {
-      $tabledata = tablefield_rationalize_table(unserialize($table['value']));
-    }
-
-    // Run the table through input filters
-    if (isset($tabledata)) {
-      if (!empty($tabledata)) {
-        foreach ($tabledata as $row_key => $row) {
-          foreach ($row as $col_key => $cell) {
-            if (!empty($table['format'])) {
-              $tabledata[$row_key][$col_key] = array('data' => check_markup($cell, $table['format']), 'class' => array('row_' . $row_key, 'col_' . $col_key));
-            }
-            else {
-              $tabledata[$row_key][$col_key] = array('data' => check_plain($cell), 'class' => array('row_' . $row_key, 'col_' . $col_key));
+  $prettyprint = FALSE;
+  if (!empty($items)) {
+    $i = 0;
+    $len = count($items);
+    foreach ($items as $delta => $table) {
+      // If we are not on the last iteration of the loop use a separator.
+      $separator = ($i == $len - 1) ? '' : ',';
+      switch ($display['type']) {
+        case 'format_raw':
+          $value = unserialize($table['value']);
+          // Swap rows and columns if the header is vertical (first column).
+          if ($settings['vertheader']) {
+            $transposed = tablefield_transpose($value['tabledata']);
+            unset($value['tabledata']);
+            array_pop($transposed);
+            // Swap column and row key names.
+            foreach ($transposed as $colk => $colv) {
+              foreach ($colv as $rowk => $rowv) {
+                $value['tabledata'][str_replace('col_', 'row_', $colk)][str_replace('row_', 'col_', $rowk)] = $rowv;
+              }
+              // Add a 'weight' although the value is not relevant.
+              $value['tabledata'][str_replace('col_', 'row_', $colk)]['weight'] = 0;
             }
           }
-        }
-      }
+          // Remove unneeded data.
+          unset($value['rebuild']);
+          unset($value['import']);
+          unset($value['paste']);
+          if ($settings['usearraykeys'] === 'Header' || $settings['usearraykeys'] === 'Both') {
+            // Keep first row values (header) to use for array keys later.
+            $keys = $value['tabledata']['row_0'];
+            // If a header value is empty use the column key (col_#).
+            foreach ($keys as $key => $content) {
+              if (empty($content)) {
+                $keys[$key] = $key;
+              }
+            }
+            // Warning about columns with duplicate names being suppressed.
+            $unique = array_unique($keys);
+            $duplicates = array_diff_assoc($keys, $unique);
+            foreach ($duplicates as $duplicate) {
+              drupal_set_message(t('The column header "%key" appears multiple times in a table. In the JSON output only the last column with this key is used to avoid duplicate names.', array('%key' => $duplicate)), 'warning', FALSE);
+            }
+            unset($keys['weight']);
+            // Remove the first row (header).
+            unset($value['tabledata']['row_0']);
 
-      // Pull the header for theming
-      $header_data = array_shift($tabledata);
-
-      // Check for an empty header, if so we don't want to theme it.
-      $noheader = TRUE;
-      foreach ($header_data as $cell) {
-        if (strlen($cell['data']) > 0) {
-          $noheader = FALSE;
+            if ($settings['usearraykeys'] === 'Both') {
+              // Remove the first column from the keys.
+              unset($keys['col_0']);
+              // Make number of elements same as $row for array_combine later.
+              unset($keys['weight']);
+            }
+          }
+          foreach ($value['tabledata'] as $key => $row) {
+            unset($row['weight']);
+            if ($settings['usearraykeys'] === 'Header' || $settings['usearraykeys'] === 'Both') {
+              if ($settings['usearraykeys'] === 'Both') {
+                $row_ident = $row['col_0'];
+                // Clean up unneeded data.
+                unset($value['tabledata'][$key]);
+                unset($row['col_0']);
+                $row = array_combine($keys, $row);
+                // If the first column value is empty use the row key (row_#).
+                $row_id = empty($row_ident) ? $key : $row_ident;
+                // Warning about rows with duplicate names being suppressed.
+                if (isset($value['tabledata'][$row_id])) {
+                  drupal_set_message(t('The row header "%row_id" appears multiple times in a table. In the JSON output only the last row with this key is used to avoid duplicate names.', array('%row_id' => $row_id)), 'warning', FALSE);
+                }
+                $value['tabledata'][$row_id] = $row;
+                // Remove the old key from the data set if it was replaced.
+                if (!empty($row_ident)) {
+                  unset($value['tabledata'][$key]);
+                }
+              }
+              $unique = array_unique($keys);
+              $row = array_combine($unique, $row);
+            }
+            if ($settings['usearraykeys'] != 'Both') {
+              $value['tabledata'][$key] = $row;
+            }
+          }
+          // DEVELOPERS! Extra future data should be unset below (e.g. title).
+          if ($settings['tabledataonly']) {
+            unset($value['caption']);
+            $value = reset($value);
+          }
+          // Assign the markup showing pretty print on node pages.
+          if (menu_get_object()) {
+            $prettyprint = TRUE;
+            $element[$delta] = array(
+              '#markup' => str_replace(array("\r", "\n", "\t"), "<br />", check_plain(json_encode($value, JSON_PRETTY_PRINT))) . $separator,
+            );
+          }
+          // And raw on other pages.
+          else {
+            $element[$delta] = array(
+              '#markup' => check_plain(drupal_json_encode($value)) . $separator,
+            );
+          }
           break;
-        }
+
+        default:
+          // Check for table caption.
+          $raw = unserialize($table['value']);
+          $caption = isset($raw['caption']) ? check_plain($raw['caption']) : '';
+
+          // Rationalize the stored data.
+          if (!empty($table['tablefield'])) {
+            $tabledata = $table['tablefield'];
+          }
+          elseif (!empty($table['value'])) {
+            $tabledata = unserialize($table['value']);
+          }
+
+          // Run the table through input filters.
+          if (isset($tabledata['tabledata'])) {
+            if (!empty($tabledata['tabledata'])) {
+
+              if ($settings['trim_trailing_rows']) {
+                $tabledata['tabledata'] = tablefield_trim($tabledata['tabledata']);
+              }
+
+              if ($settings['trim_trailing_cols']) {
+                $tabledata['tabledata'] = tablefield_rtrim_cols($tabledata['tabledata']);
+              }
+
+              if ($settings['hide_empty_rows']) {
+                $tabledata['tabledata'] = tablefield_hide_rows($tabledata['tabledata']);
+              }
+
+              if ($settings['hide_empty_cols']) {
+                $tabledata['tabledata'] = tablefield_hide_cols($tabledata['tabledata']);
+              }
+
+              if ($settings['hide_cols_skip_head']) {
+                $tabledata['tabledata'] = tablefield_hide_cols($tabledata['tabledata'], TRUE);
+              }
+
+              foreach ($tabledata['tabledata'] as $row_key => $row) {
+                foreach ($row as $col_key => $cell) {
+                  if (!empty($table['format']) && $col_key !== 'weight') {
+                    $tabledata[$row_key][$col_key] = array(
+                      'data' => check_markup($cell, $table['format']),
+                      'class' => array($row_key, $col_key),
+                    );
+                  }
+                  elseif ($col_key !== 'weight') {
+                    $tabledata[$row_key][$col_key] = array(
+                      'data' => check_plain($cell),
+                      'class' => array($row_key, $col_key),
+                    );
+                  }
+                }
+              }
+            }
+
+            // Pull the header for theming.
+            unset($tabledata['caption']);
+            unset($tabledata['tabledata']);
+            unset($tabledata['rebuild']);
+            unset($tabledata['import']);
+            unset($tabledata['paste']);
+            $header_data = isset($tabledata['row_0']) ? $tabledata['row_0'] : NULL;
+
+            // Check for an empty header, if so we don't want to theme it.
+            $noheader = TRUE;
+            if (empty($settings['hide_header']) && $header_data) {
+              foreach ($header_data as $cell) {
+                if (strlen($cell['data']) > 0) {
+                  $noheader = FALSE;
+                  break;
+                }
+              }
+            }
+
+            $header = $noheader ? NULL : $header_data;
+            $entity_info = entity_get_info($entity_type);
+            $entity_id = !empty($entity_info['entity keys']['id']) ? $entity->{$entity_info['entity keys']['id']} : NULL;
+
+            // Remove the first row from the tabledata.
+            array_shift($tabledata);
+            // Theme the table for display.
+            $element[$delta] = array(
+              '#theme' => 'tablefield_view',
+              '#attributes' => array(
+                'id' => drupal_html_id('tablefield-' . $entity_type . '-' . $entity_id . '-' . $field['field_name'] . '-' . $delta),
+                'class' => array('tablefield'),
+              ),
+              '#caption' => $caption,
+              '#sticky' => isset($settings['sticky_header']) ? $settings['sticky_header'] : NULL,
+              '#header' => $header,
+              '#rows' => $tabledata,
+              '#delta' => $delta,
+              '#export' => isset($settings['export_csv']) ? $settings['export_csv'] : NULL,
+              '#entity_type' => $entity_type,
+              '#entity_id' => $entity_id,
+              '#field_name' => $field['field_name'],
+              '#langcode' => $langcode,
+              '#formatter' => $formatter,
+            );
+          }
       }
-
-      $header = $noheader ? NULL : $header_data;
-
-      $entity_info = entity_get_info($entity_type);
-      $entity_id = !empty($entity_info['entity keys']['id']) ? $entity->{$entity_info['entity keys']['id']} : NULL;
-
-      // Theme the table for display
-      $element[$delta]['#markup'] = theme('tablefield_view', array(
-        'header' => $header,
-        'rows' => $tabledata,
-        'delta' => $delta,
-        'export' => isset($field['settings']['export']) ? $field['settings']['export'] : NULL,
-        'entity_type' => $entity_type,
-        'entity_id' => $entity_id,
-        'field_name' => $field['field_name'],
-        'langcode' => $langcode,
-      ));
+      $i++;
     }
-
+  }
+  if ($prettyprint) {
+    $element['#prefix'] = '<pre>';
+    $element['#suffix'] = '</pre>';
   }
   return $element;
 }
@@ -392,17 +781,17 @@ function tablefield_field_widget_info() {
  * Implements hook_widget_form().
  */
 function tablefield_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
-  drupal_add_css(drupal_get_path('module', 'tablefield') . '/tablefield.css');
-
+  $form['#after_build'][] = 'tablefield_after_build';
+  $settings = isset($instance['display']['default']['settings']) ? $instance['display']['default']['settings'] : FALSE;
   $element['#type'] = 'tablefield';
   $form['#attributes']['enctype'] = 'multipart/form-data';
 
   /* Tablefield is sometimes embedded within another form by other modules, such
-  * as Field Collection. Because of that, we cannot rely on field_name and
-  * $delta to provide a unique ID for this element. Instead we use a
-  * concatenation of the field parents along with the current field name,
-  * language, delta and tablefield key.
-  */
+   * as Field Collection. Because of that, we cannot rely on field_name and
+   * $delta to provide a unique ID for this element. Instead we use a
+   * concatenation of the field parents along with the current field name,
+   * language, delta and tablefield key.
+   */
   $tablefield_parents = isset($element['#field_parents']) ? $element['#field_parents'] : array();
   array_push($tablefield_parents,
     $element['#field_name'],
@@ -413,59 +802,89 @@ function tablefield_field_widget_form(&$form, &$form_state, $field, $instance, $
   $id = drupal_clean_css_identifier(implode('-', $tablefield_parents));
 
   // IDs to use for various buttons/wrapper for this element. When processing
-  // an AJAX request, these IDs are used to build the fieldstack so we know
+  // an AJAX request, these IDs are used to build the field stack so we know
   // where the value we're adjusting is in the FormAPI array.
   $ajax_wrapper_id = "$id-wrapper";
   $rebuild_id = "$id-rebuild";
   $import_id = "$id-import";
+  $pasted_id = "$id-pasted";
 
-  // Establish a list of saved/submitted/default values
-  if (isset($form_state['clicked_button']['#value']) && $form_state['clicked_button']['#name'] == $rebuild_id) {
-    // Rebuilding table rows/cols
-    $tablefield_rebuild = drupal_array_get_nested_value($form_state['tablefield_rebuild'], $tablefield_parents);
-    $default_value = tablefield_rationalize_table($tablefield_rebuild);
-  }
-  elseif (isset($form_state['clicked_button']['#value']) && $form_state['clicked_button']['#name'] == $import_id) {
-    // Importing CSV data
-    tablefield_import_csv($form, $form_state, $langcode, $import_id, $tablefield_parents);
-    $default_value = tablefield_rationalize_table(drupal_array_get_nested_value($form_state['input'], $tablefield_parents));
-  }
-  elseif ($form_state['submitted'] && isset($items[$delta]) && isset($items[$delta]['tablefield']) && !isset($form_state['clicked_button']['#value'])) {
-    // A form was submitted
-    $default_value = tablefield_rationalize_table($items[$delta]['tablefield']);
-  }
-  elseif (isset($items[$delta]['value']) && !isset($form_state['clicked_button']['#value'])) {
-    // Default from database (saved node)
-    $default_value = tablefield_rationalize_table(unserialize($items[$delta]['value']));
-  }
-  else {
-    // After the first table, we don't want to populate the values in the table
-    if ($delta > 0) {
-      tablefield_delete_table_values($instance['default_value'][0]['tablefield']);
+  // Default table size.
+  $default_size['count_cols'] = isset($instance['default_value'][0]['tablefield']['rebuild']['count_cols']) ? $instance['default_value'][0]['tablefield']['rebuild']['count_cols'] : 5;
+  $default_size['count_rows'] = isset($instance['default_value'][0]['tablefield']['rebuild']['count_rows']) ? $instance['default_value'][0]['tablefield']['rebuild']['count_rows'] : 5;
+
+  // Default table cell values.
+  $default_value = NULL;
+
+  // If there's a triggering element get the values from form state.
+  if (isset($form_state['triggering_element'])) {
+    if ($form_state['triggering_element']['#name'] == $rebuild_id) {
+      // Rebuilding table rows/cols.
+      $default_value = drupal_array_get_nested_value($form_state['tablefield_rebuild'], $tablefield_parents);
+      drupal_set_message(t('Table structure rebuilt.'), 'status', FALSE);
     }
-
-    // Get the widget default value
-    $default_value = drupal_array_get_nested_value($form_state['input'], $tablefield_parents);
-    if (!empty($default_value)) {
-      // locked cells values do not end up in the input, so use instance defaults
-      if (!empty($field['settings']['lock_values'])) {
-        $default_value = tablefield_fill_locked_values($default_value, $instance['default_value'][0]['tablefield']);
+    elseif ($form_state['triggering_element']['#name'] == $import_id) {
+      // Importing CSV data.
+      tablefield_import_csv($form, $form_state, $langcode, $import_id, $tablefield_parents);
+      $default_value = drupal_array_get_nested_value($form_state['input'], $tablefield_parents);
+    }
+    elseif ($form_state['triggering_element']['#name'] == $pasted_id) {
+      // Importing pasted data.
+      tablefield_import_pasted($form, $form_state, $langcode, $pasted_id, $tablefield_parents);
+      $default_value = drupal_array_get_nested_value($form_state['input'], $tablefield_parents);
+      if (empty($default_value['rebuild'])) {
+        $default_value['rebuild'] = $default_size;
       }
-      $default_value = tablefield_rationalize_table($default_value);
     }
     else {
-      $default_value = tablefield_rationalize_table($instance['default_value'][0]['tablefield']);
+      // The triggering element is neither a rebuild nor an import
+      // e.g. a file upload.
+      $default_value = drupal_array_get_nested_value($form_state['input'], $tablefield_parents);
     }
-
-    $default_count_cols = isset($items[0]['tablefield']['rebuild']['count_cols']) ? $items[0]['tablefield']['rebuild']['count_cols'] : 5;
-    $default_count_rows = isset($items[0]['tablefield']['rebuild']['count_cols']) ? $items[0]['tablefield']['rebuild']['count_cols'] : 5;
   }
 
+  // If no values by now, get tablefield item value stored in database, if any.
+  if (!$default_value) {
+    // This could be set e.g. when using paragraphs module.
+    if (isset($items[$delta]['tablefield'])) {
+      $default_value = $items[$delta]['tablefield'];
+    }
+    elseif (isset($items[$delta]['value'])) {
+      $default_value = unserialize($items[$delta]['value']);
+    }
+    // If still nothing then get the instance default, but only for delta 0.
+    elseif ($delta === 0 && isset($instance['default_value'][0]['tablefield'])) {
+      $default_value = $instance['default_value'][0]['tablefield'];
+    }
+  }
+
+  if (empty($default_value['rebuild'])) {
+    $default_value['rebuild'] = $default_size;
+  }
+  else {
+    $default_size = $default_value['rebuild'];
+  }
+  $count_rows = $default_size['count_rows'];
+  $count_cols = $default_size['count_cols'];
+
+  // Now we can build the widget.
   if (!empty($instance['description'])) {
     $help_text = $instance['description'];
   }
   else {
-    $help_text = t('The first row will appear as the table header. Leave the first row blank if you do not need a header.');
+    if ($settings) {
+      $display_settings = l(t('default display settings'), 'admin/structure/types/manage/' . $element['#bundle'] . '/display', array(
+        'attributes' => array(
+          'title' => t('Manage display settings'),
+        ),
+      ));
+      if ($settings['hide_header'] == TRUE) {
+        $help_text = t('This table will not have a header according to the !display_settings.', array('!display_settings' => $display_settings));
+      }
+      else {
+        $help_text = t('The first row will appear as the table header. Leave the first row blank if you do not need a header.');
+      }
+    }
   }
 
   $element['tablefield'] = array(
@@ -473,104 +892,125 @@ function tablefield_field_widget_form(&$form, &$form_state, $field, $instance, $
     '#description' => filter_xss_admin($help_text),
     '#attributes' => array(
       'id' => $id,
-      'class' => array('form-tablefield')
+      'class' => array('form-tablefield'),
     ),
     '#type' => 'fieldset',
     '#tree' => TRUE,
     '#collapsible' => FALSE,
-    '#prefix' => '<div id="'. $ajax_wrapper_id .'">',
+    '#prefix' => '<div id="' . $ajax_wrapper_id . '">',
     '#suffix' => '</div>',
   );
+  if ($settings) {
+    if ($settings['hide_header']) {
+      $element['tablefield']['#attributes']['class'][] = 'table-no-headers';
+    }
+  }
 
-  // Give the fieldset the appropriate class if it is required
+  // Give the fieldset the appropriate class if it is required.
   if ($element['#required']) {
-    $element['tablefield']['#title'] .= ' <span class="form-required" title="' . t('This field is required') . '">*</span>';
+    $element['tablefield']['#title'] .= ' <span class="form-required" title="';
+    $element['tablefield']['#title'] .= t('This field is required');
+    $element['tablefield']['#title'] .= '">*</span>';
   }
 
   $arg0 = arg(0);
   if ($arg0 == 'admin') {
-    $element['tablefield']['#description'] = t('This form defines the table field defaults, but the number of rows/columns and content can be overridden on a per-node basis. The first row will appear as the table header. Leave the first row blank if you do not need a header.');
-  }
-
-  // Determine how many rows/columns are saved in the data
-  if (!empty($default_value)) {
-    $count_rows = count($default_value);
-    $count_cols = 0;
-    foreach ($default_value as $row) {
-      $temp_count = count($row);
-      if ($temp_count > $count_cols) {
-        $count_cols = $temp_count;
+    $element['tablefield']['#description'] = t('This form defines the table field defaults, but the number of rows/columns and content can be overridden.');
+    if ($settings) {
+      if (!$settings['hide_header']) {
+        $element['tablefield']['#description'] .= ' ' . t('The first row will appear as the table header. Leave the first row blank if you do not need a header.');
       }
     }
   }
-  else {
-    $count_cols = isset($default_count_cols) ? $default_count_cols : 0;
-    $count_rows = isset($default_count_rows) ? $default_count_rows : 0;
-  }
 
-  // Override the number of rows/columns if the user rebuilds the form.
-  // $tablefield_rebuild variable was set above
-  if (isset($form_state['clicked_button']['#value']) && $form_state['clicked_button']['#name'] == $rebuild_id) {
-    $count_cols = $tablefield_rebuild['rebuild']['count_cols'];
-    $count_rows = $tablefield_rebuild['rebuild']['count_rows'];
-    drupal_set_message(t('Table structure rebuilt.'), 'status', FALSE);
-  }
-
-  // Render the form table
-  $element['tablefield']['a_break'] = array(
-    '#markup' => '<table>',
+  // Render the form table.
+  $element['tablefield']['tabledata']['a_break'] = array(
+    '#markup' => '<table id="tablefield-editor">',
   );
+
+  $default_value = isset($default_value['tabledata']) ? $default_value['tabledata'] : $default_value;
+  // Loop over all the rows.
   for ($i = 0; $i < $count_rows; $i++) {
     $zebra = $i % 2 == 0 ? 'even' : 'odd';
-    $element['tablefield']['b_break' . $i] = array(
-      '#markup' => '<tr class="tablefield-row-' . $i . ' ' . $zebra . '">',
+    $element['tablefield']['tabledata']['b_break' . $i] = array(
+      '#markup' => '<tr class="draggable tablefield-row-' . $i . ' ' . $zebra . '"><td class="tablefield-row-count">' . ($i + 1) . '</td>',
     );
+
+    // Loop over all the columns.
     for ($ii = 0; $ii < $count_cols; $ii++) {
-      $instance_default = isset($instance['default_value'][$delta]['tablefield']["cell_{$i}_{$ii}"]) ? $instance['default_value'][$delta]['tablefield']["cell_{$i}_{$ii}"] : array();
+      $instance_default = isset($instance['default_value'][0]['tablefield']['tabledata']["row_{$i}"]["col_{$ii}"]) ? $instance['default_value'][0]['tablefield']['tabledata']["row_{$i}"]["col_{$ii}"] : array();
       if (!empty($instance_default) && !empty($field['settings']['lock_values']) && $arg0 != 'admin') {
         // The value still needs to be send on every load in order for the
         // table to be saved correctly.
-        $element['tablefield']['cell_' . $i . '_' . $ii] = array(
+        $element['tablefield']['tabledata']['row_' . $i]['col_' . $ii] = array(
           '#type' => 'value',
           '#value' => $instance_default,
         );
         // Display the default value, since it's not editable.
-        $element['tablefield']['cell_' . $i . '_' . $ii . '_display'] = array(
+        $element['tablefield']['tabledata']['row_' . $i]['col_' . $ii . '_display'] = array(
           '#type' => 'item',
           '#title' => $instance_default,
-          '#prefix' => '<td style="width:' . floor(100/$count_cols) . '%">',
+          '#prefix' => '<td>',
           '#suffix' => '</td>',
         );
       }
       else {
-        $cell_default = isset($default_value[$i][$ii]) ? $default_value[$i][$ii] : '';
-        $element['tablefield']['cell_' . $i . '_' . $ii] = array(
+        $cell_default = isset($default_value['row_' . $i]['col_' . $ii]) ? $default_value['row_' . $i]['col_' . $ii] : '';
+        $element['tablefield']['tabledata']['row_' . $i]['col_' . $ii] = array(
           '#type' => 'textfield',
           '#maxlength' => 2048,
           '#size' => 0,
           '#attributes' => array(
-            'id' => $id .'-cell-' . $i . '-' . $ii,
+            'id' => $id . '-cell-' . $i . '-' . $ii,
             'class' => array('tablefield-row-' . $i, 'tablefield-col-' . $ii),
-            'style' => 'width:100%'
+            'style' => 'min-width: 100%',
           ),
-          '#default_value' => (empty($field_value)) ? $cell_default : $field_value,
-          '#prefix' => '<td style="width:' . floor(100/$count_cols) . '%">',
+          '#default_value' => $cell_default,
+          '#prefix' => '<td>',
           '#suffix' => '</td>',
         );
       }
     }
+
+    // Add an extra column for the weight.
+    $row_weight_default = isset($default_value[$i]['weight']) ? $default_value[$i]['weight'] : ($i + 1);
+    $element['tablefield']['tabledata']['row_' . $i]['weight'] = array(
+      '#type' => 'weight',
+      '#title' => t('Weight'),
+      '#default_value' => $row_weight_default,
+      '#delta' => $count_rows,
+      '#attributes' => array('class' => array('tablefield-weight')),
+      '#prefix' => '<td class="tabledrag-hide">',
+      '#suffix' => '</td>',
+    );
+
     $element['tablefield']['c_break' . $i] = array(
       '#markup' => '</tr>',
     );
   }
+
   $element['tablefield']['t_break' . $i] = array(
     '#markup' => '</table>',
   );
 
+  // Provide caption field to describe the data contained in the table.
+  $element['tablefield']['caption'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Table description'),
+    '#default_value' => '',
+    '#description' => t('This brief caption will be associated with the table and will help Assitive Technology, like screen readers, better describe the content within.'),
+  );
+  if (isset($items[$delta]['value'])) {
+    $raw = unserialize($items[$delta]['value']);
+    if (isset($raw['caption'])) {
+      $element['tablefield']['caption']['#default_value'] = check_plain($raw['caption']);
+    }
+  }
+
   // If the user doesn't have rebuild perms, we pass along the data as a value.
-  // Otherwise, we will provide form elements to specify the size and ajax rebuild.
+  // Otherwise we provide form elements to specify the size and ajax rebuild.
   if (isset($field['settings']['restrict_rebuild']) && $field['settings']['restrict_rebuild'] && !user_access('rebuild tablefield')) {
-    $element['tablefield']['rebuild'] = array (
+    $element['tablefield']['rebuild'] = array(
       '#type' => 'value',
       '#tree' => TRUE,
       'count_cols' => array(
@@ -630,20 +1070,19 @@ function tablefield_field_widget_form(&$form, &$form_state, $field, $instance, $
     );
   }
 
-  // Allow the user to import a csv file
+  // Allow the user to import a csv file.
   $element['tablefield']['import'] = array(
     '#type' => 'fieldset',
     '#tree' => TRUE,
-    '#title' => t('Import from CSV'),
+    '#title' => t('Upload CSV file'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
   $element['tablefield']['import']['file'] = array(
     '#name' => 'files[' . $import_id . ']',
-    '#title' => 'File upload',
+    '#title' => t('File upload'),
     '#type' => 'file',
   );
-
   $element['tablefield']['import']['import'] = array(
     '#type' => 'button',
     '#validate' => array(),
@@ -662,8 +1101,53 @@ function tablefield_field_widget_form(&$form, &$form_state, $field, $instance, $
     ),
   );
 
+  // Allow user to paste data (e.g. from Excel).
+  $element['tablefield']['paste'] = array(
+    '#type' => 'fieldset',
+    '#tree' => TRUE,
+    '#title' => t('Copy & Paste'),
+    '#attributes' => array('class' => array('tablefield-extra tablefield-paste')),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $delimiters = array(
+    'TAB' => t('TAB'),
+    ',' => t('Comma ,'),
+    ';' => t('Semicolon ;'),
+    '|' => t('Pipe |'),
+    '+' => t('Plus +'),
+    ':' => t('Colon :'),
+  );
+  $element['tablefield']['paste']['paste_delimiter'] = array(
+    '#type' => 'select',
+    '#tree' => TRUE,
+    '#title' => t('Column separator'),
+    '#name' => 'delimiter[' . $pasted_id . ']',
+    '#options' => $delimiters,
+    '#description' => t('Data copied from Excel will use TAB.'),
+  );
+  $element['tablefield']['paste']['data'] = array(
+    '#type' => 'textarea',
+    '#tree' => TRUE,
+    '#name' => 'data[' . $pasted_id . ']',
+    '#title' => t('Paste table data here:'),
+  );
+  $element['tablefield']['paste']['paste_import'] = array(
+    '#type' => 'button',
+    '#validate' => array(),
+    '#limit_validation_errors' => array(),
+    '#executes_submit_callback' => TRUE,
+    '#submit' => array('tablefield_rebuild_form'),
+    '#value' => t('Import & Rebuild'),
+    '#name' => $pasted_id,
+    '#ajax' => array(
+      'callback' => 'tablefield_rebuild_form_ajax',
+      'wrapper' => $ajax_wrapper_id,
+      'effect' => 'fade',
+    ),
+  );
 
-  // Allow the user to select input filters
+  // Allow the user to select input filters.
   if (!empty($field['settings']['cell_processing'])) {
     $element['#base_type'] = $element['#type'];
     $element['#type'] = 'text_format';
@@ -677,35 +1161,66 @@ function tablefield_field_widget_form(&$form, &$form_state, $field, $instance, $
 }
 
 /**
- * Helper function to import data from a CSV file
+ * Form #after_build callback for tablefield_field_widget_form().
+ */
+function tablefield_after_build($form, &$form_state) {
+  drupal_add_css(drupal_get_path('module', 'tablefield') . '/tablefield.css');
+  drupal_add_tabledrag('tablefield-editor', 'order', 'sibling', 'tablefield-weight');
+  return $form;
+}
+
+/**
+ * Helper function to import data from a CSV file.
+ *
  * @param array $form
+ *   The form structure.
  * @param array $form_state
+ *   The current state of the form.
  * @param string $langcode
+ *   The language associated with the form items.
  * @param string $file_form_field_name
+ *   The key of the upload form element in the form array.
  * @param array $tablefield_parents
+ *   The parents of the tablefield element.
  */
 function tablefield_import_csv($form, &$form_state, $langcode, $file_form_field_name, $tablefield_parents) {
-  // Extract the field and file name from the id of the clicked button
+  // Extract the field and file name from the id of the clicked button.
   $file = file_save_upload($file_form_field_name, array('file_validate_extensions' => array('csv')));
 
   if (is_object($file)) {
+    // Assure Mac/Linux EOL markers work with fgetcsv().
+    $auto_detect_line_endings = ini_get('auto_detect_line_endings');
+    ini_set('auto_detect_line_endings', TRUE);
     if (($handle = fopen($file->uri, "r")) !== FALSE) {
       tablefield_delete_table_values(drupal_array_get_nested_value($form_state['values'], $tablefield_parents));
       tablefield_delete_table_values(drupal_array_get_nested_value($form_state['input'], $tablefield_parents));
 
-      // Populate CSV values
+      // Checking the encoding of the CSV file to be UTF-8.
+      $encoding = 'UTF-8';
+      if (function_exists('mb_detect_encoding')) {
+        $file_contents = file_get_contents($file->uri);
+        $encodings_list = implode(',', variable_get('tablefield_detect_encodings', array(
+          'UTF-8',
+          'ISO-8859-1',
+          'WINDOWS-1251',
+        )));
+        $encoding = mb_detect_encoding($file_contents, $encodings_list);
+      }
+
+      // Populate CSV values.
       $max_col_count = 0;
       $row_count = 0;
       $imported_tablefield = array();
       while (($csv = fgetcsv($handle, 0, variable_get('tablefield_csv_separator', ','))) !== FALSE) {
         $col_count = count($csv);
         foreach ($csv as $col_id => $col) {
-          $imported_tablefield['cell_'. $row_count .'_'. $col_id] = $col;
+          $imported_tablefield['row_' . $row_count]['col_' . $col_id] = tablefield_convert_encoding($col, $encoding);
         }
         $max_col_count = $col_count > $max_col_count ? $col_count : $max_col_count;
         $row_count++;
       }
       fclose($handle);
+      ini_set('auto_detect_line_endings', $auto_detect_line_endings);
       $imported_tablefield['rebuild'] = array('count_cols' => $max_col_count, 'count_rows' => $row_count);
       drupal_array_set_nested_value($form_state['values'], $tablefield_parents, $imported_tablefield);
       drupal_array_set_nested_value($form_state['input'], $tablefield_parents, $imported_tablefield);
@@ -719,13 +1234,70 @@ function tablefield_import_csv($form, &$form_state, $langcode, $file_form_field_
 }
 
 /**
- * Helper function to remove all values in a particular table
+ * Helper function to import pasted data.
+ *
+ * @param array $form
+ *   The form structure.
+ * @param array $form_state
+ *   The current state of the form.
+ * @param string $langcode
+ *   The language associated with the form items.
+ * @param array $tablefield_parents
+ *   The parents of the tablefield element.
+ */
+function tablefield_import_pasted($form, &$form_state, $langcode, $pasted_form_field_name, $tablefield_parents) {
+  $data = $form_state['input']['data'][$pasted_form_field_name];
+  if (!empty($data)) {
+    // Empty the current table.
+    tablefield_delete_table_values(drupal_array_get_nested_value($form_state['values'], $tablefield_parents));
+    tablefield_delete_table_values(drupal_array_get_nested_value($form_state['input'], $tablefield_parents));
+
+    // Get the delimiter.
+    $col_delimiter = $form_state['input']['delimiter'][$pasted_form_field_name];
+    if ($col_delimiter == 'TAB') {
+      $col_delimiter = "\t";
+    }
+
+    // Populate table with pasted values.
+    $max_col_count = 0;
+    $row_count = 0;
+    $imported_tablefield = array();
+    $rows = explode(PHP_EOL, $data);
+    foreach ($rows as $row_id => $row) {
+      // Explode the current row into columns:
+      $cols = explode($col_delimiter, $row);
+      $col_count = count($cols);
+      if ($col_count > 0) {
+        foreach ($cols as $col_id => $col) {
+          $imported_tablefield['row_' . $row_count]['col_' . $col_id] = $col;
+        }
+        $max_col_count = $col_count > $max_col_count ? $col_count : $max_col_count;
+        $row_count++;
+      }
+    }
+
+    // Rebuild the table if necessary, and save.
+    $imported_tablefield['rebuild'] = array('count_cols' => $max_col_count, 'count_rows' => $row_count);
+    drupal_array_set_nested_value($form_state['values'], $tablefield_parents, $imported_tablefield);
+    drupal_array_set_nested_value($form_state['input'], $tablefield_parents, $imported_tablefield);
+
+    drupal_set_message(t('Successfully imported pasted data.'));
+  }
+  else {
+    drupal_set_message(t('There was a problem importing pasted data.'));
+  }
+}
+
+/**
+ * Helper function to remove all values in a particular table.
+ *
  * @param array $tablefield
+ *   The table as it appears in FAPI.
  */
 function tablefield_delete_table_values(&$tablefield) {
-  // Empty out previously entered values
+  // Empty out previously entered values.
   foreach ($tablefield as $key => $value) {
-    if (strpos($key, 'cell_') === 0) {
+    if (strpos($key, 'row_') === 0) {
       $tablefield[$key] = '';
     }
   }
@@ -733,16 +1305,16 @@ function tablefield_delete_table_values(&$tablefield) {
 
 /**
  * AJAX callback to rebuild the number of rows/columns.
+ *
  * The basic idea is to descend down the list of #parent elements of the
- * clicked_button in order to locate the tablefield inside of the $form
- * array. That is the element that we need to return.
- * @param array $form
- * @param array $form_state
+ * clicked_button in order to locate the tablefield inside of the $form array.
+ * That is the element that we need to return.
  */
 function tablefield_rebuild_form_ajax($form, $form_state) {
   $parents = $form_state['triggering_element']['#array_parents'];
 
-  // we do not want to go as deep as rebuild/rebuild or import/import, i.e. the triggering buttons
+  // We do not want to go as deep as rebuild/rebuild or import/import,
+  // i.e. the triggering buttons.
   array_pop($parents);
   array_pop($parents);
 
@@ -767,43 +1339,12 @@ function tablefield_rebuild_form_ajax($form, $form_state) {
 }
 
 /**
- * Helper function to rebuild the table structure w/o submitting the form.
- * @param array $form
- * @param array $form_state
+ * Helper function to rebuild the table structure without submitting the form.
  */
 function tablefield_rebuild_form($form, &$form_state) {
   // Maintain the tablefield data.
   $form_state['tablefield_rebuild'] = $form_state['input'];
-  $form_state['rebuild'] = true;
-}
-
-/**
- * Helper function to turn form elements into a structured array.
- *
- * @param array $tablefield
- *  The table as it appears in FAPI.
- */
-function tablefield_rationalize_table($tablefield) {
-  $tabledata = array();
-
-  // Rationalize the table data
-  if (!empty($tablefield)) {
-    // Remove exterraneous form data
-    $count_cols = $tablefield['rebuild']['count_cols'];
-    $count_rows = $tablefield['rebuild']['count_rows'];
-    unset($tablefield['rebuild']);
-    unset($tablefield['import']);
-
-    foreach ($tablefield as $key => $value) {
-      preg_match('/cell_(.*)_(.*)/', $key, $cell);
-      // $cell[1] is row count $cell[2] is col count
-      if ((int) $cell[1] < $count_rows && (int) $cell['2'] < $count_cols) {
-        $tabledata[$cell[1]][$cell[2]] = $value;
-      }
-    }
-  }
-
-  return $tabledata;
+  $form_state['rebuild'] = TRUE;
 }
 
 /**
@@ -813,67 +1354,251 @@ function tablefield_theme() {
   return array(
     'tablefield_view' => array(
       'variables' => array(
+        'caption' => NULL,
         'header' => NULL,
         'rows' => NULL,
-        'delta' => NULL,
         'export' => NULL,
+        'delta' => NULL,
         'entity_type' => NULL,
         'entity_id' => NULL,
         'field_name' => NULL,
         'langcode' => NULL,
+        'formatter' => NULL,
+        'sticky' => NULL,
+        'attributes' => array(),
       ),
     ),
   );
 }
 
 /**
- * Theme function for table view
+ * Theme function for table view.
  */
 function theme_tablefield_view($variables) {
-  $attributes = array(
-    'id' => 'tablefield-' . $variables['delta'],
-    'class' => array(
-      'tablefield'
-    ),
+  $id = $variables['entity_type'] . '-' . $variables['entity_id'] . '-' . $variables['field_name'] . '-' . $variables['delta'];
+
+  $attributes = $variables['attributes'] + array(
+    'id' => drupal_html_id('tablefield-' . $id),
+    'class' => array('tablefield', 'tablefield-' . $id),
   );
+
+  // Apply scope property to headers for accessibility.
+  if (is_array($variables['header'])) {
+    foreach ($variables['header'] as &$header) {
+      $header['scope'] = 'col';
+    }
+  }
 
   // If the user has access to the csv export option, display it now.
   $export = '';
   if ($variables['export'] && user_access('export tablefield')) {
     $url = sprintf('tablefield/export/%s/%s/%s/%s/%s', $variables['entity_type'], $variables['entity_id'], $variables['field_name'], $variables['langcode'], $variables['delta']);
-    $export = '<div id="tablefield-export-link-' . $variables['delta'] . '" class="tablefield-export-link">' . l(t('Export Table Data'), $url) . '</div>';
+    $export = '<div id="' . drupal_html_id('tablefield-export-link-' . $id) . '" class="tablefield-export-link">' . l(t('Export Table Data'), $url) . '</div>';
   }
 
-  return '<div id="tablefield-wrapper-' . $variables['delta'] . '" class="tablefield-wrapper">'
-    . theme('table',
-      array(
-        'header' => $variables['header'],
-        'rows' => $variables['rows'],
-        'attributes' => $attributes,
-      )
-    )
+  // Prepare variables for theme_table().
+  $theme_variables = array(
+    'header' => $variables['header'],
+    'rows' => $variables['rows'],
+    'attributes' => $attributes,
+  );
+  if (isset($variables['caption'])) {
+    $theme_variables['caption'] = $variables['caption'];
+  }
+  if (isset($variables['sticky'])) {
+    $theme_variables['sticky'] = $variables['sticky'];
+  }
+  return '<div id="' . drupal_html_id('tablefield-wrapper-' . $id) . '" class="tablefield-wrapper">'
+    . theme('table__tablefield', $theme_variables)
     . $export
     . '</div>';
 }
 
 /**
- * Helper function to fill in locked values from instance defaults
- * @param array $tablefield
- * @params array $instance_default - instance default tablefield
- * @return array - filled tablefield
+ * Helper function to detect and convert strings not in UTF-8 to UTF-8.
+ *
+ * @param string $data
+ *   The string which needs converting.
+ * @param string $encoding
+ *   The encoding of the CSV file.
+ *
+ * @return string
+ *   UTF encoded string.
  */
-function tablefield_fill_locked_values($tablefield, $instance_default) {
-  if (!empty($tablefield['rebuild'])) {
-    $count_cols = $tablefield['rebuild']['count_cols'];
-    $count_rows = $tablefield['rebuild']['count_rows'];
+function tablefield_convert_encoding($data, $encoding) {
+  // Converting UTF-8 to UTF-8 will not work.
+  if ($encoding == 'UTF-8') {
+    return $data;
+  }
 
-    for ($i = 0; $i < $count_rows; $i++) {
-      for ($ii = 0; $ii < $count_cols; $ii++) {
-        if (!isset($tablefield["cell_${i}_${ii}"])) {
-          $tablefield["cell_${i}_${ii}"] = isset($instance_default["cell_${i}_${ii}"]) ? $instance_default["cell_${i}_${ii}"] : '';
+  // Try convert the data to UTF-8.
+  if ($encoded_data = drupal_convert_to_utf8($data, $encoding)) {
+    return $encoded_data;
+  }
+
+  // Fallback on the input data.
+  return $data;
+}
+
+/**
+ * Trim trailing empty rows/columns.
+ *
+ * @param array $tabledata
+ *   The rationalized tablefield.
+ * @param bool $ignore_head
+ *   Whether ignoring header or not.
+ */
+function tablefield_trim($tabledata, $ignore_head = FALSE) {
+  $tabledata = array_reverse($tabledata);
+  // For columns the transposed array has the 'weight' one level higher.
+  unset($tabledata['weight']);
+  foreach ($tabledata as $key => $value) {
+    // Removes the weight key for the rows.
+    unset($value['weight']);
+    $empty = TRUE;
+    if (is_array($value)) {
+      foreach ($value as $k2 => $v2) {
+        if (!empty($v2)) {
+          // Stop traversing at the first non empty value.
+          if (!$ignore_head || ($ignore_head && $k2 !== 'row_0')) {
+            $empty = FALSE;
+          }
         }
       }
     }
+    else {
+      if (!empty($value)) {
+        // Stop traversing at the first non empty value.
+        $empty = FALSE;
+      }
+    }
+
+    if ($empty) {
+      unset($tabledata[$key]);
+    }
+    else {
+      break;
+    }
   }
-  return $tablefield;
+  $tabledata = array_reverse($tabledata);
+
+  return $tabledata;
+}
+
+/**
+ * Trim trailing empty columns.
+ *
+ * @param array $tabledata
+ *   The rationalized tablefield.
+ * @param bool $ignore_head
+ *   Whether ignoring header or not.
+ */
+function tablefield_rtrim_cols($tabledata, $ignore_head = FALSE) {
+  $row_num = count($tabledata);
+
+  if (!$row_num) {
+    return $tabledata;
+  }
+
+  // Transpose the array.
+  $tabledata = tablefield_transpose($tabledata);
+
+  // Trim trailing empty rows.
+  $tabledata = tablefield_trim($tabledata, $ignore_head);
+
+  // Transpose back.
+  $tabledata = tablefield_transpose($tabledata);
+
+  return $tabledata;
+}
+
+/**
+ * Helper function to transpose table data arrays.
+ */
+function tablefield_transpose($array) {
+  $transposed = array();
+  foreach ($array as $key => $row) {
+    foreach ($row as $subkey => $value) {
+      $transposed[$subkey][$key] = $value;
+    }
+  }
+  return $transposed;
+}
+
+/**
+ * Hide all empty rows.
+ *
+ * @param array $tabledata
+ *   The rationalized tablefield.
+ * @param bool $ignore_head
+ *   Whether ignoring header or not.
+ */
+function tablefield_hide_rows($tabledata, $ignore_head = FALSE) {
+  foreach ($tabledata as $key => $value) {
+    // Removes the weight key.
+    unset($value['weight']);
+    $empty = TRUE;
+
+    if (is_array($value)) {
+      foreach ($value as $k2 => $v2) {
+        if (!empty($v2)) {
+          // Stop traversing at the first non empty value.
+          if (!$ignore_head || ($ignore_head && $k2 !== 'row_0')) {
+            $empty = FALSE;
+          }
+        }
+      }
+    }
+    else {
+      if (!empty($value)) {
+        // Stop traversing at the first non empty value.
+        $empty = FALSE;
+      }
+    }
+
+    if ($empty) {
+      unset($tabledata[$key]);
+    }
+  }
+
+  return $tabledata;
+}
+
+/**
+ * Hide all empty columns.
+ *
+ * @param array $tabledata
+ *   The rationalized tablefield.
+ * @param bool $ignore_head
+ *   Whether ignoring header or not.
+ */
+function tablefield_hide_cols($tabledata, $ignore_head = FALSE) {
+  $row_num = count($tabledata);
+
+  if (!$row_num) {
+    return $tabledata;
+  }
+
+  // Transpose the array.
+  $tabledata = tablefield_transpose($tabledata);
+
+  // Trim trailing empty rows.
+  $tabledata = tablefield_hide_rows($tabledata, $ignore_head);
+
+  // Transpose back.
+  $tabledata = tablefield_transpose($tabledata);
+
+  return $tabledata;
+}
+
+/**
+ * Implements hook_multiple_field_remove_button_field_widgets_alter().
+ *
+ * Enable https://www.drupal.org/project/multiple_fields_remove_button.
+ */
+function tablefield_multiple_field_remove_button_field_widgets_alter(&$fieldwidgets) {
+  // Remove button for the following field type widgets.
+  $fieldwidgets = array(
+    'tablefield',
+  );
 }

@@ -1,6 +1,6 @@
 name = Search API
 description = "Provides a generic API for modules offering search capabilities."
-dependencies[] = entity
+dependencies[] = entity:entity
 core = 7.x
 package = Search
 
@@ -38,9 +38,8 @@ files[] = includes/service.inc
 
 configure = admin/config/search/search_api
 
-; Information added by Drupal.org packaging script on 2017-07-18
-version = "7.x-1.22"
+; Information added by Drupal.org packaging script on 2019-03-11
+version = "7.x-1.26"
 core = "7.x"
 project = "search_api"
-datestamp = "1500368049"
-
+datestamp = "1552334832"

@@ -1,9 +1,11 @@
 <?php
 
 /**
- * @file rules integration for the system module
+ * @file
+ * Rules integration for the system module.
  *
  * @addtogroup rules
+ *
  * @{
  */
 
@@ -46,6 +48,7 @@ function rules_system_event_info() {
 
 /**
  * Implements hook_rules_data_info() on behalf of the system module.
+ *
  * @see rules_core_modules()
  */
 function rules_system_data_info() {
@@ -59,8 +62,9 @@ function rules_system_data_info() {
 }
 
 /**
- * Defines property info for watchdog log entries, used by the log entry data
- * type to provide an useful metadata wrapper.
+ * Defines property info for watchdog log entries.
+ *
+ * Used by the log entry data type to provide a useful metadata wrapper.
  */
 function _rules_system_watchdog_log_entry_info() {
   return array(
@@ -242,6 +246,21 @@ function rules_system_action_info() {
       'base' => 'rules_action_mail_to_users_of_role',
       'access callback' => 'rules_system_integration_access',
     ),
+    'block_ip' => array(
+      'label' => t('Block IP address'),
+      'group' => t('System'),
+      'parameter' => array(
+        'ip_address' => array(
+          'type' => 'ip_address',
+          'label' => t('IP address'),
+          'description' => t('If not provided, the IP address of the current user will be used.'),
+          'optional' => TRUE,
+          'default value' => NULL,
+        ),
+      ),
+      'base' => 'rules_action_block_ip',
+      'access callback' => 'rules_system_integration_access',
+    ),
   );
 }
 
@@ -279,7 +298,7 @@ function rules_system_evaluator_info() {
       'class' => 'RulesTokenEvaluator',
       'type' => array('text', 'uri', 'list<text>', 'list<uri>'),
       'weight' => 0,
-     ),
+    ),
   );
 }
 

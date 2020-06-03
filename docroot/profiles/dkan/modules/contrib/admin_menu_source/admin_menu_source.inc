@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Menu callbacks for admin_menu_source module
@@ -27,13 +26,13 @@ function admin_menu_source_settings() {
     );
   }
   
-  //add a custom submit handler
+  // Add a custom submit handler.
   $form['#submit'][] = 'admin_menu_source_settings_submit';
   
   return system_settings_form($form);
 }
 
 function admin_menu_source_settings_submit() {
-  //flush admin_menu's cache
+  // Flush admin_menu's cache.
   admin_menu_flush_caches();
 }

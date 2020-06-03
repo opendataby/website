@@ -27,10 +27,11 @@ function eck_entity_type_features_export_options() {
 function eck_entity_type_features_export($data, &$export, $module_name = '') {
   $pipe = array();
 
-  foreach ($data as $entity_type) {
+  $entity_types = EntityType::loadMultipleByName($data);
+  foreach (array_keys($entity_types) as $entity_type) {
     // Export the entity type.
     $export['features']['eck_entity_type'][$entity_type] = $entity_type;
-    $export['dependencies']['eck_entity_type'] = 'eck';
+    $export['dependencies']['eck'] = 'eck';
     // @todo We need to add dependencies on the modules implementing the
     // property behaviors currently they are all implemented by ECK but in the
     // future, people might have their custom behaviors.. or we might have
@@ -56,9 +57,9 @@ function eck_entity_type_features_export_render($module, $data, $export = NULL) 
   $output = array();
   $output[] = '  $items = array(';
 
-  foreach ($data as $entity_type_name) {
-    $entity_type = EntityType::loadByName($entity_type_name);
+  $entity_types = EntityType::loadMultipleByName($data);
 
+  foreach ($entity_types as $entity_type) {
     $elements['name'] = $entity_type->name;
     $elements['label'] = $entity_type->label;
     $elements['properties'] = $entity_type->properties;
@@ -85,6 +86,12 @@ function eck_entity_type_features_rebuild($module) {
 
   if ($default_entities = features_get_default('eck_entity_type', $module)) {
     foreach ($default_entities as $entity_type_name => $entity_type_info) {
+      // Previous versions of ECK would allow deleted entity types to be
+      // exported as an empty definition without a machine name. We therefore
+      // have to ensure we are actually rebuilding a valid definition.
+      if (empty($entity_type_name) || !is_string($entity_type_name)) {
+        continue;
+      }
 
       // Load the existing entity type, if one exists.
       $entity_type = EntityType::loadByName($entity_type_name);
@@ -155,19 +162,18 @@ function eck_bundle_features_export_options() {
  */
 function eck_bundle_features_export($data, &$export, $module_name = '') {
   $pipe = array();
-  // What is this for?
-  $map = features_get_default_map('eck');
 
-  foreach ($data as $type) {
+  $bundles = Bundle::loadMultipleByMachineName($data);
+
+  foreach ($bundles as $machine_name => $bundle) {
 
     // Export the entity type.
-    $export['features']['eck_bundle'][$type] = $type;
+    $export['features']['eck_bundle'][$machine_name] = $machine_name;
     $export['dependencies']['eck'] = 'eck';
     $export['dependencies']['features'] = 'features';
 
     // Export fields.
     // @TODO: Features already supports this, just gotta find the right calls.
-    $bundle = Bundle::loadByMachineName($type);
     $fields = field_info_instances($bundle->entity_type, $bundle->name);
     foreach ($fields as $field) {
       $pipe['field'][] = "{$bundle->entity_type}-{$field['bundle']}-{$field['field_name']}";
@@ -191,8 +197,9 @@ function eck_bundle_features_export_render($module, $data, $export = NULL) {
   $output = array();
   $output[] = '  $items = array(';
 
-  foreach ($data as $bundle_machine_name) {
-    $bundle = Bundle::loadByMachineName($bundle_machine_name);
+  $bundles = Bundle::loadMultipleByMachineName($data);
+
+  foreach ($bundles as $bundle_machine_name => $bundle) {
     unset($bundle->id);
 
     foreach ($elements as $key => $value) {
@@ -223,6 +230,9 @@ function eck_bundle_features_revert($module) {
  */
 function eck_bundle_features_rebuild($module) {
   if ($default_types = features_get_default('eck_bundle', $module)) {
+    // Reset the bundles cache.
+    Bundle::loadAll(TRUE);
+
     foreach ($default_types as $bundle_machine_name => $bundle_info) {
 
       $bundle = Bundle::loadByMachineName($bundle_machine_name);

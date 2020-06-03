@@ -15,20 +15,15 @@ Drupal.ACDB.prototype.search = function (searchString) {
     return;
   }
 
+  // See if this key has been searched for before.
+  if (this.cache[searchString]) {
+    return this.owner.found(this.cache[searchString]);
+  }
+
   // Fill data with form values if we're working with dependent autocomplete
   var data = '';
   if (this.owner.isDependent()) {
     data = this.owner.serializeOuterForm();
-  }
-
-  // See if this key has been searched for before.
-  if (typeof this.lastData === 'undefined' || this.lastData !== data) {
-    // Clear the cache if the dependent data has changed.
-    this.cache = {};
-    this.lastData = data;
-  }
-  else if (this.cache[searchString]) {
-    return this.owner.found(this.cache[searchString]);
   }
 
   // Initiate delayed search.
@@ -73,28 +68,11 @@ Drupal.jsAC.prototype.isDependent = function() {
  * Returns serialized input values from form except autocomplete input.
  */
 Drupal.jsAC.prototype.serializeOuterForm = function() {
-  var i, temp, data = $(this.input)
+  return $(this.input)
     .parents('form:first')
     .find('select[name], textarea[name], input[name][type!=submit]')
     .not(this.input)
-    .serializeArray();
-
-  // If we are in a Content Pane, we need to remove the parent 'exposed' from
-  // each of the controls, and ignore any controls that aren't in 'exposed'.
-  if (this.input.name.indexOf('exposed[') === 0) {
-    temp = [];
-    for (i = 0; i < data.length; i++) {
-      if (data[i].name.indexOf('exposed[') === 0) {
-        temp.push({
-          name: data[i].name.substring(8, data[i].name.length - 1),
-          value: data[i].value
-        });
-      }
-    }
-    data = temp;
-  }
-
-  return $.param(data);
+    .serialize();
 };
 
 })(jQuery);

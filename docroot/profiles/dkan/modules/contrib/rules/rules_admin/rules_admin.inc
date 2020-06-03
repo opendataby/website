@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @file Rules Admin UI
- *   Implements rule management and configuration screens.
+ * @file
+ * Implements rule management and configuration screens.
  */
 
 /**
@@ -26,11 +26,12 @@ function rules_admin_reaction_overview($form, &$form_state, $base_path) {
   }
   else {
     $event = $_GET['event'];
-    $conditions['event'] = $event;
+    // Filter using a wildcard suffix so configured event names with suffixes
+    // are found also.
+    $conditions['event'] = $event . '%';
     $collapsed = FALSE;
   }
   $form['help'] = array(
-    '#type' => 'markup',
     '#markup' => t('Reaction rules, listed below, react on selected events on the site. Each reaction rule may fire any number of <em>actions</em>, and may have any number of <em>conditions</em> that must be met for the actions to be executed. You can also set up <a href="@url1">components</a> – stand-alone sets of Rules configuration that can be used in Rules and other parts of your site. See <a href="@url2">the online documentation</a> for an introduction on how to use Rules.',
       array('@url1' => url('admin/config/workflow/rules/components'),
             '@url2' => rules_external_help('rules'))),
@@ -103,7 +104,6 @@ function rules_admin_components_overview($form, &$form_state, $base_path) {
     $collapsed = FALSE;
   }
   $form['help'] = array(
-    '#type' => 'markup',
     '#markup' => t('Components are stand-alone sets of Rules configuration that can be used by Rules and other modules on your site. Components are for example useful if you want to use the same conditions, actions or rules in multiple places, or call them from your custom module. You may also export each component separately. See <a href="@url">the online documentation</a> for more information about how to use components.',
       array('@url' => rules_external_help('components'))),
   );
@@ -160,7 +160,7 @@ function rules_admin_settings($form, &$form_state) {
       $pathauto_help = t("Note that Pathauto's URL path cleaning method can be configured at <a href='!url'>admin/config/search/path/settings</a>.", array('!url' => url('admin/config/search/path/settings')));
     }
     else {
-      $pathauto_help = t('Install the <a href="http://drupal.org/project/pathauto">Pathauto module</a> in order to get a configurable URL path cleaning method.');
+      $pathauto_help = t('Install the <a href="https://www.drupal.org/project/pathauto">Pathauto module</a> in order to get a configurable URL path cleaning method.');
     }
 
     $form['path']['rules_path_cleaning_callback'] = array(
@@ -190,7 +190,7 @@ function rules_admin_settings($form, &$form_state) {
   $form['debug']['rules_debug_log'] = array(
     '#type' => 'checkbox',
     '#title' => t('Log debug information to the system log'),
-    '#default_value' => variable_get('rules_debug_log', 0),
+    '#default_value' => variable_get('rules_debug_log', FALSE),
   );
   $form['debug']['rules_debug'] = array(
     '#type' => 'radios',
@@ -209,7 +209,7 @@ function rules_admin_settings($form, &$form_state) {
     '#states' => array(
       // Hide the regions settings when the debug log is disabled.
       'invisible' => array(
-        'input[name="rules_debug"]' => array('value' => '0'),
+        'input[name="rules_debug"]' => array('value' => 0),
       ),
     ),
   );
@@ -279,7 +279,7 @@ function rules_admin_settings_integrity_check_submit($form, &$form_state) {
     rules_config_update_dirty_flag($rules_config, TRUE, TRUE);
     if ($rules_config->dirty) {
       $count++;
-      $variables = array('%label' => $rules_config->label(), '%name' => $rules_config->name, '@plugin' => $rules_config->plugin(), '!uri'=> url(RulesPluginUI::path($rules_config->name)));
+      $variables = array('%label' => $rules_config->label(), '%name' => $rules_config->name, '@plugin' => $rules_config->plugin(), '!uri' => url(RulesPluginUI::path($rules_config->name)));
       drupal_set_message(t('The @plugin <a href="!uri">%label (%name)</a> fails the integrity check and cannot be executed.', $variables), 'error');
     }
 
@@ -312,7 +312,7 @@ function rules_admin_settings_cache_rebuild_submit($form, &$form_state) {
 function rules_admin_add_reaction_rule($form, &$form_state, $base_path) {
   RulesPluginUI::formDefaults($form, $form_state);
 
-  $rules_config = rules_reaction_rule();
+  $rules_config = isset($form_state['rules_config']) ? $form_state['rules_config'] : rules_reaction_rule();
   $rules_config->form($form, $form_state, array('show settings' => TRUE, 'button' => TRUE));
 
   $form['settings']['#collapsible'] = FALSE;
@@ -329,16 +329,32 @@ function rules_admin_add_reaction_rule($form, &$form_state, $base_path) {
   // Incorporate the form to add the first event.
   $form['settings'] += rules_ui_add_event(array(), $form_state, $rules_config, $base_path);
   $form['settings']['event']['#tree'] = FALSE;
+  $form['settings']['event_settings']['#tree'] = FALSE;
   unset($form['settings']['help']);
 
   unset($form['settings']['submit']);
   $form['submit']['#value'] = t('Save');
 
   $form_state += array('rules_config' => $rules_config);
+  $form['#validate'][] = 'rules_ui_add_reaction_rule_validate';
   $form['#validate'][] = 'rules_ui_edit_element_validate';
-  $form['#submit'][] = 'rules_ui_add_event_apply';
-  $form['#submit'][] = 'rules_ui_edit_element_submit';
+  $form['#submit'][] = 'rules_ui_add_reaction_rule_submit';
   return $form;
+}
+
+/**
+ * Form validation callback.
+ */
+function rules_ui_add_reaction_rule_validate(&$form, &$form_state) {
+  rules_ui_add_event_validate($form['settings'], $form_state);
+}
+
+/**
+ * Form submit callback.
+ */
+function rules_ui_add_reaction_rule_submit(&$form, &$form_state) {
+  rules_ui_add_event_apply($form['settings'], $form_state);
+  rules_ui_edit_element_submit($form, $form_state);
 }
 
 /**

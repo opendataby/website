@@ -1,0 +1,38 @@
+name: Drupal/DKAN
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  drupal-dkan-tests:
+    # [ ] try php:8
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    #- name: Copy .env
+    #  run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+    - name: Install Dependencies
+      run: composer install
+      #run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Rebuild the website
+      run: .bin/phing update
+    - name: Test README workflow
+      run: |
+        git diff
+        .bin/phing import
+        git diff
+        .bin/phing export
+        git diff
+    
+    #- name: Create Database
+    #  run: |
+    #    mkdir -p database
+    #    touch database/database.sqlite
+    #- name: Execute tests (Unit and Feature tests) via PHPUnit
+    #  env:
+    #    DB_CONNECTION: sqlite
+    #    DB_DATABASE: database/database.sqlite
+    #  run: vendor/bin/phpunit

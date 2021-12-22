@@ -1,6 +1,4 @@
 {
-  "name": "opendata",
-  "description": "File for managing patches and modifications",
   "type": "project",
   "license": "GPL-2.0+",
   "authors": [

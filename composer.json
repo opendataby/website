@@ -1,6 +1,4 @@
 {
-  "name": "opendata",
-  "description": "File for managing patches and modifications",
   "type": "project",
   "license": "GPL-2.0+",
   "authors": [
@@ -77,7 +75,7 @@
     "behat/mink-goutte-driver": "~1.2",
     "jcalderonzumba/gastonjs": "^1.1@dev",
     "jcalderonzumba/mink-phantomjs-driver": "~0.3.1",
-    "mikey179/vfsStream": "~1.2",
+    "mikey179/vfsstream": "~1.2",
     "phpunit/phpunit": "~4.8",
     "symfony/css-selector": "2.7.*"
   },
